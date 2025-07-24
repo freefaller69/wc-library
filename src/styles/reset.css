@@ -1,0 +1,65 @@
+/**
+ * CSS Reset for UI Components
+ */
+
+/* Component-specific reset - not global */
+.ui-reset {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+.ui-reset *,
+.ui-reset *::before,
+.ui-reset *::after {
+  box-sizing: border-box;
+}
+
+/* Focus styles */
+.ui-focus-visible {
+  outline: 2px solid var(--ui-color-border-focus);
+  outline-offset: 2px;
+}
+
+/* Screen reader only content */
+.ui-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Disabled state */
+.ui-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Common interaction states */
+.ui-interactive {
+  cursor: pointer;
+  transition: all var(--ui-transition-fast);
+}
+
+.ui-interactive:hover {
+  opacity: 0.8;
+}
+
+.ui-interactive:active {
+  transform: translateY(1px);
+}
+
+.ui-interactive:focus-visible {
+  outline: 2px solid var(--ui-color-border-focus);
+  outline-offset: 2px;
+}
