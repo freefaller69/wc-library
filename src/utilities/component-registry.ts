@@ -11,7 +11,6 @@ interface ComponentDefinition {
 
 class ComponentRegistry {
   private definitions = new Map<string, ComponentDefinition>();
-  private registrationQueue: string[] = [];
 
   /**
    * Defines a component without immediately registering it
@@ -227,7 +226,6 @@ class ComponentRegistry {
    */
   public clear(): void {
     this.definitions.clear();
-    this.registrationQueue = [];
   }
 }
 

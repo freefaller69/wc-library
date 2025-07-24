@@ -236,11 +236,11 @@ describe('Component Registry', () => {
         disconnect: vi.fn(),
       };
       
-      global.MutationObserver = vi.fn(() => mockObserver) as any;
+      globalThis.MutationObserver = vi.fn(() => mockObserver) as any;
       
       componentRegistry.enableAutoRegistration();
       
-      expect(global.MutationObserver).toHaveBeenCalled();
+      expect(globalThis.MutationObserver).toHaveBeenCalled();
       expect(mockObserver.observe).toHaveBeenCalledWith(document.body, {
         childList: true,
         subtree: true,

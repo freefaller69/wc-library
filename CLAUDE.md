@@ -16,13 +16,12 @@ This is a Vite-based TypeScript web component library project with the following
 - **Module System**: ESNext modules with bundler resolution
 - **TypeScript Configuration**: Strict mode enabled with comprehensive linting rules
 - **Entry Point**: `src/main.ts` renders content into `#app` div in `index.html`
-- **Component Pattern**: Functions that accept DOM elements and attach event listeners (see `setupCounter` in `counter.ts`)
+- **Component Pattern**: Base classes that extend HTMLElement with lifecycle management and accessibility features
 
 ## Key Files
 
-- `src/main.ts` - Main application entry point, handles DOM manipulation and component setup
-- `src/counter.ts` - Example component demonstrating the function-based pattern for web components
-- `src/style.css` - Global styles with CSS custom properties and dark/light mode support
+- `src/main.ts` - Development playground for testing and demonstrating components
+- `src/style.css` - Design tokens (CSS custom properties), component reset styles, and dark/light mode support
 - `tsconfig.json` - Strict TypeScript configuration with modern ES2022 target
 
 ## Testing

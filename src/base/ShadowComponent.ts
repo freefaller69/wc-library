@@ -4,7 +4,7 @@
 
 import { BaseComponent } from './BaseComponent.js';
 import { StyleManager } from '../utilities/style-helpers.js';
-import type { ComponentConfig, AccessibilityOptions } from '../types/component.js';
+import type { ComponentConfig } from '../types/component.js';
 
 export interface ShadowComponentConfig extends ComponentConfig {
   shadowMode?: 'open' | 'closed';
@@ -12,7 +12,7 @@ export interface ShadowComponentConfig extends ComponentConfig {
 }
 
 export abstract class ShadowComponent extends BaseComponent {
-  protected shadowRoot: ShadowRoot;
+  declare shadowRoot: ShadowRoot;
   protected styleManager: StyleManager;
   protected template: HTMLTemplateElement | null = null;
 

@@ -10,7 +10,7 @@ export abstract class BaseComponent extends HTMLElement implements LifecycleCall
   protected componentId: string;
   protected config: ComponentConfig;
   private staticAttributeCache: Map<string, string> = new Map();
-  private isConnected = false;
+  private _isConnected = false;
 
   constructor(config: ComponentConfig) {
     super();
@@ -23,9 +23,9 @@ export abstract class BaseComponent extends HTMLElement implements LifecycleCall
    * Component lifecycle - called when element is connected to DOM
    */
   connectedCallback(): void {
-    if (this.isConnected) return;
+    if (this._isConnected) return;
     
-    this.isConnected = true;
+    this._isConnected = true;
     this.setupAccessibility();
     this.onConnect?.();
   }
@@ -34,7 +34,7 @@ export abstract class BaseComponent extends HTMLElement implements LifecycleCall
    * Component lifecycle - called when element is disconnected from DOM
    */
   disconnectedCallback(): void {
-    this.isConnected = false;
+    this._isConnected = false;
     this.onDisconnect?.();
   }
 
@@ -131,7 +131,7 @@ export abstract class BaseComponent extends HTMLElement implements LifecycleCall
   /**
    * Handles dynamic attribute changes (state, etc.)
    */
-  private handleDynamicAttributeChange(name: string, oldValue: string | null, newValue: string | null): void {
+  private handleDynamicAttributeChange(_name: string, _oldValue: string | null, _newValue: string | null): void {
     // Override in subclasses for specific dynamic attribute handling
     this.requestUpdate();
   }
@@ -159,7 +159,7 @@ export abstract class BaseComponent extends HTMLElement implements LifecycleCall
    * Requests a component update (can be overridden for efficient updates)
    */
   protected requestUpdate(): void {
-    if (this.isConnected) {
+    if (this._isConnected) {
       this.updateComponentClasses();
       this.render?.();
     }
@@ -228,15 +228,15 @@ export abstract class BaseComponent extends HTMLElement implements LifecycleCall
   }
 
   // Event handlers that can be overridden
-  protected handleFocus = (event: FocusEvent): void => {
+  protected handleFocus = (_event: FocusEvent): void => {
     this.classList.add('ui-focus-visible');
   };
 
-  protected handleBlur = (event: FocusEvent): void => {
+  protected handleBlur = (_event: FocusEvent): void => {
     this.classList.remove('ui-focus-visible');
   };
 
-  protected handleKeydown = (event: KeyboardEvent): void => {
+  protected handleKeydown = (_event: KeyboardEvent): void => {
     // Override in subclasses for specific keyboard handling
   };
 
@@ -246,8 +246,8 @@ export abstract class BaseComponent extends HTMLElement implements LifecycleCall
   protected abstract render?(): void;
 
   // Lifecycle methods (can be overridden)
-  protected onConnect?(): void;
-  protected onDisconnect?(): void;
-  protected onAttributeChange?(name: string, oldValue: string | null, newValue: string | null): void;
-  protected onAdopt?(): void;
+  onConnect?(): void;
+  onDisconnect?(): void;
+  onAttributeChange?(name: string, oldValue: string | null, newValue: string | null): void;
+  onAdopt?(): void;
 }

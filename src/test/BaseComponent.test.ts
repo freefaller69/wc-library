@@ -4,7 +4,7 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { BaseComponent } from '../base/BaseComponent.js';
-import type { ComponentConfig, AccessibilityOptions } from '../types/component.js';
+import type { AccessibilityOptions } from '../types/component.js';
 
 // Test implementation of BaseComponent
 class TestComponent extends BaseComponent {

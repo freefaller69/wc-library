@@ -23,6 +23,10 @@ class MockBaseComponent extends BaseComponent {
     return this.stateClasses;
   }
 
+  protected render(): void {
+    // Mock render method - no implementation needed for tests
+  }
+
   // Expose protected methods for testing
   public testGetTypedAttribute = this.getTypedAttribute.bind(this);
   public testSetTypedAttribute = this.setTypedAttribute.bind(this);
