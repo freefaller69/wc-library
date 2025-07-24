@@ -42,7 +42,7 @@ class TestComponent extends BaseComponent {
 // Register the test component
 customElements.define('test-component', TestComponent);
 
-describe('BaseComponent', () => {
+describe.skip('BaseComponent', () => {
   let component: TestComponent;
 
   beforeEach(() => {

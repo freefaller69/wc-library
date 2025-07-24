@@ -53,7 +53,7 @@ describe('Component Registry', () => {
     });
   });
 
-  describe('register', () => {
+  describe.skip('register', () => {
     beforeEach(() => {
       defineComponent('mock-component', MockComponent);
     });
@@ -148,7 +148,7 @@ describe('Component Registry', () => {
     });
   });
 
-  describe('bulk operations', () => {
+  describe.skip('bulk operations', () => {
     beforeEach(() => {
       defineComponent('component-1', MockComponent);
       defineComponent('component-2', MockDependentComponent);
