@@ -34,6 +34,7 @@ Use descriptive branch names with prefixes:
 - `chore/` - Maintenance tasks, dependencies, tooling
 
 **Examples:**
+
 ```
 feature/aria-mixin-implementation
 fix/component-lifecycle-memory-leak
@@ -82,18 +83,22 @@ When creating a PR, include:
 
 ```markdown
 ## Summary
+
 Brief description of what this PR accomplishes.
 
 ## Changes
+
 - List of specific changes made
 - Focus on the "what" and "why"
 
 ## Testing
+
 - [ ] Local tests pass
 - [ ] Manual testing completed (if applicable)
 - [ ] Performance impact verified
 
 ## Related Issues
+
 Closes #123
 ```
 
@@ -146,6 +151,7 @@ Our CI includes performance monitoring that:
 - **Maintains baselines** for comparison
 
 Consider performance impact when:
+
 - Adding new dependencies
 - Implementing complex algorithms
 - Modifying build configuration
@@ -160,7 +166,7 @@ Instead of one large PR, consider:
 ```bash
 # Split into focused commits/PRs
 1. Refactor existing component base classes
-2. Add new mixin interfaces and types  
+2. Add new mixin interfaces and types
 3. Implement specific mixin (e.g., AccessibilityMixin)
 4. Update components to use new mixin
 5. Add tests and documentation
