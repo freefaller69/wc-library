@@ -17,7 +17,7 @@ export class SimpleButton extends InteractiveAttributeComponent {
   }
 
   static get observedAttributes(): string[] {
-    return ['variant', 'size', 'disabled'];
+    return ['disabled'];
   }
 
   connectedCallback() {
