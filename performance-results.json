@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-07-25T16:01:11.222Z",
+  "commit": "local",
+  "branch": "local",
+  "bundleSize": 6950,
+  "analysis": {
+    "totalFiles": 2,
+    "jsFiles": 0,
+    "cssFiles": 0,
+    "htmlFiles": 1,
+    "largestJsFile": null,
+    "largestCssFile": null
+  }
+}

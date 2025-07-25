@@ -50,7 +50,7 @@ git pull origin main
 git checkout -b feature/mixin-accessibility-implementation
 # or
 git checkout -b refactor/base-component-mixins
-# or  
+# or
 git checkout -b fix/button-focus-management
 # or
 git checkout -b docs/update-component-examples
@@ -60,7 +60,7 @@ git checkout -b chore/update-dependencies
 # Start development server (for component testing)
 pnpm dev
 
-# Run tests in watch mode (separate terminal)  
+# Run tests in watch mode (separate terminal)
 pnpm test
 ```
 
