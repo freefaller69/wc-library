@@ -56,7 +56,7 @@ export class SimpleButton extends InteractiveAttributeComponent {
 
   render(): void {
     this.addEventListener('click', this.handleClick);
-    
+
     // Update ARIA states based on current state
     this.setAriaStates({
       'aria-disabled': this.getTypedAttribute('disabled', 'boolean'),

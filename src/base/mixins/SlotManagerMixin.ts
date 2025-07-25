@@ -46,7 +46,7 @@ export function SlotManagerMixin<TBase extends Constructor<HTMLElement>>(
     handleSlotChange = (event: Event): void => {
       const slot = event.target as HTMLSlotElement;
       const assignedNodes = slot.assignedNodes();
-      
+
       // Override in subclasses for specific slot handling
       this.onSlotChange?.(slot, assignedNodes);
     };

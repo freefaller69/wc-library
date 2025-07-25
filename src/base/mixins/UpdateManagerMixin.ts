@@ -25,9 +25,9 @@ export function UpdateManagerMixin<TBase extends Constructor<HTMLElement>>(
      */
     requestUpdate(): void {
       if (this._updateRequested) return;
-      
+
       this._updateRequested = true;
-      
+
       if (!this._updatePromise) {
         this._updatePromise = this.scheduleUpdate();
       }
@@ -38,11 +38,11 @@ export function UpdateManagerMixin<TBase extends Constructor<HTMLElement>>(
      */
     private async scheduleUpdate(): Promise<void> {
       await Promise.resolve(); // Wait for next microtask
-      
+
       if (this.isConnected && this._updateRequested) {
         this.performUpdate();
       }
-      
+
       this._updateRequested = false;
       this._updatePromise = null;
     }
@@ -52,7 +52,10 @@ export function UpdateManagerMixin<TBase extends Constructor<HTMLElement>>(
      */
     private performUpdate(): void {
       // Update classes if the method exists
-      if ('updateComponentClasses' in this && typeof (this as any).updateComponentClasses === 'function') {
+      if (
+        'updateComponentClasses' in this &&
+        typeof (this as any).updateComponentClasses === 'function'
+      ) {
         (this as any).updateComponentClasses();
       }
 

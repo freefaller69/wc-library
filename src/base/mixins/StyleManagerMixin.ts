@@ -45,10 +45,7 @@ export function StyleManagerMixin<TBase extends Constructor<HTMLElement>>(
 
       if ('adoptedStyleSheets' in this.shadowRoot) {
         // Use constructed stylesheets if supported
-        this.shadowRoot.adoptedStyleSheets = [
-          ...this.shadowRoot.adoptedStyleSheets,
-          stylesheet,
-        ];
+        this.shadowRoot.adoptedStyleSheets = [...this.shadowRoot.adoptedStyleSheets, stylesheet];
       } else {
         // Fallback to style element
         const style = document.createElement('style');

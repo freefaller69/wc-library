@@ -89,7 +89,7 @@ export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(
     requestUpdate(): void {
       // Check if connected using duck typing since we might not have access to isConnected
       const isConnected = 'isConnected' in this ? (this as any).isConnected : this.isConnected;
-      
+
       if (isConnected) {
         this.updateComponentClasses();
         // Call render if it exists

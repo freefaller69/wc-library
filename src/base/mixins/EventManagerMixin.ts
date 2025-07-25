@@ -7,11 +7,7 @@ import type { ComponentConfig } from '../../types/component.js';
 
 // Mixin interface that defines event management features
 export interface EventManagerMixinInterface {
-  dispatchCustomEvent(
-    eventName: string,
-    detail?: unknown,
-    options?: CustomEventInit
-  ): boolean;
+  dispatchCustomEvent(eventName: string, detail?: unknown, options?: CustomEventInit): boolean;
 }
 
 /**
@@ -26,11 +22,7 @@ export function EventManagerMixin<TBase extends Constructor<HTMLElement>>(
     /**
      * Dispatches a custom event from the component
      */
-    dispatchCustomEvent(
-      eventName: string,
-      detail?: unknown,
-      options?: CustomEventInit
-    ): boolean {
+    dispatchCustomEvent(eventName: string, detail?: unknown, options?: CustomEventInit): boolean {
       const event = new CustomEvent(`ui-${this.config.tagName}-${eventName}`, {
         detail,
         bubbles: true,

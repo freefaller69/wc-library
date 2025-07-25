@@ -9,11 +9,7 @@ import { AttributeManagerMixin } from '../mixins/AttributeManagerMixin.js';
 import { UpdateManagerMixin } from '../mixins/UpdateManagerMixin.js';
 import type { ComponentConfig } from '../../types/component.js';
 
-const AttributeBase = compose(
-  CoreCustomElement,
-  AttributeManagerMixin,
-  UpdateManagerMixin
-);
+const AttributeBase = compose(CoreCustomElement, AttributeManagerMixin, UpdateManagerMixin);
 
 export abstract class AttributeComponent extends AttributeBase {
   constructor(config: ComponentConfig) {
