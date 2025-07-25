@@ -209,8 +209,9 @@ export function withSignals<T extends new (...args: any[]) => HTMLElement>(
     // Override disconnectedCallback to cleanup signals
     disconnectedCallback(): void {
       this.cleanupSignals();
-      if (super.disconnectedCallback) {
-        super.disconnectedCallback();
+      const parentDisconnected = Object.getPrototypeOf(Object.getPrototypeOf(this))?.disconnectedCallback;
+      if (parentDisconnected && typeof parentDisconnected === 'function') {
+        parentDisconnected.call(this);
       }
     }
   };
@@ -228,7 +229,7 @@ export const SignalUtils = {
     combiner: (...values: T) => R
   ): ComputedSignal<R> {
     return computed(() => {
-      const values = signals.map((signal) => signal.get()) as T;
+      const values = signals.map((signal) => signal.get()) as unknown as T;
       return combiner(...values);
     });
   },

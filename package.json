@@ -13,7 +13,9 @@
     "format:check": "prettier --check .",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "benchmark": "node scripts/benchmark.js",
+    "benchmark:baseline": "pnpm build && pnpm benchmark"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",
