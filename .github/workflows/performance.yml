@@ -6,6 +6,11 @@ on:
   push:
     branches: [main]
 
+# Permissions needed for commenting on PRs
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   performance:
     name: Performance Analysis
