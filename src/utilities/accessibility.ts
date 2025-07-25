@@ -26,10 +26,10 @@ export function announceToScreenReader(
   announcement.style.width = '1px';
   announcement.style.height = '1px';
   announcement.style.overflow = 'hidden';
-  
+
   document.body.appendChild(announcement);
   announcement.textContent = message;
-  
+
   // Remove after announcement
   setTimeout(() => {
     document.body.removeChild(announcement);
@@ -126,7 +126,7 @@ export function setAriaState(
 ): void {
   Object.entries(states).forEach(([key, value]) => {
     const ariaKey = key.startsWith('aria-') ? key : `aria-${key}`;
-    
+
     if (value === null || value === undefined) {
       element.removeAttribute(ariaKey);
     } else {
@@ -158,7 +158,9 @@ export const KeyboardNav = {
     switch (event.key) {
       case 'ArrowDown':
         if (orientation === 'vertical' || orientation === 'both') {
-          newIndex = loop ? (currentIndex + 1) % elements.length : Math.min(currentIndex + 1, elements.length - 1);
+          newIndex = loop
+            ? (currentIndex + 1) % elements.length
+            : Math.min(currentIndex + 1, elements.length - 1);
           keyHandled = true;
           if (newIndex !== currentIndex || loop) {
             event.preventDefault();
@@ -167,7 +169,9 @@ export const KeyboardNav = {
         break;
       case 'ArrowUp':
         if (orientation === 'vertical' || orientation === 'both') {
-          newIndex = loop ? (currentIndex - 1 + elements.length) % elements.length : Math.max(currentIndex - 1, 0);
+          newIndex = loop
+            ? (currentIndex - 1 + elements.length) % elements.length
+            : Math.max(currentIndex - 1, 0);
           keyHandled = true;
           if (newIndex !== currentIndex || loop) {
             event.preventDefault();
@@ -176,7 +180,9 @@ export const KeyboardNav = {
         break;
       case 'ArrowRight':
         if (orientation === 'horizontal' || orientation === 'both') {
-          newIndex = loop ? (currentIndex + 1) % elements.length : Math.min(currentIndex + 1, elements.length - 1);
+          newIndex = loop
+            ? (currentIndex + 1) % elements.length
+            : Math.min(currentIndex + 1, elements.length - 1);
           keyHandled = true;
           if (newIndex !== currentIndex || loop) {
             event.preventDefault();
@@ -185,7 +191,9 @@ export const KeyboardNav = {
         break;
       case 'ArrowLeft':
         if (orientation === 'horizontal' || orientation === 'both') {
-          newIndex = loop ? (currentIndex - 1 + elements.length) % elements.length : Math.max(currentIndex - 1, 0);
+          newIndex = loop
+            ? (currentIndex - 1 + elements.length) % elements.length
+            : Math.max(currentIndex - 1, 0);
           keyHandled = true;
           if (newIndex !== currentIndex || loop) {
             event.preventDefault();

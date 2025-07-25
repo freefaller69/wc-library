@@ -30,7 +30,7 @@ export class SignalAttribute<T = string> {
     // Initialize with current attribute value
     const currentValue = element.getAttribute(attributeName);
     if (currentValue !== null) {
-      this.set(this._transform ? this._transform(currentValue) : currentValue as T);
+      this.set(this._transform ? this._transform(currentValue) : (currentValue as T));
     }
   }
 
@@ -53,7 +53,7 @@ export class SignalAttribute<T = string> {
    */
   set(value: T | null): void {
     this._signal.set(value);
-    
+
     if (value === null || value === undefined) {
       this._element.removeAttribute(this._attributeName);
     } else {
@@ -65,7 +65,7 @@ export class SignalAttribute<T = string> {
    * Update signal from attribute change (called from attributeChangedCallback)
    */
   updateFromAttribute(value: string | null): void {
-    const transformedValue = this._transform ? this._transform(value) : value as T;
+    const transformedValue = this._transform ? this._transform(value) : (value as T);
     this._signal.set(transformedValue);
   }
 
@@ -82,12 +82,7 @@ export class SignalAttribute<T = string> {
  */
 export class BooleanSignalAttribute extends SignalAttribute<boolean> {
   constructor(element: HTMLElement, attributeName: string, initialValue = false) {
-    super(
-      element,
-      attributeName,
-      initialValue,
-      (value) => value !== null && value !== 'false'
-    );
+    super(element, attributeName, initialValue, (value) => value !== null && value !== 'false');
   }
 }
 
@@ -96,16 +91,11 @@ export class BooleanSignalAttribute extends SignalAttribute<boolean> {
  */
 export class NumberSignalAttribute extends SignalAttribute<number> {
   constructor(element: HTMLElement, attributeName: string, initialValue = 0) {
-    super(
-      element,
-      attributeName,
-      initialValue,
-      (value) => {
-        if (value === null) return null;
-        const num = Number(value);
-        return isNaN(num) ? null : num;
-      }
-    );
+    super(element, attributeName, initialValue, (value) => {
+      if (value === null) return null;
+      const num = Number(value);
+      return isNaN(num) ? null : num;
+    });
   }
 }
 
@@ -116,12 +106,12 @@ export class NumberSignalAttribute extends SignalAttribute<number> {
 export interface SignalComponentMixin {
   _signalEffects: Set<EffectCleanup>;
   _signalAttributes: Map<string, SignalAttribute<any>>;
-  
+
   /**
    * Register an effect for automatic cleanup
    */
   addEffect(effectFn: () => void): EffectCleanup;
-  
+
   /**
    * Create a signal attribute that syncs with DOM
    */
@@ -130,7 +120,7 @@ export interface SignalComponentMixin {
     initialValue?: T | null,
     transform?: (value: string | null) => T | null
   ): SignalAttribute<T>;
-  
+
   /**
    * Create a boolean signal attribute
    */
@@ -138,20 +128,17 @@ export interface SignalComponentMixin {
     attributeName: string,
     initialValue?: boolean
   ): BooleanSignalAttribute;
-  
+
   /**
    * Create a number signal attribute
    */
-  createNumberSignalAttribute(
-    attributeName: string,
-    initialValue?: number
-  ): NumberSignalAttribute;
-  
+  createNumberSignalAttribute(attributeName: string, initialValue?: number): NumberSignalAttribute;
+
   /**
    * Update signal attribute from attributeChangedCallback
    */
   updateSignalAttribute(attributeName: string, value: string | null): void;
-  
+
   /**
    * Cleanup all signals and effects
    */
@@ -196,10 +183,7 @@ export function withSignals<T extends new (...args: any[]) => HTMLElement>(
       return signalAttr;
     }
 
-    createNumberSignalAttribute(
-      attributeName: string,
-      initialValue = 0
-    ): NumberSignalAttribute {
+    createNumberSignalAttribute(attributeName: string, initialValue = 0): NumberSignalAttribute {
       const signalAttr = new NumberSignalAttribute(this, attributeName, initialValue);
       this._signalAttributes.set(attributeName, signalAttr);
       return signalAttr;
@@ -214,11 +198,11 @@ export function withSignals<T extends new (...args: any[]) => HTMLElement>(
 
     cleanupSignals(): void {
       // Cleanup effects
-      this._signalEffects.forEach(cleanup => cleanup());
+      this._signalEffects.forEach((cleanup) => cleanup());
       this._signalEffects.clear();
-      
+
       // Cleanup signal attributes
-      this._signalAttributes.forEach(signalAttr => signalAttr.destroy());
+      this._signalAttributes.forEach((signalAttr) => signalAttr.destroy());
       this._signalAttributes.clear();
     }
 
@@ -244,7 +228,7 @@ export const SignalUtils = {
     combiner: (...values: T) => R
   ): ComputedSignal<R> {
     return computed(() => {
-      const values = signals.map(signal => signal.get()) as T;
+      const values = signals.map((signal) => signal.get()) as T;
       return combiner(...values);
     });
   },
@@ -254,24 +238,24 @@ export const SignalUtils = {
    */
   toggle(initialValue = false): Signal<boolean> & { toggle(): void } {
     const toggleSignal = signal(initialValue);
-    
+
     return Object.assign(toggleSignal, {
       toggle(): void {
         toggleSignal.set(!toggleSignal.get());
-      }
+      },
     });
   },
 
   /**
    * Create a counter signal with increment/decrement methods
    */
-  counter(initialValue = 0): Signal<number> & { 
+  counter(initialValue = 0): Signal<number> & {
     increment(step?: number): void;
     decrement(step?: number): void;
     reset(): void;
   } {
     const counterSignal = signal(initialValue);
-    
+
     return Object.assign(counterSignal, {
       increment(step = 1): void {
         counterSignal.set(counterSignal.get() + step);
@@ -281,7 +265,7 @@ export const SignalUtils = {
       },
       reset(): void {
         counterSignal.set(initialValue);
-      }
+      },
     });
-  }
+  },
 };

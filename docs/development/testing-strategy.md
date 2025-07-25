@@ -40,7 +40,7 @@ This document outlines the comprehensive testing strategy for the mixin-based we
 src/test/
 ├── utilities/
 │   ├── mixin-composer.test.ts     # compose() function tests
-│   ├── accessibility.test.ts      # Utility function tests  
+│   ├── accessibility.test.ts      # Utility function tests
 │   └── style-helpers.test.ts      # CSS helper tests
 ├── mixins/
 │   ├── AccessibilityMixin.test.ts
@@ -86,10 +86,12 @@ class TestExampleComponent extends ExampleMixin(CoreCustomElement) {
   constructor() {
     super({ tagName: 'test-example' });
   }
-  
+
   // Implement required abstract methods
   protected getRequiredConfig() {
-    return { /* test config */ };
+    return {
+      /* test config */
+    };
   }
 }
 
@@ -165,7 +167,7 @@ describe('AccessibilityMixin', () => {
       component.setAriaStates({
         expanded: true,
         'aria-label': 'Test Button',
-        describedby: 'desc-1'
+        describedby: 'desc-1',
       });
 
       expect(component.getAttribute('aria-expanded')).toBe('true');
@@ -176,7 +178,7 @@ describe('AccessibilityMixin', () => {
     it('should remove ARIA states when set to null', () => {
       component = new TestAccessibilityComponent();
       component.setAttribute('aria-expanded', 'true');
-      
+
       component.setAriaStates({ expanded: null });
       expect(component.hasAttribute('aria-expanded')).toBe(false);
     });
@@ -184,23 +186,23 @@ describe('AccessibilityMixin', () => {
 
   describe('Focus Management', () => {
     it('should setup focus management for focusable components', () => {
-      component = new TestAccessibilityComponent({ 
-        role: 'button', 
-        focusable: true 
+      component = new TestAccessibilityComponent({
+        role: 'button',
+        focusable: true,
       });
       document.body.appendChild(component);
 
       const focusSpy = vi.spyOn(component, 'handleFocus');
       component.dispatchEvent(new FocusEvent('focus'));
-      
+
       expect(focusSpy).toHaveBeenCalled();
       expect(component.classList.contains('ui-focus-visible')).toBe(true);
     });
 
     it('should not setup focus management for non-focusable components', () => {
-      component = new TestAccessibilityComponent({ 
-        role: 'text', 
-        focusable: false 
+      component = new TestAccessibilityComponent({
+        role: 'text',
+        focusable: false,
       });
       document.body.appendChild(component);
 
@@ -213,9 +215,9 @@ describe('AccessibilityMixin', () => {
   describe('Screen Reader Announcements', () => {
     it('should announce messages to screen readers', () => {
       component = new TestAccessibilityComponent();
-      
+
       component.announceToScreenReader('Test announcement');
-      
+
       const announcement = document.querySelector('[aria-live]');
       expect(announcement).toBeTruthy();
       expect(announcement?.textContent).toBe('Test announcement');
@@ -224,9 +226,9 @@ describe('AccessibilityMixin', () => {
 
     it('should support assertive announcements', () => {
       component = new TestAccessibilityComponent();
-      
+
       component.announceToScreenReader('Urgent message', 'assertive');
-      
+
       const announcement = document.querySelector('[aria-live="assertive"]');
       expect(announcement).toBeTruthy();
     });
@@ -234,9 +236,9 @@ describe('AccessibilityMixin', () => {
 
   describe('Keyboard Navigation', () => {
     it('should handle keyboard events when configured', () => {
-      component = new TestAccessibilityComponent({ 
+      component = new TestAccessibilityComponent({
         focusable: true,
-        keyboardNavigation: true 
+        keyboardNavigation: true,
       });
       document.body.appendChild(component);
 
@@ -277,7 +279,7 @@ class TestInteractiveComponent extends compose(
       tagName: 'test-interactive',
       observedAttributes: ['disabled', 'variant'],
       staticAttributes: ['variant'],
-      dynamicAttributes: ['disabled']
+      dynamicAttributes: ['disabled'],
     });
   }
 
@@ -288,7 +290,7 @@ class TestInteractiveComponent extends compose(
   protected getAttributeConfig() {
     return {
       staticAttributes: ['variant'],
-      dynamicAttributes: ['disabled']
+      dynamicAttributes: ['disabled'],
     };
   }
 
@@ -310,10 +312,10 @@ describe('Interactive Mixin Combination', () => {
   describe('Cross-Mixin Integration', () => {
     it('should integrate accessibility with attribute changes', () => {
       document.body.appendChild(component);
-      
+
       // Change attribute through AttributeManagerMixin
       component.setTypedAttribute('disabled', true);
-      
+
       // Should affect accessibility through integration
       expect(component.getAttribute('aria-disabled')).toBe('true');
       expect(component.hasAttribute('tabindex')).toBe(false);
@@ -322,11 +324,11 @@ describe('Interactive Mixin Combination', () => {
     it('should dispatch events with proper accessibility context', () => {
       document.body.appendChild(component);
       const eventSpy = vi.fn();
-      
+
       component.addEventListener('ui-test-interactive-action', eventSpy);
-      component.dispatchCustomEvent('action', { 
+      component.dispatchCustomEvent('action', {
         accessible: true,
-        role: component.getAttribute('role')
+        role: component.getAttribute('role'),
       });
 
       expect(eventSpy).toHaveBeenCalled();
@@ -337,10 +339,10 @@ describe('Interactive Mixin Combination', () => {
     it('should coordinate lifecycle across all mixins', () => {
       const accessibilitySpy = vi.spyOn(component, 'setupAccessibility');
       const attributeSpy = vi.spyOn(component, 'handleStaticAttributeChange');
-      
+
       document.body.appendChild(component);
       component.setAttribute('variant', 'primary');
-      
+
       expect(accessibilitySpy).toHaveBeenCalled();
       expect(attributeSpy).toHaveBeenCalledWith('variant', 'primary');
     });
@@ -349,15 +351,15 @@ describe('Interactive Mixin Combination', () => {
   describe('Method Resolution Order', () => {
     it('should call super methods in correct order', () => {
       const calls: string[] = [];
-      
+
       // Spy on each mixin's connectedCallback
       vi.spyOn(component, 'connectedCallback').mockImplementation(() => {
         calls.push('component');
       });
-      
+
       // Add to DOM to trigger callbacks
       document.body.appendChild(component);
-      
+
       // Verify proper method resolution
       expect(calls).toContain('component');
     });
@@ -408,13 +410,13 @@ describe('ButtonComponent Integration', () => {
 
     it('should handle complex user interactions', () => {
       document.body.appendChild(button);
-      
+
       // Keyboard interaction
       button.focus();
       const enterEvent = new KeyboardEvent('keydown', { key: 'Enter' });
       const clickSpy = vi.fn();
       button.addEventListener('click', clickSpy);
-      
+
       button.dispatchEvent(enterEvent);
       expect(clickSpy).toHaveBeenCalled();
     });
@@ -439,30 +441,40 @@ describe('Migration Compatibility', () => {
         constructor() {
           super({ tagName: 'old-test' });
         }
-        protected getAccessibilityConfig() { return {}; }
-        protected getStateClasses() { return {}; }
+        protected getAccessibilityConfig() {
+          return {};
+        }
+        protected getStateClasses() {
+          return {};
+        }
       }
 
       class NewTestComponent extends FullComponent {
         constructor() {
           super({ tagName: 'new-test' });
         }
-        protected getAccessibilityConfig() { return {}; }
-        protected getStateClasses() { return {}; }
+        protected getAccessibilityConfig() {
+          return {};
+        }
+        protected getStateClasses() {
+          return {};
+        }
       }
 
       const oldComponent = new OldTestComponent();
       const newComponent = new NewTestComponent();
 
       // Compare public interfaces
-      const oldMethods = Object.getOwnPropertyNames(Object.getPrototypeOf(oldComponent))
-        .filter(name => typeof oldComponent[name] === 'function' && !name.startsWith('_'));
-      
-      const newMethods = Object.getOwnPropertyNames(Object.getPrototypeOf(newComponent))
-        .filter(name => typeof newComponent[name] === 'function' && !name.startsWith('_'));
+      const oldMethods = Object.getOwnPropertyNames(Object.getPrototypeOf(oldComponent)).filter(
+        (name) => typeof oldComponent[name] === 'function' && !name.startsWith('_')
+      );
+
+      const newMethods = Object.getOwnPropertyNames(Object.getPrototypeOf(newComponent)).filter(
+        (name) => typeof newComponent[name] === 'function' && !name.startsWith('_')
+      );
 
       // New implementation should have all old methods
-      oldMethods.forEach(method => {
+      oldMethods.forEach((method) => {
         expect(newMethods).toContain(method);
       });
     });
@@ -492,14 +504,14 @@ describe('Bundle Size Optimization', () => {
     // Mock bundle analysis
     const simpleComponentSize = await getBundleSize('SimpleComponent');
     const baseComponentSize = await getBundleSize('BaseComponent');
-    
+
     expect(simpleComponentSize).toBeLessThan(baseComponentSize * 0.6);
   });
 
   it('should tree-shake unused mixin functionality', async () => {
     const partialMixinSize = await getBundleSize('InteractiveComponent');
     const fullMixinSize = await getBundleSize('FullComponent');
-    
+
     expect(partialMixinSize).toBeLessThan(fullMixinSize);
   });
 });
@@ -517,22 +529,30 @@ export function createMixinTestComponent<T extends Constructor>(
   config: Partial<ComponentConfig> = {}
 ): T {
   const TestClass = compose(CoreCustomElement, ...mixins);
-  
+
   class TestComponent extends TestClass {
     constructor() {
       super({
         tagName: 'test-component',
-        ...config
+        ...config,
       });
     }
-    
+
     // Provide default implementations for abstract methods
-    protected getAccessibilityConfig() { return {}; }
-    protected getStateClasses() { return {}; }
-    protected getAttributeConfig() { return {}; }
-    protected getTagName() { return 'test-component'; }
+    protected getAccessibilityConfig() {
+      return {};
+    }
+    protected getStateClasses() {
+      return {};
+    }
+    protected getAttributeConfig() {
+      return {};
+    }
+    protected getTagName() {
+      return 'test-component';
+    }
   }
-  
+
   return TestComponent as any;
 }
 
@@ -550,7 +570,7 @@ export function expectMixinInterface<T>(
 }
 
 export async function waitForMixinLifecycle(component: HTMLElement): Promise<void> {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     if (component.isConnected) {
       resolve();
     } else {
@@ -576,7 +596,7 @@ pnpm test:all
 
 # Run specific test categories
 pnpm test:mixins
-pnpm test:combinations  
+pnpm test:combinations
 pnpm test:integration
 pnpm test:migration
 pnpm test:performance

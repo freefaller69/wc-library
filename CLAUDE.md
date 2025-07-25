@@ -27,7 +27,7 @@ This is a Vite-based TypeScript web component library project with the following
 ## Testing
 
 - **Test Framework**: Vitest with jsdom environment for DOM testing
-- **Test Commands**: 
+- **Test Commands**:
   - `pnpm test` - Run tests in watch mode
   - `pnpm test:run` - Run tests once
   - `pnpm test:ui` - Run tests with UI interface

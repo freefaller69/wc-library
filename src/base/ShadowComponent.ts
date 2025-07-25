@@ -18,7 +18,7 @@ export abstract class ShadowComponent extends BaseComponent {
 
   constructor(config: ShadowComponentConfig) {
     super(config);
-    
+
     // Create shadow root
     this.shadowRoot = this.attachShadow({
       mode: config.shadowMode || 'open',
@@ -35,10 +35,10 @@ export abstract class ShadowComponent extends BaseComponent {
   private setupShadowDOM(): void {
     // Add component styles
     this.addComponentStyles();
-    
+
     // Apply stylesheets to shadow root
     this.styleManager.applyTo(this.shadowRoot);
-    
+
     // Setup template if provided
     this.setupTemplate();
   }
@@ -48,7 +48,7 @@ export abstract class ShadowComponent extends BaseComponent {
    */
   private setupTemplate(): void {
     const templateContent = this.getTemplate();
-    
+
     if (templateContent) {
       if (typeof templateContent === 'string') {
         this.shadowRoot.innerHTML = templateContent;
@@ -91,7 +91,7 @@ export abstract class ShadowComponent extends BaseComponent {
    */
   private updateSlots(): void {
     const slots = this.shadowRoot.querySelectorAll('slot');
-    slots.forEach(slot => {
+    slots.forEach((slot) => {
       slot.addEventListener('slotchange', this.handleSlotChange);
     });
   }
@@ -150,7 +150,11 @@ export abstract class ShadowComponent extends BaseComponent {
   /**
    * Dispatches events from shadow DOM that can cross the boundary
    */
-  protected dispatchShadowEvent(eventName: string, detail?: any, options?: CustomEventInit): boolean {
+  protected dispatchShadowEvent(
+    eventName: string,
+    detail?: unknown,
+    options?: CustomEventInit
+  ): boolean {
     const event = new CustomEvent(`ui-${this.config.tagName}-${eventName}`, {
       detail,
       bubbles: true,
@@ -158,7 +162,7 @@ export abstract class ShadowComponent extends BaseComponent {
       composed: true, // Allows event to cross shadow boundary
       ...options,
     });
-    
+
     return this.dispatchEvent(event);
   }
 

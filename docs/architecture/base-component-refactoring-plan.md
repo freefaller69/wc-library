@@ -7,11 +7,13 @@ This document outlines the refactoring of our current `BaseComponent` and `Shado
 ## Current Architecture Issues
 
 ### BaseComponent (253 lines)
+
 - **Monolithic design**: Handles lifecycle, accessibility, attributes, events, and updates all in one class
 - **Heavy for simple components**: Display-only components get focus management, ARIA handling, etc.
 - **Rigid inheritance**: All components must inherit all functionality
 
 ### ShadowComponent (198 lines)
+
 - **Extends monolithic base**: Inherits all BaseComponent functionality regardless of need
 - **Shadow DOM coupled with everything**: Can't use shadow DOM without full base functionality
 
@@ -122,25 +124,29 @@ This document outlines the refactoring of our current `BaseComponent` and `Shado
 ## Implementation Strategy
 
 ### Phase 1: Create Mixin Infrastructure
+
 1. **Create mixin base system** - Common mixin patterns and utilities
 2. **Implement CoreCustomElement** - Minimal base class
 3. **Create individual mixins** - Each focused on single responsibility
 4. **Add mixin composition utilities** - Helper functions for combining mixins
 
 ### Phase 2: Create Composite Base Classes
+
 1. **SimpleComponent** - CoreCustomElement only (for display components)
 2. **InteractiveComponent** - Core + Accessibility + Events + Updates
-3. **AttributeComponent** - Core + AttributeManager + Updates  
+3. **AttributeComponent** - Core + AttributeManager + Updates
 4. **ShadowComponent** - Core + ShadowDOM + Styles + Updates
 5. **FullComponent** - All mixins (equivalent to current BaseComponent)
 
 ### Phase 3: Migration Strategy
+
 1. **Create parallel implementation** - New classes alongside existing ones
 2. **Migrate tests** - Ensure all existing functionality works
 3. **Update component examples** - Show usage patterns
 4. **Deprecate old classes** - Gradual migration path
 
 ### Phase 4: Optimize Existing Components
+
 1. **Audit component needs** - Determine which mixins each component actually needs
 2. **Migrate to optimal base** - Use smallest appropriate base class
 3. **Performance validation** - Measure bundle size improvements
@@ -148,6 +154,7 @@ This document outlines the refactoring of our current `BaseComponent` and `Shado
 ## Component Usage Examples
 
 ### Simple Display Component
+
 ```typescript
 // Only needs core functionality
 class DisplayComponent extends CoreCustomElement {
@@ -156,6 +163,7 @@ class DisplayComponent extends CoreCustomElement {
 ```
 
 ### Interactive Button
+
 ```typescript
 // Needs accessibility and events
 class ButtonComponent extends compose(
@@ -169,6 +177,7 @@ class ButtonComponent extends compose(
 ```
 
 ### Complex Form Input
+
 ```typescript
 // Needs everything except shadow DOM
 class InputComponent extends compose(
@@ -183,6 +192,7 @@ class InputComponent extends compose(
 ```
 
 ### Shadow DOM Component
+
 ```typescript
 // Full shadow component with all features
 class CardComponent extends compose(
@@ -200,17 +210,20 @@ class CardComponent extends compose(
 ## Benefits
 
 ### Bundle Size Optimization
+
 - **Simple components**: ~2KB instead of ~8KB (BaseComponent overhead)
 - **Complex components**: Same size, but only include what's needed
 - **Tree shaking**: Unused mixin functionality automatically removed
 
 ### Development Experience
+
 - **Clear separation of concerns**: Each mixin has single responsibility
 - **Composable architecture**: Mix and match exactly what you need
 - **Easier testing**: Test mixins in isolation
 - **Better code reuse**: Mixins can be used across different base classes
 
 ### Maintenance
+
 - **Smaller files**: Each mixin is focused and manageable
 - **Easier debugging**: Issues isolated to specific functionality
 - **Flexible evolution**: Add new mixins without affecting existing components
@@ -218,16 +231,19 @@ class CardComponent extends compose(
 ## Migration Timeline
 
 ### Week 1-2: Infrastructure
+
 - Create mixin system and CoreCustomElement
 - Implement first 3 mixins (Accessibility, AttributeManager, EventManager)
 - Set up composition utilities
 
 ### Week 3: Complete Mixin Set
+
 - Implement remaining mixins (ShadowDOM, StyleManager, SlotManager, UpdateManager)
 - Create composite base classes
 - Write comprehensive tests
 
 ### Week 4: Migration & Validation
+
 - Migrate existing components to new system
 - Performance testing and validation
 - Update documentation and examples

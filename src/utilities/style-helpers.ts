@@ -100,15 +100,15 @@ export const ClassUtils = {
    */
   bem(block: string, element?: string, modifier?: string): string {
     let className = block;
-    
+
     if (element) {
       className += `__${element}`;
     }
-    
+
     if (modifier) {
       className += `--${modifier}`;
     }
-    
+
     return className;
   },
 };
@@ -139,7 +139,7 @@ export const CSSProps = {
    * Removes CSS custom properties from an element
    */
   remove(element: HTMLElement, properties: string[]): void {
-    properties.forEach(property => {
+    properties.forEach((property) => {
       const propName = property.startsWith('--') ? property : `--${property}`;
       element.style.removeProperty(propName);
     });

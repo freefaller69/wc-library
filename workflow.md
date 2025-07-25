@@ -5,10 +5,12 @@ This document outlines the development workflow for the web component library, p
 ## Development Environment Setup
 
 ### Prerequisites
+
 - Node.js (version specified in package.json)
 - pnpm (package manager of choice)
 
 ### Initial Setup
+
 ```bash
 # Clone and setup
 git clone <repository-url>
@@ -23,6 +25,7 @@ pnpm test:run
 ## Daily Development Workflow
 
 ### 1. Start Development Session
+
 ```bash
 # Pull latest changes and switch to main
 git checkout main
@@ -32,7 +35,7 @@ git pull origin main
 git checkout -b feature/mixin-accessibility-implementation
 # or
 git checkout -b refactor/base-component-mixins
-# or  
+# or
 git checkout -b fix/button-focus-management
 
 # Start development server (for component testing)
@@ -45,28 +48,30 @@ pnpm test
 ### 2. Development Process
 
 #### For New Mixins/Components
+
 1. **Create the implementation**
    - Follow TypeScript patterns in `docs/architecture/mixin-patterns.md`
    - Use existing components as reference
-   
 2. **Write tests first or alongside development**
    - Individual mixin tests in `src/test/mixins/`
    - Integration tests in `src/test/integration/`
    - Follow patterns in `docs/development/testing-strategy.md`
 
 3. **Validate implementation**
+
    ```bash
    # Run specific tests
    pnpm test -- --run [test-file-pattern]
-   
+
    # Run type checking
    pnpm build
-   
+
    # Check in browser
    pnpm dev
    ```
 
 #### For Refactoring Existing Components
+
 1. **Identify current functionality** (keep BaseComponent as reference)
 2. **Create mixin-based equivalent** (parallel implementation)
 3. **Write comparison tests** to ensure feature parity
@@ -75,6 +80,7 @@ pnpm test
 ### 3. Quality Assurance
 
 #### Before Committing
+
 ```bash
 # Full test suite
 pnpm test:run
@@ -87,6 +93,7 @@ pnpm preview
 ```
 
 #### Code Quality Checklist
+
 - [ ] All tests passing
 - [ ] TypeScript compilation clean
 - [ ] No console errors in dev/preview
@@ -96,16 +103,18 @@ pnpm preview
 ## Testing Workflow
 
 ### Test Structure
+
 ```
 src/test/
 ├── mixins/           # Individual mixin tests
-├── composites/       # Composite base class tests  
+├── composites/       # Composite base class tests
 ├── integration/      # Full component integration tests
 ├── performance/      # Performance comparison tests
 └── migration/        # Migration validation tests
 ```
 
 ### Testing Commands
+
 ```bash
 # Watch mode during development
 pnpm test
@@ -121,6 +130,7 @@ pnpm test -- --run pattern-name
 ```
 
 ### Performance Testing
+
 ```bash
 # Capture baseline metrics (before refactor)
 pnpm run benchmark:baseline
@@ -135,6 +145,7 @@ pnpm run benchmark:report
 ## Git Workflow
 
 ### Branch Strategy
+
 - `main` - stable, deployable code
 - `feature/[feature-name]` - new features and components
 - `refactor/[refactor-name]` - code refactoring tasks
@@ -145,6 +156,7 @@ pnpm run benchmark:report
 - `chore/[chore-name]` - maintenance tasks, dependency updates
 
 ### Branch Naming Conventions
+
 ```bash
 # Features
 git checkout -b feature/mixin-accessibility
@@ -177,6 +189,7 @@ git checkout -b chore/eslint-config-update
 ```
 
 ### Commit Guidelines
+
 - **feat**: new mixins, components, or major features
 - **refactor**: restructuring existing code
 - **test**: adding or modifying tests
@@ -185,6 +198,7 @@ git checkout -b chore/eslint-config-update
 - **fix**: bug fixes
 
 ### Example Commit Messages
+
 ```
 feat: add AccessibilityMixin with focus management
 refactor: convert ButtonComponent to use mixin composition
@@ -196,6 +210,7 @@ perf: optimize AttributeManagerMixin caching
 ### Pull Request Workflow
 
 #### Creating Pull Requests
+
 ```bash
 # After completing feature development and testing
 git add .
@@ -223,6 +238,7 @@ gh pr create --title "Implement AccessibilityMixin" --body "
 ```
 
 #### Code Review Process
+
 1. **Automated Checks**: CI runs tests, linting, and type checking
 2. **Claude Code Review**: Request review from Claude for:
    - Code quality and patterns
@@ -234,6 +250,7 @@ gh pr create --title "Implement AccessibilityMixin" --body "
 4. **Final Approval**: Merge after all checks pass and review approved
 
 #### Review Criteria
+
 - [ ] **Functionality**: Code works as intended
 - [ ] **Tests**: Comprehensive test coverage
 - [ ] **Performance**: No regressions, meets benchmarks
@@ -245,12 +262,14 @@ gh pr create --title "Implement AccessibilityMixin" --body "
 ## Documentation Workflow
 
 ### When to Update Documentation
+
 - **New mixins**: Add to usage examples and patterns
 - **API changes**: Update migration guide
 - **Performance changes**: Update benchmarking results
 - **Breaking changes**: Update breaking changes policy
 
 ### Documentation Review Process
+
 1. Update relevant docs alongside code changes
 2. Review docs for accuracy and completeness
 3. Validate examples work with current code
@@ -259,6 +278,7 @@ gh pr create --title "Implement AccessibilityMixin" --body "
 ## Release Preparation
 
 ### Pre-Release Checklist
+
 - [ ] All tests passing
 - [ ] Performance benchmarks meet targets
 - [ ] Documentation up to date
@@ -267,6 +287,7 @@ gh pr create --title "Implement AccessibilityMixin" --body "
 - [ ] Examples working
 
 ### Version Strategy
+
 - **Major**: Breaking changes, major refactors
 - **Minor**: New mixins, new composite classes
 - **Patch**: Bug fixes, performance improvements
@@ -274,6 +295,7 @@ gh pr create --title "Implement AccessibilityMixin" --body "
 ## Performance Baseline Setup
 
 ### Initial Baseline Capture
+
 Before starting the mixin refactoring, capture performance baselines:
 
 ```bash
@@ -286,12 +308,13 @@ pnpm run test:performance:baseline
 
 # This will create baseline measurements for:
 # - Bundle sizes for different component types
-# - Component creation/destruction times  
+# - Component creation/destruction times
 # - Memory usage patterns
 # - First paint and interaction metrics
 ```
 
 ### Continuous Performance Monitoring
+
 During development, regularly compare against baseline:
 
 ```bash
@@ -306,6 +329,7 @@ pnpm run perf:report
 ```
 
 ### Performance Validation Commands
+
 ```bash
 # Bundle size analysis
 pnpm run analyze:bundle
@@ -313,7 +337,7 @@ pnpm run analyze:bundle
 # Runtime performance measurement
 pnpm run measure:runtime
 
-# Memory usage profiling  
+# Memory usage profiling
 pnpm run profile:memory
 
 # Tree shaking effectiveness
@@ -323,12 +347,14 @@ pnpm run validate:tree-shaking
 ## Troubleshooting
 
 ### Common Issues
+
 - **TypeScript errors**: Check mixin composition patterns
 - **Test failures**: Verify jsdom compatibility (some features mocked)
 - **Performance regressions**: Use benchmark tools to identify bottlenecks
 - **Mixin conflicts**: Review composition order and method overrides
 
 ### Getting Help
+
 - Check existing documentation in `docs/`
 - Review similar implementations in codebase
 - Test individual mixins in isolation
@@ -337,19 +363,21 @@ pnpm run validate:tree-shaking
 ## Development Tools
 
 ### Recommended VS Code Extensions
+
 - TypeScript and JavaScript Language Features
 - Vitest (for test running)
 - ESLint
 - Prettier
 
 ### Useful Commands Reference
+
 ```bash
 # Development
 pnpm dev          # Start dev server
 pnpm build        # Production build
 pnpm preview      # Preview build
 
-# Testing  
+# Testing
 pnpm test         # Watch mode
 pnpm test:run     # Single run
 pnpm test:ui      # UI interface

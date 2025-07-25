@@ -173,7 +173,7 @@ describe.skip('BaseComponent Core Functionality', () => {
 
     it('should setup focus management for focusable components', () => {
       component.accessibilityConfig = { focusable: true };
-      
+
       const focusSpy = vi.spyOn(component, 'handleFocus' as any);
       const blurSpy = vi.spyOn(component, 'handleBlur' as any);
 

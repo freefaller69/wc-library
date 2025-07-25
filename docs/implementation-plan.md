@@ -63,7 +63,7 @@ src/components/
 
 - **Attribute Management**: Separate handling for static (variants) vs dynamic (state) attributes
 - **Event System**: Standardized `ui-[component]-[action]` event naming
-- **Accessibility Utilities**: 
+- **Accessibility Utilities**:
   - `generateId()` - Unique ID generation
   - `announceToScreenReader()` - Live region announcements
   - `FocusManager` - Focus capture, restore, and trapping
@@ -80,7 +80,7 @@ src/components/
 ### Test Coverage
 
 - ✅ **Accessibility Tests**: 21/21 passing
-- ✅ **SimpleBaseComponent Tests**: 13/13 passing  
+- ✅ **SimpleBaseComponent Tests**: 13/13 passing
 - ✅ **Component Registry Tests**: 16/19 passing (3 JSDOM limitations)
 
 ## Phase 2: First Components (NEXT)
@@ -110,20 +110,24 @@ src/components/
 ## Technical Specifications
 
 ### Event Naming Convention
+
 - Pattern: `ui-[component]-[action]`
 - Examples: `ui-button-click`, `ui-input-change`, `ui-modal-open`
 - All events bubble by default, composed for Shadow DOM
 
 ### CSS Class Naming
+
 - Base: Component tag name (e.g., `ui-button`)
 - Variants: `[component]--[attribute]-[value]` (e.g., `ui-button--variant-primary`)
 - States: `[component]--[state]` (e.g., `ui-button--disabled`)
 
 ### Attribute Patterns
+
 - **Static Attributes**: `variant`, `size`, `color` - Set once, rarely change
 - **Dynamic Attributes**: `disabled`, `loading`, `selected` - Change during interaction
 
 ### Accessibility Standards
+
 - All components implement appropriate ARIA roles and states
 - Keyboard navigation follows ARIA Authoring Practices Guide
 - Focus management with visual indicators
@@ -132,7 +136,7 @@ src/components/
 ## Development Commands
 
 - `pnpm dev` - Development server
-- `pnpm build` - TypeScript + Vite build  
+- `pnpm build` - TypeScript + Vite build
 - `pnpm test` - Run tests in watch mode
 - `pnpm test:run` - Run tests once
 - `pnpm lint` - ESLint checking
@@ -147,7 +151,7 @@ src/
 ├── utilities/             # Accessibility, style helpers, registry, signals
 ├── components/            # UI components organized atomically
 │   ├── primitives/       # Basic building blocks
-│   ├── molecules/        # Component combinations  
+│   ├── molecules/        # Component combinations
 │   └── organisms/        # Complex component groups
 ├── mixins/               # Reusable behavior mixins
 ├── styles/               # Global styles, tokens, reset

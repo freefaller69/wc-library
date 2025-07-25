@@ -15,12 +15,12 @@ export function ExampleMixin<TBase extends Constructor<HTMLElement>>(Base: TBase
   return class ExampleMixinClass extends Base {
     // Mixin implementation
     private _mixinProperty: string = '';
-    
+
     // Mixin methods
     protected mixinMethod(): void {
       // Implementation
     }
-    
+
     // Lifecycle hooks (call super if overriding)
     connectedCallback(): void {
       super.connectedCallback?.();
@@ -50,20 +50,14 @@ type Mixin<T extends Constructor> = (Base: Constructor) => T;
  * Composes multiple mixins with a base class
  * Usage: compose(BaseClass, MixinA, MixinB, MixinC)
  */
-export function compose<T extends Constructor>(
-  Base: T,
-  ...mixins: Mixin<any>[]
-): T {
+export function compose<T extends Constructor>(Base: T, ...mixins: Mixin<any>[]): T {
   return mixins.reduce((acc, mixin) => mixin(acc), Base);
 }
 
 /**
  * Type-safe mixin composition with interface merging
  */
-export function typedCompose<
-  TBase extends Constructor,
-  TMixins extends readonly Mixin<any>[]
->(
+export function typedCompose<TBase extends Constructor, TMixins extends readonly Mixin<any>[]>(
   Base: TBase,
   ...mixins: TMixins
 ): TBase & UnionToIntersection<ReturnType<TMixins[number]>> {
@@ -71,8 +65,9 @@ export function typedCompose<
 }
 
 // Utility type for merging mixin interfaces
-type UnionToIntersection<U> = 
-  (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never;
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void
+  ? I
+  : never;
 ```
 
 ## Individual Mixin Patterns
@@ -88,36 +83,36 @@ export interface AccessibilityMixinInterface {
 export function AccessibilityMixin<TBase extends Constructor<HTMLElement>>(Base: TBase) {
   return class AccessibilityMixinClass extends Base implements AccessibilityMixinInterface {
     private _focusManager?: FocusManager;
-    
+
     connectedCallback(): void {
       super.connectedCallback?.();
       this.setupAccessibility();
     }
-    
+
     disconnectedCallback(): void {
       super.disconnectedCallback?.();
       this.cleanupAccessibility();
     }
-    
+
     protected setupAccessibility(): void {
       const config = this.getAccessibilityConfig?.();
       if (!config) return;
-      
+
       // Setup focus management, ARIA attributes, etc.
     }
-    
+
     private cleanupAccessibility(): void {
       this._focusManager?.cleanup();
     }
-    
+
     setAriaStates(states: Record<string, string | boolean | null>): void {
       setAriaState(this, states);
     }
-    
+
     announceToScreenReader(message: string, priority: 'polite' | 'assertive' = 'polite'): void {
       announceToScreenReader(message, priority);
     }
-    
+
     // Abstract method - must be implemented by component
     protected abstract getAccessibilityConfig?(): AccessibilityOptions;
   };
@@ -137,22 +132,22 @@ export interface AttributeManagerMixinInterface {
 export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(Base: TBase) {
   return class AttributeManagerMixinClass extends Base implements AttributeManagerMixinInterface {
     private staticAttributeCache = new Map<string, string>();
-    
+
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
       super.attributeChangedCallback?.(name, oldValue, newValue);
-      
+
       if (oldValue === newValue) return;
-      
+
       const config = this.getAttributeConfig?.();
       if (!config) return;
-      
+
       if (config.staticAttributes?.includes(name)) {
         this.handleStaticAttributeChange(name, newValue);
       } else {
         this.handleDynamicAttributeChange(name, oldValue, newValue);
       }
     }
-    
+
     private handleStaticAttributeChange(name: string, value: string | null): void {
       if (value) {
         this.staticAttributeCache.set(name, value);
@@ -161,18 +156,22 @@ export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(Ba
       }
       this.updateComponentClasses?.();
     }
-    
-    private handleDynamicAttributeChange(name: string, oldValue: string | null, newValue: string | null): void {
+
+    private handleDynamicAttributeChange(
+      name: string,
+      oldValue: string | null,
+      newValue: string | null
+    ): void {
       this.requestUpdate?.();
     }
-    
+
     getTypedAttribute(name: string, type?: 'string' | 'boolean' | 'number'): any {
       const value = this.getAttribute(name);
-      
+
       if (value === null) {
         return type === 'boolean' ? false : null;
       }
-      
+
       switch (type) {
         case 'boolean':
           return value !== 'false' && value !== '';
@@ -183,7 +182,7 @@ export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(Ba
           return value;
       }
     }
-    
+
     setTypedAttribute(name: string, value: string | number | boolean | null): void {
       if (value === null || value === undefined) {
         this.removeAttribute(name);
@@ -197,9 +196,12 @@ export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(Ba
         this.setAttribute(name, String(value));
       }
     }
-    
+
     // Abstract methods
-    protected abstract getAttributeConfig?(): { staticAttributes?: string[], dynamicAttributes?: string[] };
+    protected abstract getAttributeConfig?(): {
+      staticAttributes?: string[];
+      dynamicAttributes?: string[];
+    };
     protected abstract updateComponentClasses?(): void;
     protected abstract requestUpdate?(): void;
   };
@@ -223,10 +225,10 @@ export function EventManagerMixin<TBase extends Constructor<HTMLElement>>(Base: 
         cancelable: true,
         ...options,
       });
-      
+
       return this.dispatchEvent(event);
     }
-    
+
     // Abstract method
     protected abstract getTagName?(): string;
   };
@@ -270,7 +272,7 @@ export class ButtonComponent extends InteractiveComponent {
   static get observedAttributes(): string[] {
     return ['disabled', 'variant', 'size'];
   }
-  
+
   constructor() {
     super({
       tagName: 'ui-button',
@@ -279,7 +281,7 @@ export class ButtonComponent extends InteractiveComponent {
       dynamicAttributes: ['disabled'],
     });
   }
-  
+
   protected getAccessibilityConfig(): AccessibilityOptions {
     return {
       role: 'button',
@@ -287,13 +289,13 @@ export class ButtonComponent extends InteractiveComponent {
       ariaLabel: this.textContent || 'Button',
     };
   }
-  
+
   protected getStateClasses(): Record<string, boolean> {
     return {
       'ui-button--disabled': this.getTypedAttribute('disabled', 'boolean'),
     };
   }
-  
+
   protected handleKeydown(event: KeyboardEvent): void {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
@@ -311,19 +313,19 @@ export class ButtonComponent extends InteractiveComponent {
 // Apply mixins based on configuration
 function createComponent(config: ComponentConfig) {
   let Base: Constructor = CoreCustomElement;
-  
+
   if (config.needsAccessibility) {
     Base = AccessibilityMixin(Base);
   }
-  
+
   if (config.needsAttributes) {
     Base = AttributeManagerMixin(Base);
   }
-  
+
   if (config.needsShadowDOM) {
     Base = ShadowDOMMixin(Base);
   }
-  
+
   return Base;
 }
 ```
@@ -332,9 +334,9 @@ function createComponent(config: ComponentConfig) {
 
 ```typescript
 // Mixin that depends on other mixins
-export function AdvancedMixin<TBase extends Constructor<HTMLElement & AttributeManagerMixinInterface>>(
-  Base: TBase
-) {
+export function AdvancedMixin<
+  TBase extends Constructor<HTMLElement & AttributeManagerMixinInterface>,
+>(Base: TBase) {
   return class AdvancedMixinClass extends Base {
     // Can safely use AttributeManagerMixin methods
     someMethod(): void {
@@ -347,8 +349,8 @@ export function AdvancedMixin<TBase extends Constructor<HTMLElement & AttributeM
 // Usage with type safety
 const ComponentClass = compose(
   CoreCustomElement,
-  AttributeManagerMixin,  // Required dependency
-  AdvancedMixin          // Depends on AttributeManagerMixin
+  AttributeManagerMixin, // Required dependency
+  AdvancedMixin // Depends on AttributeManagerMixin
 );
 ```
 
@@ -362,7 +364,7 @@ export function OverridingMixin<TBase extends Constructor<HTMLElement>>(Base: TB
       super.connectedCallback?.();
       // Mixin-specific logic
     }
-    
+
     // For methods that may not exist in base
     protected someMethod(): void {
       // Call super if it exists
@@ -371,7 +373,7 @@ export function OverridingMixin<TBase extends Constructor<HTMLElement>>(Base: TB
       }
       // Additional logic
     }
-    
+
     // Override with extension
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
       // Handle mixin-specific attributes first
@@ -379,7 +381,7 @@ export function OverridingMixin<TBase extends Constructor<HTMLElement>>(Base: TB
         // Handle it
         return;
       }
-      
+
       // Pass to base implementation
       super.attributeChangedCallback?.(name, oldValue, newValue);
     }
@@ -402,7 +404,9 @@ export interface MyMixinInterface {
 export function MyMixin<TBase extends Constructor<HTMLElement>>(Base: TBase) {
   return class extends Base implements MyMixinInterface {
     myProperty: string = '';
-    myMethod(): void { /* implementation */ }
+    myMethod(): void {
+      /* implementation */
+    }
   };
 }
 ```
@@ -431,11 +435,11 @@ export function RequireImplementationMixin<TBase extends Constructor<HTMLElement
       const config = this.getRequiredConfig(); // Will enforce implementation
       // Use config...
     }
-    
+
     // Abstract method - must be implemented
     protected abstract getRequiredConfig(): SomeConfigType;
   }
-  
+
   return RequireImplementationMixinClass;
 }
 ```
@@ -450,7 +454,7 @@ class TestMixinComponent extends AccessibilityMixin(CoreCustomElement) {
   constructor() {
     super({ tagName: 'test-mixin' });
   }
-  
+
   protected getAccessibilityConfig(): AccessibilityOptions {
     return { role: 'button', focusable: true };
   }
@@ -458,11 +462,11 @@ class TestMixinComponent extends AccessibilityMixin(CoreCustomElement) {
 
 describe('AccessibilityMixin', () => {
   let component: TestMixinComponent;
-  
+
   beforeEach(() => {
     component = new TestMixinComponent();
   });
-  
+
   it('should provide accessibility methods', () => {
     expect(typeof component.setAriaStates).toBe('function');
   });

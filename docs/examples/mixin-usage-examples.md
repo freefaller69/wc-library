@@ -21,7 +21,7 @@ export class BadgeComponent extends SimpleComponent {
     super({
       tagName: 'ui-badge',
       observedAttributes: ['variant', 'size'],
-      staticAttributes: ['variant', 'size']
+      staticAttributes: ['variant', 'size'],
     });
   }
 }
@@ -31,6 +31,7 @@ customElements.define('ui-badge', BadgeComponent);
 ```
 
 **Usage:**
+
 ```html
 <ui-badge variant="success" size="small">New</ui-badge>
 <ui-badge variant="warning">Important</ui-badge>
@@ -55,7 +56,7 @@ export class ButtonComponent extends InteractiveComponent {
       tagName: 'ui-button',
       observedAttributes: ['variant', 'size', 'disabled', 'loading'],
       staticAttributes: ['variant', 'size'],
-      dynamicAttributes: ['disabled', 'loading']
+      dynamicAttributes: ['disabled', 'loading'],
     });
   }
 
@@ -64,21 +65,21 @@ export class ButtonComponent extends InteractiveComponent {
       role: 'button',
       focusable: !this.getTypedAttribute('disabled', 'boolean'),
       ariaLabel: this.textContent || 'Button',
-      ariaDisabled: this.getTypedAttribute('disabled', 'boolean')
+      ariaDisabled: this.getTypedAttribute('disabled', 'boolean'),
     };
   }
 
   protected getStateClasses(): Record<string, boolean> {
     return {
       'ui-button--disabled': this.getTypedAttribute('disabled', 'boolean'),
-      'ui-button--loading': this.getTypedAttribute('loading', 'boolean')
+      'ui-button--loading': this.getTypedAttribute('loading', 'boolean'),
     };
   }
 
   protected getAttributeConfig() {
     return {
       staticAttributes: ['variant', 'size'],
-      dynamicAttributes: ['disabled', 'loading']
+      dynamicAttributes: ['disabled', 'loading'],
     };
   }
 
@@ -96,11 +97,13 @@ export class ButtonComponent extends InteractiveComponent {
   }
 
   private handleClick(): void {
-    if (!this.getTypedAttribute('disabled', 'boolean') && 
-        !this.getTypedAttribute('loading', 'boolean')) {
+    if (
+      !this.getTypedAttribute('disabled', 'boolean') &&
+      !this.getTypedAttribute('loading', 'boolean')
+    ) {
       this.dispatchCustomEvent('click', {
         variant: this.getAttribute('variant'),
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     }
   }
@@ -120,6 +123,7 @@ customElements.define('ui-button', ButtonComponent);
 ```
 
 **Usage:**
+
 ```html
 <ui-button variant="primary" size="large">Primary Action</ui-button>
 <ui-button variant="secondary" disabled>Disabled Button</ui-button>
@@ -146,7 +150,7 @@ import type { AccessibilityOptions } from '../../types/component.js';
 const FormInputBase = compose(
   CoreCustomElement,
   AccessibilityMixin,
-  AttributeManagerMixin, 
+  AttributeManagerMixin,
   EventManagerMixin,
   UpdateManagerMixin
 );
@@ -163,7 +167,7 @@ export class InputComponent extends FormInputBase {
       tagName: 'ui-input',
       observedAttributes: ['type', 'placeholder', 'disabled', 'required', 'value', 'invalid'],
       staticAttributes: ['type'],
-      dynamicAttributes: ['disabled', 'required', 'value', 'invalid']
+      dynamicAttributes: ['disabled', 'required', 'value', 'invalid'],
     });
 
     this.inputElement = document.createElement('input');
@@ -176,7 +180,8 @@ export class InputComponent extends FormInputBase {
       focusable: !this.getTypedAttribute('disabled', 'boolean'),
       ariaRequired: this.getTypedAttribute('required', 'boolean'),
       ariaInvalid: this.getTypedAttribute('invalid', 'boolean'),
-      ariaLabel: this.getAttribute('aria-label') || this.getAttribute('placeholder') || 'Input field'
+      ariaLabel:
+        this.getAttribute('aria-label') || this.getAttribute('placeholder') || 'Input field',
     };
   }
 
@@ -185,14 +190,14 @@ export class InputComponent extends FormInputBase {
       'ui-input--disabled': this.getTypedAttribute('disabled', 'boolean'),
       'ui-input--required': this.getTypedAttribute('required', 'boolean'),
       'ui-input--invalid': this.getTypedAttribute('invalid', 'boolean'),
-      'ui-input--has-value': !!this.inputElement.value
+      'ui-input--has-value': !!this.inputElement.value,
     };
   }
 
   protected getAttributeConfig() {
     return {
       staticAttributes: ['type'],
-      dynamicAttributes: ['disabled', 'required', 'value', 'invalid']
+      dynamicAttributes: ['disabled', 'required', 'value', 'invalid'],
     };
   }
 
@@ -200,7 +205,11 @@ export class InputComponent extends FormInputBase {
     return 'ui-input';
   }
 
-  protected handleDynamicAttributeChange(name: string, oldValue: string | null, newValue: string | null): void {
+  protected handleDynamicAttributeChange(
+    name: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     super.handleDynamicAttributeChange(name, oldValue, newValue);
 
     // Sync attributes with internal input element
@@ -231,7 +240,7 @@ export class InputComponent extends FormInputBase {
 
   connectedCallback(): void {
     super.connectedCallback();
-    
+
     // Set up input event handling
     this.inputElement.addEventListener('input', this.handleInput);
     this.inputElement.addEventListener('change', this.handleChange);
@@ -244,7 +253,7 @@ export class InputComponent extends FormInputBase {
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
-    
+
     this.inputElement.removeEventListener('input', this.handleInput);
     this.inputElement.removeEventListener('change', this.handleChange);
     this.inputElement.removeEventListener('focus', this.handleInputFocus);
@@ -253,7 +262,7 @@ export class InputComponent extends FormInputBase {
 
   private syncAttributes(): void {
     const attributes = ['type', 'placeholder', 'disabled', 'required', 'value'];
-    attributes.forEach(attr => {
+    attributes.forEach((attr) => {
       const value = this.getAttribute(attr);
       if (value !== null) {
         this.handleDynamicAttributeChange(attr, null, value);
@@ -264,19 +273,19 @@ export class InputComponent extends FormInputBase {
   private handleInput = (event: Event): void => {
     const target = event.target as HTMLInputElement;
     this.setAttribute('value', target.value);
-    
+
     this.dispatchCustomEvent('input', {
       value: target.value,
-      nativeEvent: event
+      nativeEvent: event,
     });
   };
 
   private handleChange = (event: Event): void => {
     const target = event.target as HTMLInputElement;
-    
+
     this.dispatchCustomEvent('change', {
       value: target.value,
-      nativeEvent: event
+      nativeEvent: event,
     });
   };
 
@@ -315,6 +324,7 @@ customElements.define('ui-input', InputComponent);
 ```
 
 **Usage:**
+
 ```html
 <ui-input type="text" placeholder="Enter your name" required></ui-input>
 <ui-input type="email" placeholder="Email address" invalid></ui-input>
@@ -357,14 +367,14 @@ export class CardComponent extends CardBase {
       observedAttributes: ['variant', 'elevation', 'interactive'],
       staticAttributes: ['variant', 'elevation'],
       dynamicAttributes: ['interactive'],
-      shadowMode: 'open'
+      shadowMode: 'open',
     });
   }
 
   protected getAttributeConfig() {
     return {
       staticAttributes: ['variant', 'elevation'],
-      dynamicAttributes: ['interactive']
+      dynamicAttributes: ['interactive'],
     };
   }
 
@@ -374,7 +384,7 @@ export class CardComponent extends CardBase {
 
   protected getStateClasses(): Record<string, boolean> {
     return {
-      'ui-card--interactive': this.getTypedAttribute('interactive', 'boolean')
+      'ui-card--interactive': this.getTypedAttribute('interactive', 'boolean'),
     };
   }
 
@@ -463,7 +473,7 @@ export class CardComponent extends CardBase {
 
   connectedCallback(): void {
     super.connectedCallback();
-    
+
     if (this.getTypedAttribute('interactive', 'boolean')) {
       this.setupInteractivity();
     }
@@ -472,7 +482,7 @@ export class CardComponent extends CardBase {
   private setupInteractivity(): void {
     this.addEventListener('click', this.handleCardClick);
     this.addEventListener('keydown', this.handleCardKeydown);
-    
+
     // Make interactive cards focusable
     if (!this.hasAttribute('tabindex')) {
       this.setAttribute('tabindex', '0');
@@ -482,7 +492,7 @@ export class CardComponent extends CardBase {
   private handleCardClick = (): void => {
     this.dispatchCustomEvent('card-click', {
       variant: this.getAttribute('variant'),
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   };
 
@@ -498,6 +508,7 @@ customElements.define('ui-card', CardComponent);
 ```
 
 **Usage:**
+
 ```html
 <ui-card variant="outlined" elevation="md">
   <h3 slot="header">Card Title</h3>
@@ -553,7 +564,7 @@ export class ModalComponent extends ModalBase {
       observedAttributes: ['open', 'size', 'closable'],
       dynamicAttributes: ['open', 'closable'],
       staticAttributes: ['size'],
-      shadowMode: 'open'
+      shadowMode: 'open',
     });
 
     this.focusManager = new FocusManager();
@@ -565,21 +576,21 @@ export class ModalComponent extends ModalBase {
       ariaModal: this.getTypedAttribute('open', 'boolean'),
       ariaLabelledby: this.getAttribute('aria-labelledby') || undefined,
       ariaDescribedby: this.getAttribute('aria-describedby') || undefined,
-      focusable: false // The modal container itself is not focusable
+      focusable: false, // The modal container itself is not focusable
     };
   }
 
   protected getStateClasses(): Record<string, boolean> {
     return {
       'ui-modal--open': this.getTypedAttribute('open', 'boolean'),
-      'ui-modal--closable': this.getTypedAttribute('closable', 'boolean')
+      'ui-modal--closable': this.getTypedAttribute('closable', 'boolean'),
     };
   }
 
   protected getAttributeConfig() {
     return {
       staticAttributes: ['size'],
-      dynamicAttributes: ['open', 'closable']
+      dynamicAttributes: ['open', 'closable'],
     };
   }
 
@@ -716,7 +727,11 @@ export class ModalComponent extends ModalBase {
     `;
   }
 
-  protected handleDynamicAttributeChange(name: string, oldValue: string | null, newValue: string | null): void {
+  protected handleDynamicAttributeChange(
+    name: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     super.handleDynamicAttributeChange(name, oldValue, newValue);
 
     if (name === 'open') {
@@ -730,21 +745,21 @@ export class ModalComponent extends ModalBase {
 
   connectedCallback(): void {
     super.connectedCallback();
-    
+
     // Set up event listeners
     const closeButton = this.shadowQuery('.modal-close');
     const backdrop = this.shadowQuery('.modal-backdrop');
-    
+
     closeButton?.addEventListener('click', this.handleClose);
     backdrop?.addEventListener('click', this.handleBackdropClick);
-    
+
     // Set up keyboard handling
     document.addEventListener('keydown', this.handleDocumentKeydown);
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
-    
+
     document.removeEventListener('keydown', this.handleDocumentKeydown);
     this.focusManager.restore();
   }
@@ -753,16 +768,16 @@ export class ModalComponent extends ModalBase {
     // Capture focus and trap it within modal
     this.focusManager.capture();
     this.focusManager.trap(this.shadowQuery('.modal-container')!);
-    
+
     // Prevent body scroll
     document.body.style.overflow = 'hidden';
-    
+
     // Focus first focusable element in modal
     const firstFocusable = this.shadowQuery('button, [tabindex]:not([tabindex="-1"])');
     if (firstFocusable) {
       (firstFocusable as HTMLElement).focus();
     }
-    
+
     this.dispatchCustomEvent('modal-open');
   }
 
@@ -770,10 +785,10 @@ export class ModalComponent extends ModalBase {
     // Restore focus and remove trap
     this.focusManager.untrap();
     this.focusManager.restore();
-    
+
     // Restore body scroll
     document.body.style.overflow = '';
-    
+
     this.dispatchCustomEvent('modal-close');
   }
 
@@ -817,6 +832,7 @@ customElements.define('ui-modal', ModalComponent);
 ```
 
 **Usage:**
+
 ```html
 <ui-modal size="lg" closable>
   <h2 slot="header">Confirmation</h2>
@@ -863,10 +879,10 @@ describe('AccessibilityMixin Example', () => {
 
   it('should provide accessibility features', () => {
     document.body.appendChild(component);
-    
+
     expect(component.getAttribute('role')).toBe('button');
     expect(typeof component.setAriaStates).toBe('function');
-    
+
     component.setAriaStates({ expanded: true });
     expect(component.getAttribute('aria-expanded')).toBe('true');
   });
@@ -892,10 +908,10 @@ describe('ButtonComponent Example', () => {
 
     // Test accessibility
     expect(button.getAttribute('role')).toBe('button');
-    
+
     // Test attribute management
     expect(button.classList.contains('ui-button--variant-primary')).toBe(true);
-    
+
     // Test event management
     const eventSpy = vi.fn();
     button.addEventListener('ui-button-click', eventSpy);
@@ -915,12 +931,12 @@ const bundleSizes = {
   // Old monolithic approach
   BaseComponent: '~8KB',
   ShadowComponent: '~10KB',
-  
+
   // New mixin approach
-  SimpleComponent: '~2KB',      // 75% reduction
+  SimpleComponent: '~2KB', // 75% reduction
   InteractiveComponent: '~5KB', // 37% reduction
-  ShadowComponent: '~7KB',      // 30% reduction
-  FullComponent: '~8KB',        // Same as old BaseComponent
+  ShadowComponent: '~7KB', // 30% reduction
+  FullComponent: '~8KB', // Same as old BaseComponent
 };
 ```
 
@@ -929,11 +945,11 @@ const bundleSizes = {
 ```typescript
 // Example performance measurements (microseconds per component)
 const creationTimes = {
-  BadgeComponent: 12,      // Simple, minimal overhead
-  ButtonComponent: 18,     // Interactive, more features
-  InputComponent: 25,      // Form element, complex sync
-  CardComponent: 35,       // Shadow DOM, styling
-  ModalComponent: 45,      // Complex, focus management
+  BadgeComponent: 12, // Simple, minimal overhead
+  ButtonComponent: 18, // Interactive, more features
+  InputComponent: 25, // Form element, complex sync
+  CardComponent: 35, // Shadow DOM, styling
+  ModalComponent: 45, // Complex, focus management
 };
 ```
 

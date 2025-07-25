@@ -38,7 +38,7 @@ class ComponentRegistry {
    */
   public register(tagName: string): boolean {
     const definition = this.definitions.get(tagName);
-    
+
     if (!definition) {
       console.error(`Component ${tagName} is not defined. Call define() first.`);
       return false;
@@ -81,7 +81,7 @@ class ComponentRegistry {
    * Registers multiple components
    */
   public registerAll(tagNames: string[]): boolean {
-    return tagNames.every(tagName => this.register(tagName));
+    return tagNames.every((tagName) => this.register(tagName));
   }
 
   /**
@@ -119,8 +119,8 @@ class ComponentRegistry {
    */
   public getRegisteredComponents(): string[] {
     return Array.from(this.definitions.values())
-      .filter(def => def.registered)
-      .map(def => def.tagName);
+      .filter((def) => def.registered)
+      .map((def) => def.tagName);
   }
 
   /**
@@ -128,8 +128,8 @@ class ComponentRegistry {
    */
   public getUnregisteredComponents(): string[] {
     return Array.from(this.definitions.values())
-      .filter(def => !def.registered)
-      .map(def => def.tagName);
+      .filter((def) => !def.registered)
+      .map((def) => def.tagName);
   }
 
   /**
@@ -137,9 +137,9 @@ class ComponentRegistry {
    */
   public enableAutoRegistration(): void {
     // Create a MutationObserver to watch for new elements
-    const observer = new MutationObserver(mutations => {
-      mutations.forEach(mutation => {
-        mutation.addedNodes.forEach(node => {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
           if (node.nodeType === Node.ELEMENT_NODE) {
             this.autoRegisterElement(node as Element);
           }
@@ -161,13 +161,13 @@ class ComponentRegistry {
    */
   private autoRegisterElement(element: Element): void {
     const tagName = element.tagName.toLowerCase();
-    
+
     if (this.isDefined(tagName) && !this.isRegistered(tagName)) {
       this.register(tagName);
     }
 
     // Check child elements recursively
-    element.querySelectorAll('*').forEach(child => {
+    element.querySelectorAll('*').forEach((child) => {
       const childTagName = child.tagName.toLowerCase();
       if (this.isDefined(childTagName) && !this.isRegistered(childTagName)) {
         this.register(childTagName);
@@ -180,8 +180,8 @@ class ComponentRegistry {
    */
   private autoRegisterExistingElements(): void {
     const definedTags = this.getDefinedComponents();
-    
-    definedTags.forEach(tagName => {
+
+    definedTags.forEach((tagName) => {
       if (!this.isRegistered(tagName) && document.querySelector(tagName)) {
         this.register(tagName);
       }
@@ -197,7 +197,7 @@ class ComponentRegistry {
     }
 
     return new Promise((resolve) => {
-      const checkRegistration = () => {
+      const checkRegistration = (): void => {
         if (this.isRegistered(tagName)) {
           resolve();
         } else {

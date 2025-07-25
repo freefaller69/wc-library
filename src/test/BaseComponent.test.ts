@@ -74,7 +74,7 @@ describe.skip('BaseComponent', () => {
       const customComponent = document.createElement('test-component') as TestComponent;
       customComponent.id = 'custom-id';
       document.body.appendChild(customComponent);
-      
+
       expect(customComponent.id).toBe('custom-id');
     });
   });
@@ -83,21 +83,21 @@ describe.skip('BaseComponent', () => {
     it('should call onConnect when connected to DOM', () => {
       const onConnectSpy = vi.spyOn(component, 'onConnect' as any);
       document.body.appendChild(component);
-      
+
       expect(onConnectSpy).toHaveBeenCalled();
     });
 
     it('should call onDisconnect when removed from DOM', () => {
       document.body.appendChild(component);
       const onDisconnectSpy = vi.spyOn(component, 'onDisconnect' as any);
-      
+
       component.remove();
       expect(onDisconnectSpy).toHaveBeenCalled();
     });
 
     it('should setup accessibility attributes when connected', () => {
       document.body.appendChild(component);
-      
+
       expect(component.getAttribute('role')).toBe('button');
       expect(component.hasAttribute('tabindex')).toBe(false); // focusable but no explicit tabindex
     });
@@ -110,19 +110,19 @@ describe.skip('BaseComponent', () => {
 
     it('should handle static attributes (variants)', () => {
       component.setAttribute('variant', 'primary');
-      
+
       expect(component.classList.contains('test-component--variant-primary')).toBe(true);
     });
 
     it('should handle dynamic attributes (state)', () => {
       component.setAttribute('disabled', '');
-      
+
       expect(component.classList.contains('test-component--disabled')).toBe(true);
     });
 
     it('should call onAttributeChange when attributes change', () => {
       const onAttributeChangeSpy = vi.spyOn(component, 'onAttributeChange' as any);
-      
+
       component.setAttribute('test-attr', 'value');
       expect(onAttributeChangeSpy).toHaveBeenCalledWith('test-attr', null, 'value');
     });
@@ -130,7 +130,7 @@ describe.skip('BaseComponent', () => {
     it('should not call onAttributeChange if value is the same', () => {
       component.setAttribute('test-attr', 'value');
       const onAttributeChangeSpy = vi.spyOn(component, 'onAttributeChange' as any);
-      
+
       component.setAttribute('test-attr', 'value');
       expect(onAttributeChangeSpy).not.toHaveBeenCalled();
     });
@@ -149,10 +149,10 @@ describe.skip('BaseComponent', () => {
     it('should get boolean attributes', () => {
       component.setAttribute('disabled', '');
       expect(component['getTypedAttribute']('disabled', 'boolean')).toBe(true);
-      
+
       component.removeAttribute('disabled');
       expect(component['getTypedAttribute']('disabled', 'boolean')).toBe(false);
-      
+
       component.setAttribute('disabled', 'false');
       expect(component['getTypedAttribute']('disabled', 'boolean')).toBe(false);
     });
@@ -160,7 +160,7 @@ describe.skip('BaseComponent', () => {
     it('should get number attributes', () => {
       component.setAttribute('test-attr', '42');
       expect(component['getTypedAttribute']('test-attr', 'number')).toBe(42);
-      
+
       component.setAttribute('test-attr', 'not-a-number');
       expect(component['getTypedAttribute']('test-attr', 'number')).toBe(null);
     });
@@ -168,17 +168,17 @@ describe.skip('BaseComponent', () => {
     it('should set typed attributes', () => {
       component['setTypedAttribute']('test-string', 'value');
       expect(component.getAttribute('test-string')).toBe('value');
-      
+
       component['setTypedAttribute']('test-boolean', true);
       expect(component.hasAttribute('test-boolean')).toBe(true);
       expect(component.getAttribute('test-boolean')).toBe('');
-      
+
       component['setTypedAttribute']('test-boolean', false);
       expect(component.hasAttribute('test-boolean')).toBe(false);
-      
+
       component['setTypedAttribute']('test-number', 42);
       expect(component.getAttribute('test-number')).toBe('42');
-      
+
       component['setTypedAttribute']('test-null', null);
       expect(component.hasAttribute('test-null')).toBe(false);
     });
@@ -192,9 +192,9 @@ describe.skip('BaseComponent', () => {
     it('should dispatch custom events with proper naming', () => {
       const eventSpy = vi.fn();
       component.addEventListener('ui-test-component-custom', eventSpy);
-      
+
       component['dispatchCustomEvent']('custom', { data: 'test' });
-      
+
       expect(eventSpy).toHaveBeenCalled();
       const event = eventSpy.mock.calls[0][0] as CustomEvent;
       expect(event.type).toBe('ui-test-component-custom');
@@ -212,7 +212,7 @@ describe.skip('BaseComponent', () => {
     it('should add focus-visible class on focus', () => {
       component.focus();
       component.dispatchEvent(new FocusEvent('focus'));
-      
+
       expect(component.classList.contains('ui-focus-visible')).toBe(true);
     });
 
@@ -220,7 +220,7 @@ describe.skip('BaseComponent', () => {
       component.focus();
       component.dispatchEvent(new FocusEvent('focus'));
       component.dispatchEvent(new FocusEvent('blur'));
-      
+
       expect(component.classList.contains('ui-focus-visible')).toBe(false);
     });
   });
@@ -237,7 +237,7 @@ describe.skip('BaseComponent', () => {
     it('should update classes when attributes change', () => {
       component.setAttribute('variant', 'primary');
       expect(component.classList.contains('test-component--variant-primary')).toBe(true);
-      
+
       component.setAttribute('variant', 'secondary');
       expect(component.classList.contains('test-component--variant-secondary')).toBe(true);
       expect(component.classList.contains('test-component--variant-primary')).toBe(false);

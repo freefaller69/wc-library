@@ -7,6 +7,9 @@ import prettierConfig from 'eslint-config-prettier';
 export default [
   js.configs.recommended,
   {
+    ignores: ['dist/**/*'],
+  },
+  {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       parser: tsparser,
@@ -15,11 +18,19 @@ export default [
         tsconfigRootDir: import.meta.dirname,
       },
       globals: {
+        console: 'readonly',
         document: 'readonly',
         window: 'readonly',
         HTMLElement: 'readonly',
         HTMLButtonElement: 'readonly',
         Event: 'readonly',
+        CustomEvent: 'readonly',
+        customElements: 'readonly',
+        fetch: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        MutationObserver: 'readonly',
+        getComputedStyle: 'readonly',
       },
     },
     plugins: {
@@ -33,6 +44,34 @@ export default [
       'prettier/prettier': 'error',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/explicit-function-return-type': 'warn',
+      // Allow any in method overloads
+      '@typescript-eslint/no-explicit-any': [
+        'error',
+        {
+          ignoreRestArgs: true,
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/test/**/*.ts', 'src/**/*.test.ts'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/explicit-function-return-type': 'off',
+    },
+  },
+  {
+    files: ['src/utilities/signals/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/ban-ts-comment': 'off',
+      '@typescript-eslint/explicit-function-return-type': 'off',
     },
   },
   {

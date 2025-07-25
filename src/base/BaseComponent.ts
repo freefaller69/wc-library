@@ -4,7 +4,11 @@
 
 import { generateId, setAriaState } from '../utilities/accessibility.js';
 import { ClassUtils } from '../utilities/style-helpers.js';
-import type { ComponentConfig, LifecycleCallbacks, AccessibilityOptions } from '../types/component.js';
+import type {
+  ComponentConfig,
+  LifecycleCallbacks,
+  AccessibilityOptions,
+} from '../types/component.js';
 
 export abstract class BaseComponent extends HTMLElement implements LifecycleCallbacks {
   protected componentId: string;
@@ -24,7 +28,7 @@ export abstract class BaseComponent extends HTMLElement implements LifecycleCall
    */
   connectedCallback(): void {
     if (this._isConnected) return;
-    
+
     this._isConnected = true;
     this.setupAccessibility();
     this.onConnect?.();
@@ -74,7 +78,7 @@ export abstract class BaseComponent extends HTMLElement implements LifecycleCall
   private setupBaseAttributes(): void {
     this.classList.add('ui-reset');
     this.setAttribute('data-ui-component', this.config.tagName);
-    
+
     if (!this.id) {
       this.id = this.componentId;
     }
@@ -85,19 +89,19 @@ export abstract class BaseComponent extends HTMLElement implements LifecycleCall
    */
   private setupAccessibility(): void {
     const accessibilityConfig = this.getAccessibilityConfig();
-    
+
     if (accessibilityConfig.role) {
       this.setAttribute('role', accessibilityConfig.role);
     }
-    
+
     if (accessibilityConfig.ariaLabel) {
       this.setAttribute('aria-label', accessibilityConfig.ariaLabel);
     }
-    
+
     if (accessibilityConfig.ariaDescribedBy) {
       this.setAttribute('aria-describedby', accessibilityConfig.ariaDescribedBy);
     }
-    
+
     if (accessibilityConfig.tabIndex !== undefined) {
       this.setAttribute('tabindex', String(accessibilityConfig.tabIndex));
     }
@@ -131,7 +135,11 @@ export abstract class BaseComponent extends HTMLElement implements LifecycleCall
   /**
    * Handles dynamic attribute changes (state, etc.)
    */
-  private handleDynamicAttributeChange(_name: string, _oldValue: string | null, _newValue: string | null): void {
+  private handleDynamicAttributeChange(
+    _name: string,
+    _oldValue: string | null,
+    _newValue: string | null
+  ): void {
     // Override in subclasses for specific dynamic attribute handling
     this.requestUpdate();
   }
@@ -168,14 +176,18 @@ export abstract class BaseComponent extends HTMLElement implements LifecycleCall
   /**
    * Dispatches a custom event from the component
    */
-  protected dispatchCustomEvent(eventName: string, detail?: any, options?: CustomEventInit): boolean {
+  protected dispatchCustomEvent(
+    eventName: string,
+    detail?: unknown,
+    options?: CustomEventInit
+  ): boolean {
     const event = new CustomEvent(`ui-${this.config.tagName}-${eventName}`, {
       detail,
       bubbles: true,
       cancelable: true,
       ...options,
     });
-    
+
     return this.dispatchEvent(event);
   }
 
@@ -192,19 +204,21 @@ export abstract class BaseComponent extends HTMLElement implements LifecycleCall
   protected getTypedAttribute(name: string): string | null;
   protected getTypedAttribute(name: string, type: 'boolean'): boolean;
   protected getTypedAttribute(name: string, type: 'number'): number | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected getTypedAttribute(name: string, type?: 'string' | 'boolean' | 'number'): any {
     const value = this.getAttribute(name);
-    
+
     if (value === null) {
       return type === 'boolean' ? false : null;
     }
-    
+
     switch (type) {
       case 'boolean':
         return value !== 'false' && value !== '';
-      case 'number':
+      case 'number': {
         const num = Number(value);
         return isNaN(num) ? null : num;
+      }
       default:
         return value;
     }

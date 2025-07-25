@@ -2,13 +2,13 @@
  * SignalSystem implementation - core reactive system
  */
 
-import type { 
-  Signal, 
-  ComputedSignal, 
-  EffectCleanup, 
-  ISignalSystem, 
+import type {
+  Signal,
+  ComputedSignal,
+  EffectCleanup,
+  ISignalSystem,
   SignalSystemOptions,
-  Computation 
+  Computation,
 } from './types.js';
 import { createSignal } from './signal.js';
 import { createComputed } from './computed.js';
@@ -24,7 +24,7 @@ export class SignalSystem implements ISignalSystem {
   constructor(options: SignalSystemOptions = {}) {
     this.options = {
       debug: false,
-      onError: (error, context) => {
+      onError: (error, context): void => {
         console.error(`Error in signal ${context}:`, error);
       },
       ...options,

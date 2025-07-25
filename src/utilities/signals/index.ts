@@ -1,36 +1,34 @@
 /**
  * Signals - Reactive state management system
  * Aligned with TC39 signals proposal with additional pragmatic features
- * 
+ *
  * @example
  * ```typescript
  * import { signal, computed, effect, batch } from './signals/index.js';
- * 
+ *
  * // Create reactive state
  * const count = signal(0);
  * const doubled = computed(() => count.get() * 2);
- * 
+ *
  * // React to changes
  * effect(() => {
  *   console.log('Count is:', count.get());
  * });
- * 
+ *
  * // Update state
  * count.set(5); // logs: "Count is: 5"
  * ```
  */
 
 import { SignalSystem } from './system.js';
-import type { 
-  Signal, 
-  ComputedSignal, 
-  EffectCleanup, 
-  SignalFactory, 
+import type {
+  Signal,
+  ComputedSignal,
+  EffectCleanup,
+  SignalFactory,
   SignalSystemOptions,
   ReadonlySignal,
   SignalValue,
-  isSignal,
-  isComputed
 } from './types.js';
 
 // Re-export types for convenience
@@ -68,7 +66,7 @@ const defaultSystem = createSignalSystem();
 
 /**
  * Create a writable signal with initial value
- * 
+ *
  * @example
  * ```typescript
  * const count = signal(0);
@@ -80,7 +78,7 @@ export const signal = defaultSystem.signal;
 
 /**
  * Create a computed signal that derives from other signals
- * 
+ *
  * @example
  * ```typescript
  * const count = signal(0);
@@ -94,14 +92,14 @@ export const computed = defaultSystem.computed;
 
 /**
  * Create an effect that runs when dependencies change
- * 
+ *
  * @example
  * ```typescript
  * const count = signal(0);
  * const cleanup = effect(() => {
  *   console.log('Count changed:', count.get());
  * });
- * 
+ *
  * count.set(5); // logs: "Count changed: 5"
  * cleanup(); // stops the effect
  * ```
@@ -110,15 +108,15 @@ export const effect = defaultSystem.effect;
 
 /**
  * Batch multiple signal updates to prevent intermediate updates
- * 
+ *
  * @example
  * ```typescript
  * const a = signal(1);
  * const b = signal(2);
  * const sum = computed(() => a.get() + b.get());
- * 
+ *
  * effect(() => console.log('Sum:', sum.get()));
- * 
+ *
  * batch(() => {
  *   a.set(10);
  *   b.set(20);
