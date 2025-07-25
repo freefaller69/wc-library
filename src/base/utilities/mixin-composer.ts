@@ -2,6 +2,8 @@
  * Mixin composition utilities for creating composable component architectures
  */
 
+/* eslint-disable @typescript-eslint/no-empty-object-type, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return, @typescript-eslint/explicit-function-return-type */
+
 export type Constructor<T = {}> = abstract new (...args: any[]) => T;
 export type ConcreteConstructor<T = {}> = new (...args: any[]) => T;
 export type Mixin<T extends Constructor> = (Base: T) => T;

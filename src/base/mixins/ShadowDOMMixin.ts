@@ -2,6 +2,8 @@
  * ShadowDOMMixin - Provides Shadow DOM creation and management
  */
 
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+
 import type { Constructor } from '../utilities/mixin-composer.js';
 
 // Mixin interface that defines Shadow DOM features

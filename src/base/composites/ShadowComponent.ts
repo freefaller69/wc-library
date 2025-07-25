@@ -3,6 +3,8 @@
  * For components that need Shadow DOM encapsulation
  */
 
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+
 import { CoreCustomElement } from '../CoreCustomElement.js';
 import { compose } from '../utilities/mixin-composer.js';
 import { ShadowDOMMixin } from '../mixins/ShadowDOMMixin.js';

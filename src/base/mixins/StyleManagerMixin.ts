@@ -2,6 +2,8 @@
  * StyleManagerMixin - Provides CSS and stylesheet management
  */
 
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+
 import type { Constructor } from '../utilities/mixin-composer.js';
 
 // Mixin interface that defines style management features

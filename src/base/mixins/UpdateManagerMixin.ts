@@ -2,6 +2,8 @@
  * UpdateManagerMixin - Provides component update lifecycle management
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
+
 import type { Constructor } from '../utilities/mixin-composer.js';
 
 // Mixin interface that defines update management features

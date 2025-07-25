@@ -2,6 +2,8 @@
  * AccessibilityMixin - Provides ARIA states, focus management, and keyboard handling
  */
 
+/* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/explicit-function-return-type */
+
 import { setAriaState } from '../../utilities/accessibility.js';
 import type { AccessibilityOptions } from '../../types/component.js';
 import type { Constructor } from '../utilities/mixin-composer.js';

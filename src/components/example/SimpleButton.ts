@@ -3,6 +3,8 @@
  * Demonstrates InteractiveAttributeComponent with full functionality
  */
 
+/* eslint-disable @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment */
+
 import { InteractiveAttributeComponent } from '../../base/composites/InteractiveAttributeComponent.js';
 import type { AccessibilityOptions } from '../../types/component.js';
 

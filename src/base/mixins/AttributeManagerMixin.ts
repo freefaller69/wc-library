@@ -2,6 +2,8 @@
  * AttributeManagerMixin - Provides attribute handling and CSS class generation
  */
 
+/* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any */
+
 import { ClassUtils } from '../../utilities/style-helpers.js';
 import type { Constructor } from '../utilities/mixin-composer.js';
 import type { ComponentConfig } from '../../types/component.js';

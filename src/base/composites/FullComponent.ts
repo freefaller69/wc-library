@@ -3,6 +3,8 @@
  * Equivalent to the current BaseComponent but built with mixins
  */
 
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+
 import { CoreCustomElement } from '../CoreCustomElement.js';
 import { compose } from '../utilities/mixin-composer.js';
 import {

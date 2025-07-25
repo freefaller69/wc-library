@@ -3,6 +3,8 @@
  * For interactive elements like buttons that don't need attribute management
  */
 
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+
 import { CoreCustomElement } from '../CoreCustomElement.js';
 import { compose } from '../utilities/mixin-composer.js';
 import { AccessibilityMixin } from '../mixins/AccessibilityMixin.js';

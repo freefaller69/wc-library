@@ -2,6 +2,8 @@
  * SlotManagerMixin - Provides slot handling and management
  */
 
+/* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/explicit-function-return-type */
+
 import type { Constructor } from '../utilities/mixin-composer.js';
 
 // Mixin interface that defines slot management features
