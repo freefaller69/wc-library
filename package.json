@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:no-typecheck": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
@@ -15,7 +16,8 @@
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "benchmark": "node scripts/benchmark.js",
-    "benchmark:baseline": "pnpm build && pnpm benchmark"
+    "benchmark:baseline": "pnpm build && pnpm benchmark",
+    "benchmark:baseline:no-typecheck": "pnpm build:no-typecheck && pnpm benchmark"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",

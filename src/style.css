@@ -20,14 +20,14 @@
   box-sizing: border-box;
 }
 
-/* Focus Management */
-.ui-focus-visible {
+/* Focus Management - Using native :focus-visible pseudo-selector */
+.ui-reset:focus-visible {
   outline: var(--ui-shadow-focus);
   outline-offset: 2px;
 }
 
-/* Ensure focus styles are only shown when appropriate */
-.ui-reset:focus:not(.ui-focus-visible) {
+/* Remove default focus outline when not using keyboard navigation */
+.ui-reset:focus:not(:focus-visible) {
   outline: none;
 }
 

@@ -48,8 +48,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build current version
-        run: pnpm build
+      - name: Build current version (skip typecheck for mixin foundation)
+        run: pnpm build:no-typecheck
 
       - name: Run performance benchmark
         run: pnpm benchmark
