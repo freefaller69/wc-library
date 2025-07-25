@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Development Commands
 
-- **Development server**: `pnpm dev` or `npm run dev` - starts Vite development server
-- **Build**: `pnpm build` or `npm run build` - runs TypeScript compilation followed by Vite build
-- **Preview**: `pnpm preview` or `npm run preview` - previews the production build locally
+- **Development server**: `pnpm dev` - starts Vite development server
+- **Build**: `pnpm build` - runs TypeScript compilation followed by Vite build
+- **Preview**: `pnpm preview` - previews the production build locally
 
 ## Architecture
 
@@ -36,7 +36,7 @@ This is a Vite-based TypeScript web component library project with the following
 
 ## Development Notes
 
-- Uses pnpm for package management (lock file present)
+- Uses pnpm as the preferred package management tool (lock file present)
 - ESLint configured with TypeScript rules and Prettier integration
 - Prettier configured for consistent code formatting
 - CSS uses CSS custom properties and prefers-color-scheme media queries for theming
