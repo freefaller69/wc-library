@@ -146,6 +146,78 @@ This document outlines the planned components for our web component library, org
 - **Features**: Indeterminate state, labels, colors
 - **Dependencies**: None
 
+### Typography Elements
+
+#### ui-heading ⭐
+
+- **Extends**: `BaseComponent` (Light DOM for styling flexibility)
+- **Levels**: 1-6 (h1-h6) with semantic/visual separation
+- **Variants**: display, title, subtitle based on design system scales
+- **Attributes**: `level`, `as`, `variant`, `responsive`, `truncate`
+- **Features**: Responsive typography, semantic override, design token integration
+- **Events**: `ui-heading-truncate-toggle`
+- **Dependencies**: None
+
+#### ui-paragraph ⭐
+
+- **Extends**: `BaseComponent` (Light DOM for styling flexibility)
+- **Variants**: body, caption, legal, emphasis based on design system
+- **Attributes**: `variant`, `size`, `truncate`, `max-lines`
+- **Features**: Multi-line truncation, responsive sizing, reading time calculation
+- **Events**: `ui-paragraph-expand`, `ui-paragraph-truncate`
+- **Dependencies**: None
+
+#### ui-text ⭐
+
+- **Extends**: `BaseComponent` (Light DOM for styling flexibility)
+- **Elements**: Generic text wrapper for spans, inline text
+- **Variants**: body, caption, label, code, emphasis, strong
+- **Attributes**: `variant`, `as`, `size`, `weight`, `italic`
+- **Features**: Semantic flexibility, design token integration, inline styling
+- **Events**: None (primitive component)
+- **Dependencies**: None
+
+### Media Elements
+
+#### ui-image ⭐
+
+- **Extends**: `BaseComponent`
+- **Features**: Lazy loading, error states, aspect ratios, responsive sizing
+- **States**: loading, loaded, error
+- **Attributes**: `src`, `alt`, `sizes`, `loading`, `aspect-ratio`
+- **Events**: `ui-image-load`, `ui-image-error`, `ui-image-lazy-load`
+- **Dependencies**: None
+
+#### ui-picture ⭐
+
+- **Extends**: `BaseComponent`
+- **Features**: Multiple format support (WebP/AVIF), art direction, density switching
+- **Sources**: Format-based (`webp`, `avif`, `jpg`), media query-based
+- **Attributes**: `fallback-src`, `alt`, `sizes`
+- **Events**: `ui-picture-load`, `ui-picture-error`, `ui-picture-source-change`
+- **Dependencies**: None
+- **Note**: Generates `<picture>` element with multiple `<source>` tags
+
+#### ui-video ⭐
+
+- **Extends**: `BaseComponent`
+- **Features**: Custom controls, poster support, accessibility, caption handling
+- **Sources**: Single/multiple format support, adaptive streaming
+- **Controls**: play/pause, seek, volume, fullscreen, playback speed
+- **Attributes**: `src`, `poster`, `controls`, `autoplay`, `muted`, `loop`
+- **Events**: `ui-video-play`, `ui-video-pause`, `ui-video-ended`, `ui-video-error`
+- **Dependencies**: ui-button, ui-icon, ui-slider
+
+#### ui-media-embed ⭐
+
+- **Extends**: `BaseComponent`
+- **Providers**: YouTube, Vimeo, Twitter, Instagram, generic iframe
+- **Features**: Privacy-first loading, GDPR compliance, aspect ratio containers
+- **Privacy**: Click-to-load with consent, no cookies until user interaction
+- **Attributes**: `provider`, `video-id`, `privacy-mode`, `aspect-ratio`
+- **Events**: `ui-embed-consent`, `ui-embed-load`, `ui-embed-error`
+- **Dependencies**: ui-button, ui-icon
+
 ---
 
 ## Molecules (Component Combinations)
@@ -229,6 +301,79 @@ This document outlines the planned components for our web component library, org
 - **Orientations**: horizontal, vertical
 - **Features**: Keyboard navigation, lazy loading
 - **Dependencies**: ui-button
+
+### Media Molecules
+
+#### ui-media-gallery ⭐
+
+- **Extends**: `BaseComponent`
+- **Features**: Grid/masonry layouts, lightbox integration, lazy loading
+- **Layouts**: grid, masonry, carousel, filmstrip
+- **Navigation**: thumbnail nav, prev/next, keyboard support
+- **Events**: `ui-gallery-item-select`, `ui-gallery-view-change`
+- **Dependencies**: ui-image, ui-picture, ui-button, ui-icon
+
+#### ui-media-player ⭐
+
+- **Extends**: `ShadowComponent`
+- **Features**: Unified audio/video player, playlist support, custom themes
+- **Media Types**: video, audio, live streams
+- **Controls**: Custom UI, keyboard shortcuts, gesture support
+- **Features**: Picture-in-picture, fullscreen, captions, quality selection
+- **Events**: `ui-player-play`, `ui-player-pause`, `ui-player-seek`, `ui-player-quality-change`
+- **Dependencies**: ui-video, ui-button, ui-icon, ui-slider, ui-menu
+
+#### ui-lightbox ⭐
+
+- **Extends**: `ShadowComponent`
+- **Features**: Full-screen media viewing, zoom, pan, slideshow
+- **Media Types**: images, videos, mixed galleries
+- **Navigation**: Swipe gestures, keyboard, thumbnails
+- **Features**: Zoom controls, slideshow timer, download options
+- **Events**: `ui-lightbox-open`, `ui-lightbox-close`, `ui-lightbox-navigate`
+- **Dependencies**: ui-image, ui-video, ui-button, ui-icon
+
+#### ui-media-uploader ⭐
+
+- **Extends**: `BaseComponent`
+- **Features**: Drag & drop, multiple files, preview, progress, validation
+- **File Types**: images, videos, audio, documents
+- **Validation**: File size, type, dimensions, duration
+- **Preview**: Thumbnails, metadata display, crop tools
+- **Events**: `ui-uploader-add`, `ui-uploader-progress`, `ui-uploader-complete`, `ui-uploader-error`
+- **Dependencies**: ui-button, ui-progress, ui-icon, ui-image
+
+### Typography Molecules
+
+#### ui-article ⭐
+
+- **Extends**: `ShadowComponent` (Encapsulated content structure)
+- **Features**: Semantic content hierarchy, reading time, table of contents
+- **Sections**: header, body, footer, sidebar, metadata
+- **Content**: Automatic heading hierarchy validation, spacing consistency
+- **Attributes**: `reading-time`, `toc`, `word-count`, `estimated-read`
+- **Events**: `ui-article-scroll-section`, `ui-article-toc-click`
+- **Dependencies**: ui-heading, ui-paragraph, ui-text
+
+#### ui-text-block ⭐
+
+- **Extends**: `ShadowComponent` (Structured content pattern)
+- **Features**: Heading + content + metadata composition, responsive layout
+- **Layouts**: stacked, inline, card-style, banner
+- **Content**: Heading, paragraph, optional metadata, actions
+- **Attributes**: `layout`, `spacing`, `alignment`, `metadata-position`
+- **Events**: `ui-text-block-expand`, `ui-text-block-action`
+- **Dependencies**: ui-heading, ui-paragraph, ui-text, ui-button
+
+#### ui-content-card ⭐
+
+- **Extends**: `ShadowComponent` (Rich content container)
+- **Features**: Media + typography composition, interactive content
+- **Sections**: media (image/video), heading, description, actions, metadata
+- **Layouts**: horizontal, vertical, overlay, grid
+- **Attributes**: `layout`, `media-position`, `actions-position`, `interactive`
+- **Events**: `ui-content-card-click`, `ui-content-card-action`
+- **Dependencies**: ui-image, ui-heading, ui-paragraph, ui-button, ui-icon
 
 ### Navigation Molecules
 
@@ -349,7 +494,12 @@ BaseComponent
 │   ├── ui-menu
 │   ├── ui-modal
 │   ├── ui-drawer
-│   └── ui-dialog
+│   ├── ui-dialog
+│   ├── ui-media-player
+│   ├── ui-lightbox
+│   ├── ui-article
+│   ├── ui-text-block
+│   └── ui-content-card
 ├── BaseInputComponent
 │   ├── TextInputComponent
 │   │   ├── ui-input (text, email, tel, url, password, search)
@@ -378,6 +528,15 @@ BaseComponent
     ├── ui-spinner
     ├── ui-link
     ├── ui-progress
+    ├── ui-heading
+    ├── ui-paragraph  
+    ├── ui-text
+    ├── ui-image
+    ├── ui-picture
+    ├── ui-video
+    ├── ui-media-embed
+    ├── ui-media-gallery
+    ├── ui-media-uploader
     ├── ui-alert
     ├── ui-toast
     ├── ui-accordion
@@ -414,6 +573,14 @@ Higher-level components compose multiple primitives (ui-field = ui-label + ui-in
 
 Shared behaviors (keyboard navigation, focus management) implemented as mixins.
 
+#### 5. **Media Component Pattern**
+
+Media components use progressive enhancement: basic `ui-image`/`ui-video` for simple use cases, complex `ui-media-player`/`ui-lightbox` for advanced features. Privacy-first design for embeds.
+
+#### 6. **Typography Hybrid Pattern**
+
+Typography primitives (`ui-heading`, `ui-paragraph`, `ui-text`) use light DOM for maximum styling flexibility. Typography molecules (`ui-article`, `ui-text-block`) use shadow DOM for structured content patterns while inheriting design tokens.
+
 ---
 
 ## Implementation Priorities
@@ -424,24 +591,40 @@ Shared behaviors (keyboard navigation, focus management) implemented as mixins.
 2. ui-input (inheritance pattern validation)
 3. ui-icon (dependency for many components)
 4. ui-label (field composition)
+5. ui-heading (typography foundation)
+6. ui-paragraph (text content)
+7. ui-image (media foundation)
 
 ### Phase 3: Essential Molecules
 
 1. ui-field (form building block)
 2. ui-alert (feedback pattern)
 3. ui-card (layout pattern)
+4. ui-text-block (structured content)
+5. ui-picture (responsive images)
 
 ### Phase 4: Advanced Components
 
 1. ui-select (complex interaction)
 2. ui-table (data display)
 3. ui-modal (overlay pattern)
+4. ui-video (media player foundation)
 
 ### Phase 5: Specialized Components
 
 1. ui-data-grid (advanced data)
 2. ui-multi-step-form (complex flows)
 3. ui-drawer (advanced navigation)
+4. ui-article (rich content structure)
+5. ui-content-card (media + typography)
+
+### Phase 6: Advanced Media Components
+
+1. ui-media-embed (privacy-first embeds)
+2. ui-media-gallery (image/video galleries)
+3. ui-media-player (unified media player)
+4. ui-lightbox (full-screen media viewing)
+5. ui-media-uploader (file upload with preview)
 
 ---
 
@@ -452,5 +635,8 @@ Shared behaviors (keyboard navigation, focus management) implemented as mixins.
 - CSS custom properties enable flexible theming
 - Individual exports support tree-shaking
 - Test coverage should be maintained at >90% for all components
+- **Media components prioritize privacy**: No external requests until user consent
+- **Progressive enhancement**: Simple media components work without JavaScript
+- **Performance first**: Lazy loading, intersection observers, and efficient rendering
 
 This roadmap provides a comprehensive view of where the component library is headed while maintaining flexibility to adapt as requirements evolve.
