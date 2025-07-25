@@ -112,6 +112,9 @@ jobs:
             echo "No baseline found, creating initial baseline..."
             cp performance-results.json performance-baseline.json
             echo "performance_status=baseline" >> $GITHUB_OUTPUT
+            echo "current_size=${{ steps.bundle-size.outputs.current }}" >> $GITHUB_OUTPUT
+            echo "baseline_size=${{ steps.bundle-size.outputs.current }}" >> $GITHUB_OUTPUT
+            echo "change_percent=0" >> $GITHUB_OUTPUT
           fi
 
       - name: Save performance baseline (main branch only)
