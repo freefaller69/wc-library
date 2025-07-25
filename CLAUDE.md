@@ -42,3 +42,19 @@ This is a Vite-based TypeScript web component library project with the following
 - CSS uses CSS custom properties and prefers-color-scheme media queries for theming
 - Components use explicit registration system rather than auto-registration
 - Individual component exports enable tree-shaking optimization
+
+## Development Workflow
+
+**IMPORTANT**: All development work must be done on feature branches with Pull Requests unless explicitly specified otherwise.
+
+### Standard Workflow
+1. Create feature branch from main: `git checkout -b feature/your-feature-name`
+2. Make changes and test thoroughly
+3. Run quality checks: `pnpm test:run && pnpm build`
+4. Push branch and create Pull Request
+5. Merge only after review and approval
+
+### Direct main commits are ONLY allowed for:
+- Emergency hotfixes (with immediate follow-up PR)
+- Repository maintenance tasks explicitly agreed upon
+- When specifically requested by project maintainer

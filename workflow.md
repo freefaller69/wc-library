@@ -1,6 +1,19 @@
 # Development Workflow
 
-This document outlines the development workflow for the web component library, particularly during the mixin refactoring phase.
+This document outlines the development workflow for the web component library. **All development work must be done on feature branches with Pull Requests unless explicitly specified otherwise.**
+
+## Branch-First Development Policy
+
+🚨 **IMPORTANT**: Starting immediately, all changes to the codebase MUST follow the branch-based development workflow:
+
+- **Default**: Create a feature branch → Make changes → Open Pull Request → Review → Merge
+- **Exceptions**: Direct commits to `main` are ONLY allowed for:
+  - Emergency hotfixes (with immediate follow-up PR for review)
+  - Repository maintenance (updating .gitignore, README, etc.)
+  - Documentation-only changes explicitly agreed upon
+  - When explicitly stated by project maintainer
+
+This policy ensures code quality, enables proper review processes, and maintains a clean commit history.
 
 ## Development Environment Setup
 
@@ -24,25 +37,52 @@ pnpm test:run
 
 ## Daily Development Workflow
 
-### 1. Start Development Session
+### 1. Start Development Session (ALWAYS on a branch)
+
+⚠️ **Remember**: Never work directly on `main` branch!
 
 ```bash
 # Pull latest changes and switch to main
 git checkout main
 git pull origin main
 
-# Create feature branch
+# REQUIRED: Create feature branch for your work
 git checkout -b feature/mixin-accessibility-implementation
 # or
 git checkout -b refactor/base-component-mixins
-# or
+# or  
 git checkout -b fix/button-focus-management
+# or
+git checkout -b docs/update-component-examples
+# or
+git checkout -b chore/update-dependencies
 
 # Start development server (for component testing)
 pnpm dev
 
-# Run tests in watch mode (separate terminal)
+# Run tests in watch mode (separate terminal)  
 pnpm test
+```
+
+### 2. Complete Development Session (ALWAYS via PR)
+
+```bash
+# After completing your work:
+# 1. Ensure code quality
+pnpm test:run
+pnpm build
+
+# 2. Commit your changes
+git add -A
+git commit -m "descriptive commit message"
+
+# 3. Push your branch
+git push origin feature/your-branch-name
+
+# 4. Create Pull Request (required for all changes)
+gh pr create --title "Your PR Title" --body "Description of changes"
+
+# 5. DO NOT merge until reviewed and approved
 ```
 
 ### 2. Development Process
