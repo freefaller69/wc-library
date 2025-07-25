@@ -82,14 +82,16 @@ export function AccessibilityMixin<TBase extends Constructor<HTMLElement>>(
      * Handles focus events
      */
     handleFocus = (_event: FocusEvent): void => {
-      this.classList.add('ui-focus-visible');
+      // Focus styling is handled via :focus-visible CSS pseudo-selector
+      // Components can override this method for custom focus behavior
     };
 
     /**
      * Handles blur events
      */
     handleBlur = (_event: FocusEvent): void => {
-      this.classList.remove('ui-focus-visible');
+      // Blur handling can be customized by components if needed
+      // No utility classes needed - CSS handles focus states natively
     };
 
     /**
