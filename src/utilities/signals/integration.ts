@@ -209,7 +209,9 @@ export function withSignals<T extends new (...args: any[]) => HTMLElement>(
     // Override disconnectedCallback to cleanup signals
     disconnectedCallback(): void {
       this.cleanupSignals();
-      const parentDisconnected = Object.getPrototypeOf(Object.getPrototypeOf(this))?.disconnectedCallback;
+      const parentDisconnected = Object.getPrototypeOf(
+        Object.getPrototypeOf(this)
+      )?.disconnectedCallback;
       if (parentDisconnected && typeof parentDisconnected === 'function') {
         parentDisconnected.call(this);
       }

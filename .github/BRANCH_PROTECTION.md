@@ -7,20 +7,24 @@ This document outlines the GitHub branch protection rules that should be applied
 Apply these settings to the `main` branch in your GitHub repository settings:
 
 ### General Settings
+
 - ✅ **Require pull request reviews before merging**
   - Required approving reviews: **1**
   - ✅ Dismiss stale PR approvals when new commits are pushed
   - ✅ Require review from code owners (optional, can be enabled later)
 
 ### Status Checks
+
 - ✅ **Require status checks to pass before merging**
 - ✅ **Require branches to be up to date before merging**
 
 #### Required Status Checks:
+
 - `Code Quality & Tests` (from ci.yml workflow)
 - `Performance Analysis` (from performance.yml workflow)
 
 ### Additional Restrictions
+
 - ✅ **Require branches to be up to date before merging**
 - ✅ **Include administrators** (apply rules to repository administrators)
 - ❌ **Allow force pushes** (keep disabled for safety)
@@ -65,15 +69,18 @@ These names come from the `name:` fields in our GitHub Actions workflow files.
 ## Troubleshooting
 
 ### Status Checks Not Appearing
+
 - Ensure workflows have run at least once on a PR
 - Check that workflow files are in `.github/workflows/` directory
 - Verify workflow syntax is correct
 
 ### Permission Issues
+
 - Ensure GitHub Actions has read/write permissions in repository settings
 - Check that required secrets/permissions are properly configured
 
 ### Performance Analysis Failing
+
 - First run will establish baseline (should pass)
 - Subsequent runs compare against stored baseline
 - Check performance threshold settings in workflow if needed
@@ -81,6 +88,7 @@ These names come from the `name:` fields in our GitHub Actions workflow files.
 ## Future Enhancements
 
 Consider adding later:
+
 - **Required reviewers** for specific file paths
 - **Auto-merge** for dependency updates (dependabot)
 - **Draft PR support** for work-in-progress changes
