@@ -57,6 +57,7 @@ src/components/
 6. **✅ Individual component exports** - Tree-shaking optimization
 7. **✅ TypeScript interfaces** - Component configuration and accessibility options
 8. **✅ Comprehensive test suite** - Vitest with jsdom, accessibility utilities testing
+9. **✅ Signals system** - TC39-aligned reactive state management with web component integration
 
 ### Key Features Implemented
 
@@ -70,6 +71,11 @@ src/components/
   - `KeyboardNav` - Arrow key navigation patterns
 - **Style System**: CSS custom properties, design tokens, adoptable stylesheets
 - **Component Registry**: Explicit registration with dependency resolution
+- **Signals System**: TC39-aligned reactive primitives (signal, computed, effect) with:
+  - Automatic dependency tracking and batched updates
+  - Web component integration via `withSignals` mixin
+  - Reactive DOM attribute binding with `SignalAttribute` classes
+  - Circular dependency detection and proper cleanup lifecycle
 
 ### Test Coverage
 
@@ -138,7 +144,7 @@ src/components/
 ```
 src/
 ├── base/                   # BaseComponent, ShadowComponent
-├── utilities/             # Accessibility, style helpers, registry
+├── utilities/             # Accessibility, style helpers, registry, signals
 ├── components/            # UI components organized atomically
 │   ├── primitives/       # Basic building blocks
 │   ├── molecules/        # Component combinations  
