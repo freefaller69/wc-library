@@ -48,6 +48,7 @@ This is a Vite-based TypeScript web component library project with the following
 **IMPORTANT**: All development work must be done on feature branches with Pull Requests unless explicitly specified otherwise.
 
 ### Standard Workflow
+
 1. Create feature branch from main: `git checkout -b feature/your-feature-name`
 2. Make changes and test thoroughly
 3. Run quality checks: `pnpm test:run && pnpm build`
@@ -55,6 +56,7 @@ This is a Vite-based TypeScript web component library project with the following
 5. Merge only after review and approval
 
 ### Direct main commits are ONLY allowed for:
+
 - Emergency hotfixes (with immediate follow-up PR)
 - Repository maintenance tasks explicitly agreed upon
 - When specifically requested by project maintainer
