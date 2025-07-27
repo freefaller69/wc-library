@@ -20,7 +20,7 @@ export interface ShadowDOMMixinInterface {
 export function ShadowDOMMixin<TBase extends Constructor<HTMLElement>>(
   Base: TBase
 ): TBase & Constructor<ShadowDOMMixinInterface> {
-  return class ShadowDOMMixin extends Base implements ShadowDOMMixinInterface {
+  abstract class ShadowDOMMixin extends Base implements ShadowDOMMixinInterface {
     declare shadowRoot: ShadowRoot;
     private _shadowSetup = false;
 
@@ -54,5 +54,7 @@ export function ShadowDOMMixin<TBase extends Constructor<HTMLElement>>(
     shadowQueryAll<T extends Element = Element>(selector: string): NodeListOf<T> {
       return this.shadowRoot.querySelectorAll<T>(selector);
     }
-  };
+  }
+
+  return ShadowDOMMixin;
 }

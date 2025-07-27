@@ -2,8 +2,6 @@
  * StyleManagerMixin - Provides CSS and stylesheet management
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-
 import type { Constructor } from '../utilities/mixin-composer.js';
 
 // Mixin interface that defines style management features
@@ -19,7 +17,7 @@ export interface StyleManagerMixinInterface {
 export function StyleManagerMixin<TBase extends Constructor<HTMLElement>>(
   Base: TBase
 ): TBase & Constructor<StyleManagerMixinInterface> {
-  return class StyleManagerMixin extends Base implements StyleManagerMixinInterface {
+  abstract class StyleManagerMixin extends Base implements StyleManagerMixinInterface {
     declare shadowRoot: ShadowRoot;
 
     /**
@@ -54,8 +52,10 @@ export function StyleManagerMixin<TBase extends Constructor<HTMLElement>>(
         style.textContent = Array.from(stylesheet.cssRules)
           .map((rule) => rule.cssText)
           .join('\n');
-        this.shadowRoot.appendChild(style);
+        (this.shadowRoot as ShadowRoot).appendChild(style);
       }
     }
-  };
+  }
+
+  return StyleManagerMixin;
 }

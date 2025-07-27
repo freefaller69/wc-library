@@ -18,7 +18,7 @@ export interface UpdateManagerMixinInterface {
 export function UpdateManagerMixin<TBase extends Constructor<HTMLElement>>(
   Base: TBase
 ): TBase & Constructor<UpdateManagerMixinInterface> {
-  return class UpdateManagerMixin extends Base implements UpdateManagerMixinInterface {
+  abstract class UpdateManagerMixin extends Base implements UpdateManagerMixinInterface {
     private _updateRequested = false;
     private _updatePromise: Promise<void> | null = null;
 
@@ -71,5 +71,7 @@ export function UpdateManagerMixin<TBase extends Constructor<HTMLElement>>(
      * Render method - can be implemented by components
      */
     render?(): void;
-  };
+  }
+
+  return UpdateManagerMixin;
 }

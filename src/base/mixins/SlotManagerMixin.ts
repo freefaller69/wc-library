@@ -19,11 +19,12 @@ export interface SlotManagerMixinInterface {
 export function SlotManagerMixin<TBase extends Constructor<HTMLElement>>(
   Base: TBase
 ): TBase & Constructor<SlotManagerMixinInterface> {
-  return class SlotManagerMixin extends Base implements SlotManagerMixinInterface {
+  abstract class SlotManagerMixin extends Base implements SlotManagerMixinInterface {
     declare shadowRoot: ShadowRoot;
     private _slotSetup = false;
 
     connectedCallback() {
+      // @ts-expect-error - super might have connectedCallback
       super.connectedCallback?.();
       this.setupSlotManagement();
     }
@@ -59,6 +60,7 @@ export function SlotManagerMixin<TBase extends Constructor<HTMLElement>>(
     onSlotChange?(slot: HTMLSlotElement, assignedNodes: Node[]): void;
 
     disconnectedCallback() {
+      // @ts-expect-error - super might have disconnectedCallback
       super.disconnectedCallback?.();
 
       // Clean up slot listeners
@@ -70,5 +72,7 @@ export function SlotManagerMixin<TBase extends Constructor<HTMLElement>>(
       }
       this._slotSetup = false;
     }
-  };
+  }
+
+  return SlotManagerMixin;
 }
