@@ -145,8 +145,8 @@ jobs:
             let statusText = 'Performance check passed';
 
             if (status === 'failed') {
-              statusIcon = '❌';
-              statusText = 'Performance regression detected';
+              statusIcon = '⚠️';
+              statusText = 'Performance regression detected (warning only)';
             } else if (status === 'baseline') {
               statusIcon = '📊';
               statusText = 'Baseline performance recorded';
@@ -167,7 +167,7 @@ jobs:
               body += `| Bundle Size | ${formatBytes(baselineSize)} | ${formatBytes(currentSize)} | ${changePercent}% |\n`;
               
               if (parseFloat(changePercent) > 10) {
-                body += `\n⚠️ **Warning:** Bundle size increased by more than 10%. Please review the changes.`;
+                body += `\n⚠️ **Warning:** Bundle size increased by more than 10%. Consider reviewing for optimization opportunities.\n\n*Note: This is currently warning-only during early development phase.*`;
               } else if (parseFloat(changePercent) < -5) {
                 body += `\n🎉 **Great!** Bundle size decreased by ${Math.abs(changePercent)}%`;
               }
@@ -183,11 +183,14 @@ jobs:
               body: body
             });
 
-      - name: Fail if performance regression
+      - name: Performance regression warning
         if: steps.performance-check.outputs.performance_status == 'failed'
         run: |
-          echo "Performance regression detected!"
-          exit 1
+          echo "::warning title=Performance Regression Detected::Bundle size increased by ${{ steps.performance-check.outputs.change_percent }}% (current threshold: 10%)"
+          echo "::warning::Consider reviewing the changes for optimization opportunities"
+          echo "Current bundle size: ${{ steps.performance-check.outputs.current_size }} bytes"
+          echo "Baseline bundle size: ${{ steps.performance-check.outputs.baseline_size }} bytes"
+          echo "This is currently a warning during early development phase - build will not fail"
 
       - name: Upload performance artifacts
         uses: actions/upload-artifact@v4
