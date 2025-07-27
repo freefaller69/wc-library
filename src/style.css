@@ -12,6 +12,7 @@
   font-size: var(--ui-font-size-base);
   line-height: var(--ui-line-height-normal);
   color: var(--ui-color-text-primary);
+  background-color: var(--ui-color-background-primary);
 }
 
 .ui-reset *,
