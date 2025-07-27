@@ -1,10 +1,12 @@
 /**
- * AttributeManagerMixin - Provides attribute handling and CSS class generation
+ * AttributeManagerMixin - Provides attribute handling and parsing
+ *
+ * Focused on attribute management only. Does not handle CSS classes or styling.
+ * Use with ClassManagerMixin if utility class generation is needed.
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any */
 
-import { ClassUtils } from '../../utilities/style-helpers.js';
 import type { Constructor } from '../utilities/mixin-composer.js';
 import type { ComponentConfig } from '../../types/component.js';
 
@@ -14,23 +16,24 @@ export interface AttributeManagerMixinInterface {
   getTypedAttribute(name: string, type: 'boolean'): boolean;
   getTypedAttribute(name: string, type: 'number'): number | null;
   setTypedAttribute(name: string, value: string | number | boolean | null): void;
-  updateComponentClasses(): void;
-  getStateClasses(): Record<string, boolean>;
-  requestUpdate(): void;
 }
 
 /**
- * Attribute manager mixin that adds typed attribute handling and CSS class management
+ * Attribute manager mixin that adds typed attribute handling
  */
 export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(
   Base: TBase
 ): TBase & Constructor<AttributeManagerMixinInterface> {
-  return class AttributeManagerMixin extends Base implements AttributeManagerMixinInterface {
-    private staticAttributeCache: Map<string, string> = new Map();
+  abstract class AttributeManagerMixin extends Base implements AttributeManagerMixinInterface {
     protected config!: ComponentConfig;
 
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
-      super.attributeChangedCallback?.(name, oldValue, newValue);
+      // Call parent's attributeChangedCallback if it exists (for components that extend CoreCustomElement)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const parentProto = Object.getPrototypeOf(Object.getPrototypeOf(this));
+      if (parentProto && typeof parentProto.attributeChangedCallback === 'function') {
+        parentProto.attributeChangedCallback.call(this, name, oldValue, newValue);
+      }
 
       if (oldValue === newValue) return;
 
@@ -46,12 +49,19 @@ export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(
      * Handles static attribute changes (variants, etc.)
      */
     private handleStaticAttributeChange(name: string, value: string | null): void {
-      if (value) {
-        this.staticAttributeCache.set(name, value);
-      } else {
-        this.staticAttributeCache.delete(name);
+      // Notify ClassManagerMixin if present
+      if (
+        'updateStaticAttributeCache' in this &&
+        typeof (this as any).updateStaticAttributeCache === 'function'
+      ) {
+        (this as any).updateStaticAttributeCache(name, value);
+        if (
+          'updateComponentClasses' in this &&
+          typeof (this as any).updateComponentClasses === 'function'
+        ) {
+          (this as any).updateComponentClasses();
+        }
       }
-      this.updateComponentClasses();
     }
 
     /**
@@ -62,42 +72,9 @@ export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(
       _oldValue: string | null,
       _newValue: string | null
     ): void {
-      // Override in subclasses for specific dynamic attribute handling
-      this.requestUpdate();
-    }
-
-    /**
-     * Updates component CSS classes based on attributes
-     */
-    updateComponentClasses(): void {
-      const baseClass = this.config.tagName;
-      const modifierClasses: Record<string, boolean> = {};
-
-      // Add modifier classes based on static attributes
-      this.staticAttributeCache.forEach((value, name) => {
-        modifierClasses[`${baseClass}--${name}-${value}`] = true;
-      });
-
-      // Add state classes based on dynamic attributes
-      const stateClasses = this.getStateClasses();
-      Object.assign(modifierClasses, stateClasses);
-
-      this.className = ClassUtils.conditional(`ui-reset ${baseClass}`, modifierClasses);
-    }
-
-    /**
-     * Requests a component update (can be overridden for efficient updates)
-     */
-    requestUpdate(): void {
-      // Check if connected using duck typing since we might not have access to isConnected
-      const isConnected = 'isConnected' in this ? (this as any).isConnected : this.isConnected;
-
-      if (isConnected) {
-        this.updateComponentClasses();
-        // Call render if it exists
-        if ('render' in this && typeof (this as any).render === 'function') {
-          (this as any).render();
-        }
+      // Notify UpdateManagerMixin if present
+      if ('requestUpdate' in this && typeof (this as any).requestUpdate === 'function') {
+        (this as any).requestUpdate();
       }
     }
 
@@ -107,7 +84,7 @@ export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(
     getTypedAttribute(name: string): string | null;
     getTypedAttribute(name: string, type: 'boolean'): boolean;
     getTypedAttribute(name: string, type: 'number'): number | null;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     getTypedAttribute(name: string, type?: 'string' | 'boolean' | 'number'): any {
       const value = this.getAttribute(name);
 
@@ -143,12 +120,7 @@ export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(
         this.setAttribute(name, String(value));
       }
     }
+  }
 
-    /**
-     * Gets state classes - must be implemented by component
-     */
-    getStateClasses(): Record<string, boolean> {
-      throw new Error('getStateClasses must be implemented by the component');
-    }
-  };
+  return AttributeManagerMixin;
 }

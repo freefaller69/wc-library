@@ -1,6 +1,8 @@
 /**
- * AttributeComponent - Component with attribute management and updates
- * For components that need sophisticated attribute handling but not accessibility
+ * AttributeComponent - Component with attribute management and updates only
+ * For components that need attribute handling but NOT utility class generation
+ *
+ * Use AttributeClassComponent if you need utility class generation.
  */
 
 import { CoreCustomElement } from '../CoreCustomElement.js';
@@ -15,9 +17,4 @@ export abstract class AttributeComponent extends AttributeBase {
   constructor(config: ComponentConfig) {
     super(config);
   }
-
-  /**
-   * Must be implemented by subclasses to define state classes
-   */
-  abstract getStateClasses(): Record<string, boolean>;
 }
