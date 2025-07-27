@@ -19,7 +19,7 @@ export interface StyleManagerMixinInterface {
 export function StyleManagerMixin<TBase extends Constructor<HTMLElement>>(
   Base: TBase
 ): TBase & Constructor<StyleManagerMixinInterface> {
-  return class StyleManagerMixin extends Base implements StyleManagerMixinInterface {
+  abstract class StyleManagerMixin extends Base implements StyleManagerMixinInterface {
     declare shadowRoot: ShadowRoot;
 
     /**
@@ -54,8 +54,10 @@ export function StyleManagerMixin<TBase extends Constructor<HTMLElement>>(
         style.textContent = Array.from(stylesheet.cssRules)
           .map((rule) => rule.cssText)
           .join('\n');
-        this.shadowRoot.appendChild(style);
+        this.shadowRoot?.appendChild(style);
       }
     }
-  };
+  }
+
+  return StyleManagerMixin;
 }

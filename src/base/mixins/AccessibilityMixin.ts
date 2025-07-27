@@ -24,10 +24,11 @@ export interface AccessibilityMixinInterface {
 export function AccessibilityMixin<TBase extends Constructor<HTMLElement>>(
   Base: TBase
 ): TBase & Constructor<AccessibilityMixinInterface> {
-  return class AccessibilityMixin extends Base implements AccessibilityMixinInterface {
+  abstract class AccessibilityMixin extends Base implements AccessibilityMixinInterface {
     private _accessibilitySetup = false;
 
     connectedCallback() {
+      // @ts-ignore - super might have connectedCallback
       super.connectedCallback?.();
       this.setupAccessibility();
     }
@@ -104,8 +105,8 @@ export function AccessibilityMixin<TBase extends Constructor<HTMLElement>>(
     /**
      * Gets accessibility configuration - must be implemented by component
      */
-    getAccessibilityConfig(): AccessibilityOptions {
-      throw new Error('getAccessibilityConfig must be implemented by the component');
-    }
-  };
+    abstract getAccessibilityConfig(): AccessibilityOptions;
+  }
+
+  return AccessibilityMixin;
 }

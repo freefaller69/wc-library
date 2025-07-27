@@ -16,7 +16,7 @@ export interface EventManagerMixinInterface {
 export function EventManagerMixin<TBase extends Constructor<HTMLElement>>(
   Base: TBase
 ): TBase & Constructor<EventManagerMixinInterface> {
-  return class EventManagerMixin extends Base implements EventManagerMixinInterface {
+  abstract class EventManagerMixin extends Base implements EventManagerMixinInterface {
     protected config!: ComponentConfig;
 
     /**
@@ -33,5 +33,7 @@ export function EventManagerMixin<TBase extends Constructor<HTMLElement>>(
 
       return this.dispatchEvent(event);
     }
-  };
+  }
+
+  return EventManagerMixin;
 }
