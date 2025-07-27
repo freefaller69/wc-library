@@ -5,9 +5,28 @@
 /* Import comprehensive design tokens */
 @import './styles/tokens.css';
 
-/* Component Reset Styles */
-.ui-reset {
+/* Modern CSS Reset - Based on best practices for contemporary web development */
+
+/* Reset all elements except those that should maintain browser defaults */
+*:where(:not(html, iframe, canvas, img, svg, video, audio):not(svg *, symbol *)) {
+  all: unset;
+  display: revert;
+}
+
+/* Consistent box-sizing for all elements */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+}
+
+/* Prevent font size inflation on mobile devices */
+html {
+  -moz-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+
+  /* Set base design system styles on html element */
   font-family: var(--ui-font-family-sans);
   font-size: var(--ui-font-size-base);
   line-height: var(--ui-line-height-normal);
@@ -15,20 +34,67 @@
   background-color: var(--ui-color-background-primary);
 }
 
-.ui-reset *,
-.ui-reset *::before,
-.ui-reset *::after {
-  box-sizing: border-box;
+/* Restore cursor behavior for interactive elements */
+a,
+button {
+  cursor: revert;
 }
 
-/* Focus Management - Using native :focus-visible pseudo-selector */
-.ui-reset:focus-visible {
+/* Remove list styling but keep semantics */
+ol,
+ul,
+menu,
+summary {
+  list-style: none;
+}
+
+/* Restore counter behavior for ordered lists */
+ol {
+  counter-reset: revert;
+}
+
+/* Responsive images */
+img {
+  max-inline-size: 100%;
+  max-block-size: 100%;
+}
+
+/* Consistent table behavior */
+table {
+  border-collapse: collapse;
+}
+
+/* Restore text selection for form inputs */
+input,
+textarea {
+  -webkit-user-select: auto;
+  user-select: auto;
+}
+
+/* Restore whitespace behavior for textarea */
+textarea {
+  white-space: revert;
+}
+
+/* Restore meter appearance */
+meter {
+  -webkit-appearance: revert;
+  appearance: revert;
+}
+
+/* Reset placeholder color */
+::placeholder {
+  color: unset;
+}
+
+/* Focus Management - Using modern :focus-visible for keyboard navigation */
+:focus-visible {
   outline: var(--ui-shadow-focus);
   outline-offset: 2px;
 }
 
-/* Remove default focus outline when not using keyboard navigation */
-.ui-reset:focus:not(:focus-visible) {
+/* Remove focus outline for mouse/touch interactions */
+:focus:not(:focus-visible) {
   outline: none;
 }
 

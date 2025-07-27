@@ -134,8 +134,7 @@ describe('UIHeading - Minimal Implementation', () => {
       document.body.appendChild(element);
       element.connectedCallback();
 
-      // Should only have the base classes from CoreCustomElement
-      expect(element.classList.contains('ui-reset')).toBe(true);
+      // Should only have the base attributes from CoreCustomElement
       expect(element.getAttribute('data-ui-component')).toBe('ui-heading');
 
       // Should NOT have utility classes

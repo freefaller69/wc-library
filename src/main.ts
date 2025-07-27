@@ -9,11 +9,11 @@ import './components/primitives/ui-heading/ui-heading.js';
 
 // Initialize the development environment
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div class="ui-reset">
+  <main>
     <h1>Web Component Library</h1>
     <p>Development playground for testing components</p>
     
-    <div id="component-demo">
+    <section id="component-demo">
       <h2>Minimal UI-Heading Demo</h2>
       
       <!-- Basic headings with semantic levels -->
@@ -31,8 +31,8 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
       <ui-heading level="7">This will throw an error!</ui-heading>
       <ui-heading level="invalid">This will also throw an error!</ui-heading>
       -->
-    </div>
-  </div>
+    </section>
+  </main>
 `;
 
 // Development: Test component functionality
