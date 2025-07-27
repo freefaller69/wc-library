@@ -3,13 +3,12 @@
  * For interactive elements like buttons that don't need attribute management
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-
 import { CoreCustomElement } from '../CoreCustomElement.js';
 import { compose } from '../utilities/mixin-composer.js';
 import { AccessibilityMixin } from '../mixins/AccessibilityMixin.js';
 import { EventManagerMixin } from '../mixins/EventManagerMixin.js';
 import { UpdateManagerMixin } from '../mixins/UpdateManagerMixin.js';
+import type { UpdateManagerMixinInterface } from '../mixins/UpdateManagerMixin.js';
 import type { ComponentConfig, AccessibilityOptions } from '../../types/component.js';
 
 const InteractiveBase = compose(
@@ -19,7 +18,14 @@ const InteractiveBase = compose(
   UpdateManagerMixin
 );
 
-export abstract class InteractiveComponent extends InteractiveBase {
+export abstract class InteractiveComponent
+  extends InteractiveBase
+  implements UpdateManagerMixinInterface
+{
+  // Declare methods from UpdateManagerMixin
+  declare requestUpdate: () => void;
+  declare render?: () => void;
+
   constructor(config: ComponentConfig) {
     super(config);
   }

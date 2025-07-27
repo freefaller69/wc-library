@@ -3,14 +3,14 @@
  * For components that need Shadow DOM encapsulation
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-
 import { CoreCustomElement } from '../CoreCustomElement.js';
 import { compose } from '../utilities/mixin-composer.js';
 import { ShadowDOMMixin } from '../mixins/ShadowDOMMixin.js';
 import { StyleManagerMixin } from '../mixins/StyleManagerMixin.js';
 import { SlotManagerMixin } from '../mixins/SlotManagerMixin.js';
 import { UpdateManagerMixin } from '../mixins/UpdateManagerMixin.js';
+import type { ShadowDOMMixinInterface } from '../mixins/ShadowDOMMixin.js';
+import type { UpdateManagerMixinInterface } from '../mixins/UpdateManagerMixin.js';
 import type { ComponentConfig } from '../../types/component.js';
 
 const ShadowBase = compose(
@@ -21,7 +21,20 @@ const ShadowBase = compose(
   UpdateManagerMixin
 );
 
-export abstract class ShadowComponent extends ShadowBase {
+export abstract class ShadowComponent
+  extends ShadowBase
+  implements ShadowDOMMixinInterface, UpdateManagerMixinInterface
+{
+  // Declare methods from ShadowDOMMixin
+  declare shadowRoot: ShadowRoot;
+  declare shadowQuery: <T extends Element = Element>(selector: string) => T | null;
+  declare shadowQueryAll: <T extends Element = Element>(selector: string) => NodeListOf<T>;
+  declare setupShadowDOM: (options?: ShadowRootInit) => void;
+
+  // Declare methods from UpdateManagerMixin
+  declare requestUpdate: () => void;
+  declare render?: () => void;
+
   constructor(config: ComponentConfig, shadowOptions?: ShadowRootInit) {
     super(config);
     this.setupShadowDOM(shadowOptions);
