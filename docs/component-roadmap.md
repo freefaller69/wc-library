@@ -529,7 +529,7 @@ BaseComponent
     ├── ui-link
     ├── ui-progress
     ├── ui-heading
-    ├── ui-paragraph  
+    ├── ui-paragraph
     ├── ui-text
     ├── ui-image
     ├── ui-picture
