@@ -18,15 +18,29 @@ This document captures key learnings, best practices, and patterns discovered du
 
 ### ✅ **What Worked Well**
 
-#### **Mixin Architecture Over Inheritance**
-- **Use CoreCustomElement + mixins** instead of deprecated BaseComponent
-- **Separation of concerns**: AttributeManagerMixin vs ClassManagerMixin
-- **Composable functionality**: Pick only needed mixins per component
+#### **Composite Selection Strategy**
+- **Evaluate existing composites first** before building from individual mixins
+- **Decision hierarchy**: 
+  1. Does an existing composite fit? → Use it
+  2. Need minor modifications? → Extend the composite
+  3. Completely unique needs? → Build from CoreCustomElement + individual mixins
+- **Separation of concerns**: AttributeManagerMixin vs ClassManagerMixin when building custom
+
+#### **Available Composites**
+- **AttributeComponent**: For components with attribute handling (CSS custom properties approach)
+- **ShadowComponent**: For components needing Shadow DOM encapsulation  
+- **InteractiveComponent**: For interactive elements with accessibility and events
+- **FullComponent**: Complete component with all mixins (use sparingly)
 
 ```typescript
-// ✅ Good: Modern composable approach
+// ✅ Best: Use existing composite when it fits
+export class UIText extends AttributeComponent {
+  // Inherits attribute handling, clean implementation
+}
+
+// ✅ Good: Build from CoreCustomElement when composites don't fit
 export class UIHeading extends CoreCustomElement {
-  // Clean, focused implementation
+  // Clean, focused implementation for unique needs
 }
 
 // ❌ Avoid: Deprecated inheritance
@@ -340,7 +354,7 @@ it('should throw error for invalid levels', () => {
 
 ### ✅ **Architecture Dos**
 
-1. **Use CoreCustomElement + mixins** for all new components
+1. **Evaluate existing composites first** - Check if AttributeComponent, ShadowComponent, InteractiveComponent, or FullComponent meets your needs before building with individual mixins. All composites are built on CoreCustomElement + mixins and provide common patterns
 2. **Add `abstract` keyword** to all mixin classes for TypeScript
 3. **Use explicit interface declarations** in composite components with `declare` statements
 4. **Separate attribute management** from CSS class generation (AttributeManagerMixin vs ClassManagerMixin)
@@ -412,8 +426,8 @@ it('should throw error for invalid levels', () => {
 ## Future Considerations
 
 ### **Architecture Evolution**
-- **Component base classes** may need refinement as more components are added
-- **Mixin composition patterns** will evolve with real-world usage
+- **Existing composites** (AttributeComponent, ShadowComponent, etc.) should cover most use cases; evaluate gaps before creating new patterns
+- **Mixin composition patterns** will evolve with real-world usage, but prefer extending existing composites
 - **TypeScript configuration** may need updates for new component patterns
 
 ### **Performance Strategy**
