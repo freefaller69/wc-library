@@ -15,6 +15,15 @@ This sprint focuses on building essential primitives and a flexible card foundat
 #### ui-heading
 - **Extends**: `BaseComponent` (light DOM for maximum styling flexibility)
 - **Purpose**: Semantic headings with design system integration
+- **File Structure**:
+  ```
+  src/components/primitives/ui-heading/
+  ├── ui-heading.ts          # Component logic and lifecycle
+  ├── ui-heading.html        # Minimal template with slot
+  ├── ui-heading.css         # Typography variants and responsive styles
+  ├── ui-heading.test.ts     # Comprehensive test suite
+  └── index.ts               # Public exports
+  ```
 - **Variants**: `h1`, `h2`, `h3`, `h4`, `h5`, `h6`, `display`, `title`, `subtitle`
 - **Attributes**: 
   - `level` (1-6) - Semantic heading level
@@ -28,6 +37,15 @@ This sprint focuses on building essential primitives and a flexible card foundat
 #### ui-text  
 - **Extends**: `BaseComponent` (light DOM for inline flexibility)
 - **Purpose**: Flexible text wrapper for paragraphs and inline content
+- **File Structure**:
+  ```
+  src/components/primitives/ui-text/
+  ├── ui-text.ts             # Component logic and semantic element handling
+  ├── ui-text.html           # Slot-based template for content
+  ├── ui-text.css            # Text variants and truncation styles
+  ├── ui-text.test.ts        # Comprehensive test coverage
+  └── index.ts               # Public exports and types
+  ```
 - **Variants**: `body`, `caption`, `emphasis`, `strong`, `code`
 - **Attributes**:
   - `variant` - Text style variant
@@ -41,6 +59,15 @@ This sprint focuses on building essential primitives and a flexible card foundat
 #### ui-button (Enhanced)
 - **Extends**: `InteractiveAttributeComponent` (build on existing SimpleButton)
 - **Purpose**: Primary interactive element for cards
+- **File Structure**:
+  ```
+  src/components/primitives/ui-button/
+  ├── ui-button.ts           # Interactive component logic and event handling
+  ├── ui-button.html         # Button template with icon slots
+  ├── ui-button.css          # Variants, sizes, states, and animations
+  ├── ui-button.test.ts      # Interaction and accessibility tests
+  └── index.ts               # Component exports and types
+  ```
 - **Variants**: `primary`, `secondary`, `ghost`, `danger`, `success`
 - **Sizes**: `small`, `medium`, `large`
 - **States**: `disabled`, `loading`, `pressed`

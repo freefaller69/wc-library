@@ -151,6 +151,12 @@ src/
 ├── utilities/             # Accessibility, style helpers, registry, signals
 ├── components/            # UI components organized atomically
 │   ├── primitives/       # Basic building blocks
+│   │   └── ui-component/ # Each component in its own directory
+│   │       ├── ui-component.ts      # Component logic
+│   │       ├── ui-component.html    # Template structure
+│   │       ├── ui-component.css     # Component styles
+│   │       ├── ui-component.test.ts # Unit tests
+│   │       └── index.ts             # Public exports
 │   ├── molecules/        # Component combinations
 │   └── organisms/        # Complex component groups
 ├── mixins/               # Reusable behavior mixins
@@ -158,5 +164,16 @@ src/
 ├── types/                # TypeScript interfaces
 └── test/                 # Test utilities and base tests
 ```
+
+## Component Architecture
+
+This project follows an **Angular-inspired component structure** with separation of concerns:
+
+- **Logic** (`.ts`) - Component class, lifecycle, event handling
+- **Template** (`.html`) - HTML structure and slots
+- **Styles** (`.css`) - Component-specific CSS and variants
+- **Tests** (`.test.ts`) - Comprehensive test coverage
+
+See [Component File Structure Guidelines](./component-file-structure.md) for detailed information.
 
 This implementation plan provides a solid foundation for building a comprehensive, accessible component library that can scale efficiently while maintaining code quality and developer experience.
