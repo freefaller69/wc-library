@@ -3,6 +3,7 @@
 This document captures key learnings, best practices, and patterns discovered during the development of our first component (ui-heading) in the web component library.
 
 ## Table of Contents
+
 - [Architecture Decisions](#architecture-decisions)
 - [TypeScript & Build System](#typescript--build-system)
 - [Component Design Philosophy](#component-design-philosophy)
@@ -19,16 +20,18 @@ This document captures key learnings, best practices, and patterns discovered du
 ### ✅ **What Worked Well**
 
 #### **Composite Selection Strategy**
+
 - **Evaluate existing composites first** before building from individual mixins
-- **Decision hierarchy**: 
+- **Decision hierarchy**:
   1. Does an existing composite fit? → Use it
   2. Need minor modifications? → Extend the composite
   3. Completely unique needs? → Build from CoreCustomElement + individual mixins
 - **Separation of concerns**: AttributeManagerMixin vs ClassManagerMixin when building custom
 
 #### **Available Composites**
+
 - **AttributeComponent**: For components with attribute handling (CSS custom properties approach)
-- **ShadowComponent**: For components needing Shadow DOM encapsulation  
+- **ShadowComponent**: For components needing Shadow DOM encapsulation
 - **InteractiveComponent**: For interactive elements with accessibility and events
 - **FullComponent**: Complete component with all mixins (use sparingly)
 
@@ -50,6 +53,7 @@ export class UIHeading extends BaseComponent {
 ```
 
 #### **Abstract Keyword for Mixins**
+
 - **Always use `abstract class`** in mixin functions for TypeScript compliance
 - **Proper return statements** from mixin factory functions
 
@@ -59,7 +63,7 @@ export function SomeMixin<TBase extends Constructor<HTMLElement>>(Base: TBase) {
   abstract class SomeMixin extends Base implements SomeMixinInterface {
     // implementation
   }
-  
+
   return SomeMixin; // ✅ Explicit return
 }
 ```
@@ -67,20 +71,21 @@ export function SomeMixin<TBase extends Constructor<HTMLElement>>(Base: TBase) {
 ### ⚠️ **Challenges Overcome**
 
 #### **TypeScript Composite Component Issues**
+
 - **Problem**: Composite components couldn't see mixin methods
 - **Solution**: Add explicit interface declarations with `declare` statements
 
 ```typescript
 // ✅ Required for TypeScript in composite components
-export abstract class ShadowComponent 
-  extends ShadowBase 
-  implements ShadowDOMMixinInterface, UpdateManagerMixinInterface 
+export abstract class ShadowComponent
+  extends ShadowBase
+  implements ShadowDOMMixinInterface, UpdateManagerMixinInterface
 {
   // Declare methods from ShadowDOMMixin
   declare shadowRoot: ShadowRoot;
   declare setupShadowDOM: (options?: ShadowRootInit) => void;
-  
-  // Declare methods from UpdateManagerMixin  
+
+  // Declare methods from UpdateManagerMixin
   declare requestUpdate: () => void;
 }
 ```
@@ -92,11 +97,13 @@ export abstract class ShadowComponent
 ### ✅ **Build Pipeline Improvements**
 
 #### **Separate Build Commands**
+
 - **`pnpm build`**: Full TypeScript + Vite build for development
 - **`pnpm build:no-typecheck`**: Vite-only build for CI performance testing
 - **Reason**: Performance CI needs to test actual components, not just type-check
 
 #### **ESLint Configuration**
+
 - **Use `@ts-expect-error`** instead of `@ts-ignore` per ESLint rules
 - **Remove unused disable directives** during refactoring
 - **Prettier formatting**: Long class declarations need proper line breaks
@@ -118,6 +125,7 @@ export abstract class ShadowComponent
 ### ⚠️ **TypeScript Gotchas**
 
 #### **Mixin Callback Handling**
+
 - **Problem**: `super.connectedCallback?.()` caused type errors
 - **Solution**: Use optional chaining with proper type suppression
 
@@ -137,11 +145,13 @@ connectedCallback() {
 ### ✅ **"Smart Pass-Through" Approach**
 
 #### **Minimal Value Proposition**
+
 - **Principle**: Provide just enough benefit to justify existence
 - **Question**: "What value does this provide over raw HTML?"
 - **Answer**: Design system consistency + developer experience + type safety
 
 #### **Static vs Dynamic Attributes**
+
 - **Headings use static attributes** - set once, don't observe changes
 - **Level validation happens once** on connect, not on every change
 - **Reasoning**: Headings rarely change level dynamically
@@ -161,6 +171,7 @@ static get observedAttributes(): string[] {
 ```
 
 #### **Strict Accessibility Validation**
+
 - **Fail fast with clear errors** for accessibility violations
 - **Throw meaningful error messages** that guide developers
 
@@ -169,8 +180,8 @@ static get observedAttributes(): string[] {
 if (!isValid) {
   throw new Error(
     `UIHeading: Invalid level "${level}". ` +
-    `Level must be a number between 1 and 6 for proper accessibility. ` +
-    `Current level would break screen reader navigation.`
+      `Level must be a number between 1 and 6 for proper accessibility. ` +
+      `Current level would break screen reader navigation.`
   );
 }
 ```
@@ -178,6 +189,7 @@ if (!isValid) {
 ### ⚠️ **Complexity Traps Avoided**
 
 #### **No Manual ARIA Management**
+
 - **Principle**: If you need `role="heading"`, something's wrong
 - **Solution**: Render proper semantic HTML elements (h1-h6)
 - **Result**: Browser handles accessibility automatically
@@ -200,6 +212,7 @@ this.setAttribute('aria-level', level);
 ### ✅ **CSS Custom Properties Strategy**
 
 #### **Attribute-Driven Styling**
+
 - **Use attribute selectors** instead of utility classes
 - **CSS custom properties** for easy theming
 - **Fallback values** for graceful degradation
@@ -210,7 +223,7 @@ ui-heading {
   font-size: var(--ui-heading-font-size, var(--ui-heading-h2-size, 2rem));
 }
 
-ui-heading[level="1"] {
+ui-heading[level='1'] {
   font-size: var(--ui-heading-h1-size, 2.5rem);
 }
 
@@ -221,6 +234,7 @@ ui-heading[level="1"] {
 ```
 
 #### **Theme Integration**
+
 - **Design tokens in separate file** (`styles/tokens.css`)
 - **Automatic dark mode** with `prefers-color-scheme`
 - **Consistent naming** convention: `--ui-component-property-variant`
@@ -228,6 +242,7 @@ ui-heading[level="1"] {
 ### ⚠️ **Dark Mode Issues Discovered**
 
 #### **Background Color Missing**
+
 - **Problem**: Dark mode text appeared on white background
 - **Root cause**: `.ui-reset` only set text color, not background
 - **Solution**: Add `background-color: var(--ui-color-background-primary)`
@@ -247,6 +262,7 @@ ui-heading[level="1"] {
 ### ✅ **Comprehensive Test Coverage**
 
 #### **Test Categories Implemented**
+
 1. **Validation Tests**: Invalid level handling, error messages
 2. **Rendering Tests**: Correct HTML element creation
 3. **Accessibility Tests**: Semantic markup verification
@@ -254,17 +270,18 @@ ui-heading[level="1"] {
 5. **Integration Tests**: CSS class application, attribute handling
 
 #### **Test Structure Pattern**
+
 ```typescript
 // ✅ Clear test organization
 describe('UIHeading Component', () => {
   describe('Level Validation', () => {
     // Validation-specific tests
   });
-  
+
   describe('Rendering Behavior', () => {
     // DOM rendering tests
   });
-  
+
   describe('Accessibility', () => {
     // A11y verification tests
   });
@@ -272,6 +289,7 @@ describe('UIHeading Component', () => {
 ```
 
 #### **JSDOM Limitations Handled**
+
 - **Custom element registration** issues in test environment
 - **Simplified mocks** for DOM APIs that don't work in JSDOM
 - **Focus on logic testing** rather than full browser behavior
@@ -279,12 +297,13 @@ describe('UIHeading Component', () => {
 ### ⚠️ **Testing Gotchas**
 
 #### **Error Testing Patterns**
+
 ```typescript
 // ✅ Proper error testing approach
 it('should throw error for invalid levels', () => {
   const element = document.createElement('ui-heading');
   element.setAttribute('level', '7');
-  
+
   expect(() => {
     document.body.appendChild(element); // Triggers connectedCallback
   }).toThrow(/Invalid level "7"/);
@@ -298,6 +317,7 @@ it('should throw error for invalid levels', () => {
 ### ✅ **Performance Monitoring Setup**
 
 #### **Warning-Only During Development**
+
 - **Problem**: 10% regression threshold too strict for early development
 - **Solution**: Convert failures to warnings during component buildout phase
 - **Benefits**: Data collection continues, builds don't block, team awareness maintained
@@ -311,6 +331,7 @@ it('should throw error for invalid levels', () => {
 ```
 
 #### **Bundle Analysis Issues**
+
 - **Problem**: Benchmark script only checked `/dist` root, missed `/dist/assets`
 - **Impact**: Underreported actual bundle sizes
 - **Note**: Framework for future improvement identified
@@ -318,6 +339,7 @@ it('should throw error for invalid levels', () => {
 ### ⚠️ **CI/CD Lessons**
 
 #### **Performance Baseline Strategy**
+
 - **Early development**: Use warnings, collect data
 - **Stable phase**: Switch to strict thresholds (5-10%)
 - **Alternative**: Absolute size limits (e.g., +5KB max per PR)
@@ -329,21 +351,25 @@ it('should throw error for invalid levels', () => {
 ### ✅ **Branch Strategy That Worked**
 
 #### **Separation of Concerns**
+
 1. **`fix/mixin-abstract-keywords`**: Architectural TypeScript fixes
-2. **`fix/composite-methods-and-cleanup`**: Composite components + legacy cleanup  
+2. **`fix/composite-methods-and-cleanup`**: Composite components + legacy cleanup
 3. **`feature/minimal-heading-component`**: Actual component implementation
 
 #### **PR Sequencing Benefits**
+
 - **Incremental review**: Easier to review focused changes
 - **Risk isolation**: Architectural fixes separate from feature work
 - **Clean history**: Clear progression of improvements
 
 ### ✅ **Merge Strategy**
+
 - **Merge architectural fixes first** before component work
 - **Update feature branches** with latest main after merges
 - **Test integration** after merging architectural changes
 
 ### ⚠️ **Merge Conflicts Handling**
+
 - **Mixin structure changes** caused conflicts between branches
 - **Solution**: Merge main into feature branch, resolve conflicts systematically
 - **Git auto-merge** handled most conflicts well due to good separation
@@ -426,21 +452,25 @@ it('should throw error for invalid levels', () => {
 ## Future Considerations
 
 ### **Architecture Evolution**
+
 - **Existing composites** (AttributeComponent, ShadowComponent, etc.) should cover most use cases; evaluate gaps before creating new patterns
 - **Mixin composition patterns** will evolve with real-world usage, but prefer extending existing composites
 - **TypeScript configuration** may need updates for new component patterns
 
 ### **Performance Strategy**
+
 - **Switch to strict thresholds** once 5-10 components are implemented
 - **Consider absolute size limits** instead of percentage-based
 - **Implement more sophisticated bundle analysis** (tree-shaking effectiveness, etc.)
 
 ### **Testing Framework**
+
 - **Consider browser testing** for complex components
 - **Automated accessibility testing** with tools like axe-core
 - **Visual regression testing** for CSS component appearance
 
 ### **Documentation Patterns**
+
 - **Component documentation** standards based on ui-heading example
 - **Migration guides** when architectural patterns change
 - **Performance benchmarking** documentation for different component types
@@ -452,7 +482,7 @@ it('should throw error for invalid levels', () => {
 The ui-heading component implementation provided valuable insights into building a scalable, maintainable web component library. The key success factors were:
 
 1. **Incremental architectural improvements** before feature work
-2. **Clear separation of concerns** in mixin architecture  
+2. **Clear separation of concerns** in mixin architecture
 3. **CSS-first approach** with design tokens and custom properties
 4. **Comprehensive testing** including error conditions
 5. **Flexible performance monitoring** that adapts to development phase

@@ -11,11 +11,13 @@ describe('UIHeading - Minimal Implementation', () => {
 
   beforeEach(() => {
     element = new UIHeading();
-    document.body.appendChild(element);
+    // Don't append to DOM yet - level attribute must be set first
   });
 
   afterEach(() => {
-    element.remove();
+    if (element.parentNode) {
+      element.remove();
+    }
   });
 
   describe('Component Registration', () => {
@@ -30,18 +32,20 @@ describe('UIHeading - Minimal Implementation', () => {
   });
 
   describe('Semantic HTML Rendering', () => {
-    it('should render proper h2 element by default', () => {
+    it('should require level attribute - no defaults for accessibility', () => {
       element.innerHTML = 'Test Heading';
-      element.connectedCallback();
 
-      const heading = element.querySelector('h2');
-      expect(heading).toBeTruthy();
-      expect(heading?.textContent).toBe('Test Heading');
+      expect(() => {
+        element.connectedCallback();
+      }).toThrow(
+        'UIHeading: Level attribute is required. Must specify level="1" through level="6" for proper accessibility. Missing level would break screen reader navigation.'
+      );
     });
 
     it('should render correct heading level', () => {
       element.setAttribute('level', '3');
       element.innerHTML = 'Level 3 Heading';
+      document.body.appendChild(element);
       element.connectedCallback();
 
       const heading = element.querySelector('h3');
@@ -54,6 +58,7 @@ describe('UIHeading - Minimal Implementation', () => {
         const testElement = new UIHeading();
         testElement.setAttribute('level', level.toString());
         testElement.innerHTML = `Level ${level}`;
+        document.body.appendChild(testElement);
         testElement.connectedCallback();
 
         const heading = testElement.querySelector(`h${level}`);
@@ -81,33 +86,35 @@ describe('UIHeading - Minimal Implementation', () => {
         // Component should not have rendered any heading
         expect(testElement.querySelector('h1, h2, h3, h4, h5, h6')).toBeNull();
 
-        testElement.remove();
+        if (testElement.parentNode) testElement.remove();
       });
     });
 
-    it('should allow empty level attribute (defaults to h2)', () => {
+    it('should throw error for empty level attribute', () => {
       const testElement = new UIHeading();
       testElement.setAttribute('level', '');
       testElement.innerHTML = 'Test';
-      testElement.connectedCallback();
 
-      const heading = testElement.querySelector('h2');
-      expect(heading).toBeTruthy();
-      expect(heading?.textContent).toBe('Test');
+      expect(() => {
+        testElement.connectedCallback();
+      }).toThrow(
+        'UIHeading: Level attribute is required. Must specify level="1" through level="6" for proper accessibility. Missing level would break screen reader navigation.'
+      );
 
-      testElement.remove();
+      if (testElement.parentNode) testElement.remove();
     });
 
-    it('should allow no level attribute (defaults to h2)', () => {
+    it('should throw error for missing level attribute', () => {
       const testElement = new UIHeading();
       testElement.innerHTML = 'Test';
-      testElement.connectedCallback();
 
-      const heading = testElement.querySelector('h2');
-      expect(heading).toBeTruthy();
-      expect(heading?.textContent).toBe('Test');
+      expect(() => {
+        testElement.connectedCallback();
+      }).toThrow(
+        'UIHeading: Level attribute is required. Must specify level="1" through level="6" for proper accessibility. Missing level would break screen reader navigation.'
+      );
 
-      testElement.remove();
+      if (testElement.parentNode) testElement.remove();
     });
   });
 
@@ -115,6 +122,7 @@ describe('UIHeading - Minimal Implementation', () => {
     it('should have level attribute for CSS selector targeting', () => {
       element.setAttribute('level', '4');
       element.innerHTML = 'Test';
+      document.body.appendChild(element);
       element.connectedCallback();
 
       expect(element.getAttribute('level')).toBe('4');
@@ -123,6 +131,7 @@ describe('UIHeading - Minimal Implementation', () => {
     it('should maintain clean DOM without utility classes', () => {
       element.setAttribute('level', '3');
       element.innerHTML = 'Test';
+      document.body.appendChild(element);
       element.connectedCallback();
 
       // Should only have the base classes from CoreCustomElement
@@ -135,7 +144,9 @@ describe('UIHeading - Minimal Implementation', () => {
     });
 
     it('should update attribute when level changes for CSS targeting', () => {
+      element.setAttribute('level', '2');
       element.innerHTML = 'Test';
+      document.body.appendChild(element);
       element.connectedCallback();
 
       // Change level attribute
@@ -146,7 +157,8 @@ describe('UIHeading - Minimal Implementation', () => {
 
   describe('Public API (Read-Only for Static Components)', () => {
     it('should provide level getter', () => {
-      expect(element.level).toBe(2); // default
+      element.setAttribute('level', '3');
+      expect(element.level).toBe(3);
 
       element.setAttribute('level', '5');
       expect(element.level).toBe(5);
@@ -165,6 +177,7 @@ describe('UIHeading - Minimal Implementation', () => {
     it('should render semantic heading elements (no manual ARIA needed)', () => {
       element.setAttribute('level', '3');
       element.innerHTML = 'Accessible Heading';
+      document.body.appendChild(element);
       element.connectedCallback();
 
       const heading = element.querySelector('h3');
@@ -179,23 +192,27 @@ describe('UIHeading - Minimal Implementation', () => {
 
   describe('Performance', () => {
     it('should have minimal DOM overhead', () => {
+      element.setAttribute('level', '3');
       element.innerHTML = 'Test Content';
+      document.body.appendChild(element);
       element.connectedCallback();
 
       // Should only contain one child (the heading element)
       expect(element.children.length).toBe(1);
-      expect(element.firstElementChild?.tagName).toBe('H2');
+      expect(element.firstElementChild?.tagName).toBe('H3');
     });
 
     it('should not re-render unnecessarily', () => {
+      element.setAttribute('level', '2');
       element.innerHTML = 'Original Content';
+      document.body.appendChild(element);
       element.connectedCallback();
 
       const originalHeading = element.querySelector('h2');
       const originalContent = originalHeading?.textContent;
 
       // Trigger re-render
-      element.attributeChangedCallback('variant', null, 'title');
+      element.attributeChangedCallback('level', null, '2');
 
       const newHeading = element.querySelector('h2');
       expect(newHeading?.textContent).toBe(originalContent);
@@ -205,6 +222,7 @@ describe('UIHeading - Minimal Implementation', () => {
   describe('Extension Points', () => {
     it('should provide getLevel() as extension point', () => {
       // Test the protected method works correctly
+      element.setAttribute('level', '2');
       expect(element.level).toBe(2);
 
       element.setAttribute('level', '4');

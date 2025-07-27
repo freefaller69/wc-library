@@ -60,31 +60,42 @@ export class UIHeading extends CoreCustomElement {
     const { isValid, level } = this.parseLevelAttribute();
 
     if (!isValid) {
-      throw new Error(
-        `UIHeading: Invalid level "${level}". ` +
-          `Level must be a number between 1 and 6 for proper accessibility. ` +
-          `Current level would break screen reader navigation.`
-      );
+      if (level === null || level === '') {
+        throw new Error(
+          `UIHeading: Level attribute is required. ` +
+            `Must specify level="1" through level="6" for proper accessibility. ` +
+            `Missing level would break screen reader navigation.`
+        );
+      } else {
+        throw new Error(
+          `UIHeading: Invalid level "${level}". ` +
+            `Level must be a number between 1 and 6 for proper accessibility. ` +
+            `Current level would break screen reader navigation.`
+        );
+      }
     }
   }
 
-  private parseLevelAttribute(): { isValid: boolean; level: string | null; parsed: number } {
+  private parseLevelAttribute(): { isValid: boolean; level: string | null; parsed: number | null } {
     const level = this.getAttribute('level');
 
-    // Allow null (no attribute) or empty string (defaults to h2)
+    // Level attribute is required - no defaults for accessibility
     if (level === null || level === '') {
-      return { isValid: true, level, parsed: 2 };
+      return { isValid: false, level, parsed: null };
     }
 
     const parsed = parseInt(level, 10);
     const isValid = !isNaN(parsed) && parsed >= 1 && parsed <= 6;
 
-    return { isValid, level, parsed: isValid ? parsed : 2 };
+    return { isValid, level, parsed: isValid ? parsed : null };
   }
 
   // Extension point for mixins
   protected getLevel(): UIHeadingLevel {
     const { parsed } = this.parseLevelAttribute();
+    if (parsed === null) {
+      throw new Error('UIHeading: Level attribute is required but not set or invalid');
+    }
     return parsed as UIHeadingLevel;
   }
 
