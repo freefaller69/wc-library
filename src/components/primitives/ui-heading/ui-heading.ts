@@ -20,21 +20,19 @@ import './ui-heading.css';
 export type UIHeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 
 export class UIHeading extends CoreCustomElement {
-  static get observedAttributes(): string[] {
-    return ['level'];
-  }
-
   constructor() {
     super({
       tagName: 'ui-heading',
     });
   }
 
-  attributeChangedCallback(_name: string, oldValue: string | null, newValue: string | null): void {
-    if (oldValue === newValue) return;
-
-    // CSS custom properties handle styling automatically via attribute selectors
-    // No manual class management needed
+  attributeChangedCallback(
+    _name: string,
+    _oldValue: string | null,
+    _newValue: string | null
+  ): void {
+    // Static component - no attribute change handling needed
+    // Level is validated once on connect, not on attribute changes
   }
 
   connectedCallback(): void {
