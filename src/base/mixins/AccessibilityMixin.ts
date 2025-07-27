@@ -28,7 +28,7 @@ export function AccessibilityMixin<TBase extends Constructor<HTMLElement>>(
     private _accessibilitySetup = false;
 
     connectedCallback() {
-      // @ts-ignore - super might have connectedCallback
+      // @ts-expect-error - super might have connectedCallback
       super.connectedCallback?.();
       this.setupAccessibility();
     }

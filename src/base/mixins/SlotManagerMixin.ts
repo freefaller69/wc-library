@@ -24,7 +24,7 @@ export function SlotManagerMixin<TBase extends Constructor<HTMLElement>>(
     private _slotSetup = false;
 
     connectedCallback() {
-      // @ts-ignore - super might have connectedCallback
+      // @ts-expect-error - super might have connectedCallback
       super.connectedCallback?.();
       this.setupSlotManagement();
     }
@@ -60,7 +60,7 @@ export function SlotManagerMixin<TBase extends Constructor<HTMLElement>>(
     onSlotChange?(slot: HTMLSlotElement, assignedNodes: Node[]): void;
 
     disconnectedCallback() {
-      // @ts-ignore - super might have disconnectedCallback
+      // @ts-expect-error - super might have disconnectedCallback
       super.disconnectedCallback?.();
 
       // Clean up slot listeners
