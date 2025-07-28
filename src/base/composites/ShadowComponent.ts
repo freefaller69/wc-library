@@ -25,19 +25,16 @@ export abstract class ShadowComponent
   extends ShadowBase
   implements ShadowDOMMixinInterface, UpdateManagerMixinInterface
 {
-  // Declare methods from ShadowDOMMixin
-  declare shadowRoot: ShadowRoot;
-  declare shadowQuery: <T extends Element = Element>(selector: string) => T | null;
-  declare shadowQueryAll: <T extends Element = Element>(selector: string) => NodeListOf<T>;
-  declare setupShadowDOM: (options?: ShadowRootInit) => void;
+  // Declare properties from ShadowDOMMixin
+  declare shadowRoot: ShadowRoot | null;
+  declare hasShadowDOM: boolean;
 
   // Declare methods from UpdateManagerMixin
   declare requestUpdate: () => void;
   declare render?: () => void;
 
-  constructor(config: ComponentConfig, shadowOptions?: ShadowRootInit) {
+  constructor(config: ComponentConfig) {
     super(config);
-    this.setupShadowDOM(shadowOptions);
   }
 
   /**

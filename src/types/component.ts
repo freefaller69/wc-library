@@ -15,6 +15,8 @@ export interface ComponentConfig {
   observedAttributes?: string[];
   staticAttributes?: string[];
   dynamicAttributes?: string[];
+  useShadowDOM?: boolean;
+  shadowOptions?: ShadowRootInit;
 }
 
 export interface LifecycleCallbacks {
