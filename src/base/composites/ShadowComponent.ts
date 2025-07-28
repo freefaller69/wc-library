@@ -27,7 +27,6 @@ export abstract class ShadowComponent
 {
   // Declare properties from ShadowDOMMixin
   declare shadowRoot: ShadowRoot | null;
-  declare hasShadowDOM: boolean;
 
   // Declare methods from UpdateManagerMixin
   declare requestUpdate: () => void;

@@ -14,7 +14,6 @@ type ShadowDOMBase = HTMLElement & {
 // Mixin interface that defines Shadow DOM features
 export interface ShadowDOMMixinInterface {
   shadowRoot: ShadowRoot | null;
-  hasShadowDOM: boolean;
 }
 
 /**
@@ -33,7 +32,7 @@ export function ShadowDOMMixin<TBase extends Constructor<ShadowDOMBase>>(
 
     /**
      * Component lifecycle - called when element is connected to DOM
-     * Creates shadowRoot if config.useShadowDOM is true
+     * Creates shadowRoot when mixin is used
      */
     connectedCallback(): void {
       super.connectedCallback?.();
@@ -41,20 +40,9 @@ export function ShadowDOMMixin<TBase extends Constructor<ShadowDOMBase>>(
     }
 
     /**
-     * Gets whether this component has Shadow DOM enabled
-     */
-    get hasShadowDOM(): boolean {
-      return Boolean(this.config.useShadowDOM);
-    }
-
-    /**
-     * Sets up Shadow DOM based on component configuration
+     * Sets up Shadow DOM - always creates shadow root when mixin is used
      */
     private setupShadowDOM(): void {
-      if (!this.config.useShadowDOM) {
-        return;
-      }
-
       // Prevent multiple calls to attachShadow
       if (this.shadowRoot) {
         console.warn(

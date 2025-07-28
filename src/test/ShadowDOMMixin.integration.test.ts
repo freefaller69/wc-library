@@ -77,34 +77,30 @@ describe('ShadowDOMMixin Integration with CoreCustomElement', () => {
   });
 
   describe('Basic integration', () => {
-    it('should create component with shadow DOM when useShadowDOM is true', () => {
+    it('should create component with shadow DOM when mixin is used', () => {
       const config: ComponentConfig = {
         tagName: 'integration-shadow',
-        useShadowDOM: true,
       };
 
       const component = new TestIntegrationComponent(config);
       component.connectedCallback();
 
       expect(component.shadowRoot).not.toBeNull();
-      expect(component.hasShadowDOM).toBe(true);
       expect(component.isConnected).toBe(true);
       expect(component.getAttribute('data-ui-component')).toBe('integration-shadow');
     });
 
-    it('should create component without shadow DOM when useShadowDOM is false', () => {
+    it('should create shadow DOM with default open mode', () => {
       const config: ComponentConfig = {
-        tagName: 'integration-light',
-        useShadowDOM: false,
+        tagName: 'integration-default',
       };
 
       const component = new TestIntegrationComponent(config);
       component.connectedCallback();
 
-      expect(component.shadowRoot).toBeNull();
-      expect(component.hasShadowDOM).toBe(false);
+      expect(component.shadowRoot).not.toBeNull();
+      expect(component.shadowRoot?.mode).toBe('open');
       expect(component.isConnected).toBe(true);
-      expect(component.getAttribute('data-ui-component')).toBe('integration-light');
     });
   });
 
@@ -112,7 +108,6 @@ describe('ShadowDOMMixin Integration with CoreCustomElement', () => {
     it('should properly call both CoreCustomElement and ShadowDOMMixin lifecycle methods', () => {
       const config: ComponentConfig = {
         tagName: 'integration-lifecycle',
-        useShadowDOM: true,
       };
 
       const component = new TestIntegrationComponent(config);
@@ -130,7 +125,6 @@ describe('ShadowDOMMixin Integration with CoreCustomElement', () => {
     it('should handle disconnection properly', () => {
       const config: ComponentConfig = {
         tagName: 'integration-disconnect',
-        useShadowDOM: true,
       };
 
       const component = new TestIntegrationComponent(config);
@@ -150,7 +144,6 @@ describe('ShadowDOMMixin Integration with CoreCustomElement', () => {
     it('should respect custom shadow options in integration', () => {
       const config: ComponentConfig = {
         tagName: 'integration-custom',
-        useShadowDOM: true,
         shadowOptions: {
           mode: 'closed',
           delegatesFocus: true,
@@ -162,13 +155,11 @@ describe('ShadowDOMMixin Integration with CoreCustomElement', () => {
 
       expect(component.shadowRoot?.mode).toBe('closed');
       expect(component.shadowRoot?.delegatesFocus).toBe(true);
-      expect(component.hasShadowDOM).toBe(true);
     });
 
     it('should work with observed attributes configuration', () => {
       const config: ComponentConfig = {
         tagName: 'integration-attrs',
-        useShadowDOM: true,
         observedAttributes: ['test-attr'],
       };
 
@@ -184,7 +175,6 @@ describe('ShadowDOMMixin Integration with CoreCustomElement', () => {
     it('should maintain CoreCustomElement functionality with shadow DOM', () => {
       const config: ComponentConfig = {
         tagName: 'integration-attrs-test',
-        useShadowDOM: true,
       };
 
       const component = new TestIntegrationComponent(config);
@@ -196,13 +186,12 @@ describe('ShadowDOMMixin Integration with CoreCustomElement', () => {
 
       // ShadowDOMMixin functionality should work
       expect(component.shadowRoot).not.toBeNull();
-      expect(component.hasShadowDOM).toBe(true);
     });
 
-    it('should maintain CoreCustomElement functionality without shadow DOM', () => {
+    it('should work with different shadow options in integration', () => {
       const config: ComponentConfig = {
-        tagName: 'integration-no-shadow-test',
-        useShadowDOM: false,
+        tagName: 'integration-mode-test',
+        shadowOptions: { mode: 'closed' },
       };
 
       const component = new TestIntegrationComponent(config);
@@ -210,11 +199,10 @@ describe('ShadowDOMMixin Integration with CoreCustomElement', () => {
 
       // CoreCustomElement functionality should work
       expect(component.id).toBeTruthy();
-      expect(component.getAttribute('data-ui-component')).toBe('integration-no-shadow-test');
+      expect(component.getAttribute('data-ui-component')).toBe('integration-mode-test');
 
-      // ShadowDOMMixin should indicate no shadow DOM
-      expect(component.shadowRoot).toBeNull();
-      expect(component.hasShadowDOM).toBe(false);
+      // ShadowDOMMixin should create closed shadow DOM
+      expect(component.shadowRoot?.mode).toBe('closed');
     });
   });
 });

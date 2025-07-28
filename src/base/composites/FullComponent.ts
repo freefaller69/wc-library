@@ -31,7 +31,6 @@ const FullBase = compose(
 export abstract class FullComponent extends FullBase implements ShadowDOMMixinInterface {
   // Declare properties from ShadowDOMMixin
   declare shadowRoot: ShadowRoot | null;
-  declare hasShadowDOM: boolean;
 
   constructor(config: ComponentConfig) {
     super(config);

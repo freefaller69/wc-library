@@ -54,62 +54,34 @@ describe('ShadowDOMMixin', () => {
   });
 
   describe('Shadow DOM creation', () => {
-    it('should create shadowRoot when useShadowDOM is true', () => {
+    it('should always create shadowRoot when mixin is used', () => {
       const config: ComponentConfig = {
         tagName: 'test-shadow',
-        useShadowDOM: true,
       };
 
       const component = new TestShadowComponent(config);
       component.connectedCallback();
 
       expect(component.shadowRoot).not.toBeNull();
-      expect(component.hasShadowDOM).toBe(true);
     });
 
-    it('should not create shadowRoot when useShadowDOM is false', () => {
+    it('should create shadowRoot with default open mode', () => {
       const config: ComponentConfig = {
-        tagName: 'test-light',
-        useShadowDOM: false,
+        tagName: 'test-default-mode',
       };
 
       const component = new TestShadowComponent(config);
       component.connectedCallback();
 
-      expect(component.shadowRoot).toBeNull();
-      expect(component.hasShadowDOM).toBe(false);
-    });
-
-    it('should not create shadowRoot when useShadowDOM is undefined', () => {
-      const config: ComponentConfig = {
-        tagName: 'test-default',
-      };
-
-      const component = new TestShadowComponent(config);
-      component.connectedCallback();
-
-      expect(component.shadowRoot).toBeNull();
-      expect(component.hasShadowDOM).toBe(false);
+      expect(component.shadowRoot).not.toBeNull();
+      expect(component.shadowRoot?.mode).toBe('open');
     });
   });
 
   describe('Shadow DOM options', () => {
-    it('should use default options when shadowOptions is not provided', () => {
-      const config: ComponentConfig = {
-        tagName: 'test-default-options',
-        useShadowDOM: true,
-      };
-
-      const component = new TestShadowComponent(config);
-      component.connectedCallback();
-
-      expect(component.shadowRoot?.mode).toBe('open');
-    });
-
     it('should use custom shadowOptions when provided', () => {
       const config: ComponentConfig = {
         tagName: 'test-custom-options',
-        useShadowDOM: true,
         shadowOptions: { mode: 'closed', delegatesFocus: true },
       };
 
@@ -119,36 +91,39 @@ describe('ShadowDOMMixin', () => {
       expect(component.shadowRoot?.mode).toBe('closed');
       expect(component.shadowRoot?.delegatesFocus).toBe(true);
     });
-  });
 
-  describe('hasShadowDOM property', () => {
-    it('should return true when useShadowDOM is true', () => {
+    it('should support core ShadowRootInit options', () => {
       const config: ComponentConfig = {
-        tagName: 'test-has-shadow',
-        useShadowDOM: true,
+        tagName: 'test-core-options',
+        shadowOptions: {
+          mode: 'closed',
+          delegatesFocus: true,
+        },
       };
 
       const component = new TestShadowComponent(config);
-      expect(component.hasShadowDOM).toBe(true);
+      component.connectedCallback();
+
+      expect(component.shadowRoot?.mode).toBe('closed');
+      expect(component.shadowRoot?.delegatesFocus).toBe(true);
     });
 
-    it('should return false when useShadowDOM is false', () => {
+    it('should accept standard ShadowRootInit options in config', () => {
+      // This test ensures the TypeScript interface accepts standard options
       const config: ComponentConfig = {
-        tagName: 'test-no-shadow',
-        useShadowDOM: false,
+        tagName: 'test-standard-options-config',
+        shadowOptions: {
+          mode: 'open',
+          delegatesFocus: false,
+        },
       };
 
       const component = new TestShadowComponent(config);
-      expect(component.hasShadowDOM).toBe(false);
-    });
+      component.connectedCallback();
 
-    it('should return false when useShadowDOM is undefined', () => {
-      const config: ComponentConfig = {
-        tagName: 'test-undefined-shadow',
-      };
-
-      const component = new TestShadowComponent(config);
-      expect(component.hasShadowDOM).toBe(false);
+      expect(component.shadowRoot).not.toBeNull();
+      expect(component.shadowRoot?.mode).toBe('open');
+      expect(component.shadowRoot?.delegatesFocus).toBe(false);
     });
   });
 
@@ -179,14 +154,12 @@ describe('ShadowDOMMixin', () => {
 
       const config: ComponentConfig = {
         tagName: 'failing-shadow',
-        useShadowDOM: true,
       };
 
       const component = new FailingTestComponent(config);
       component.connectedCallback();
 
       expect(component.shadowRoot).toBeNull();
-      expect(component.hasShadowDOM).toBe(true); // Config still says true
       expect(consoleSpy).toHaveBeenCalledWith(
         'ShadowDOMMixin: Failed to create shadow DOM for component failing-shadow:',
         expect.any(Error)
@@ -200,7 +173,6 @@ describe('ShadowDOMMixin', () => {
 
       const config: ComponentConfig = {
         tagName: 'duplicate-shadow',
-        useShadowDOM: true,
       };
 
       const component = new TestShadowComponent(config);
@@ -255,7 +227,6 @@ describe('ShadowDOMMixin', () => {
 
       const config: ComponentConfig = {
         tagName: 'test-lifecycle',
-        useShadowDOM: true,
       };
 
       const component = new TestComponent(config);
@@ -268,7 +239,6 @@ describe('ShadowDOMMixin', () => {
     it('should not create shadowRoot multiple times on multiple connects', () => {
       const config: ComponentConfig = {
         tagName: 'test-multiple-connect',
-        useShadowDOM: true,
       };
 
       const component = new TestShadowComponent(config);
