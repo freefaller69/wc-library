@@ -60,3 +60,7 @@ This is a Vite-based TypeScript web component library project with the following
 - Emergency hotfixes (with immediate follow-up PR)
 - Repository maintenance tasks explicitly agreed upon
 - When specifically requested by project maintainer
+
+### Code Quality Requirements
+
+- Prettier, eslint, and build must all be error/failure free before committing any code

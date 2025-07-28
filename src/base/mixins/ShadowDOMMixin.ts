@@ -1,58 +1,66 @@
 /**
- * ShadowDOMMixin - Provides Shadow DOM creation and management
+ * ShadowDOMMixin - Provides Shadow DOM creation and management based on component configuration
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-
 import type { Constructor } from '../utilities/mixin-composer.js';
+import type { ComponentConfig } from '../../types/component.js';
+
+// Base type that ShadowDOMMixin expects to work with
+type ShadowDOMBase = HTMLElement & {
+  config: ComponentConfig;
+  connectedCallback?(): void;
+};
 
 // Mixin interface that defines Shadow DOM features
 export interface ShadowDOMMixinInterface {
-  shadowRoot: ShadowRoot;
-  shadowQuery<T extends Element = Element>(selector: string): T | null;
-  shadowQueryAll<T extends Element = Element>(selector: string): NodeListOf<T>;
-  setupShadowDOM(options?: ShadowRootInit): void;
+  shadowRoot: ShadowRoot | null;
 }
 
 /**
- * Shadow DOM mixin that adds shadow root creation and querying utilities
+ * Shadow DOM mixin that creates shadowRoot based on component configuration
  */
-export function ShadowDOMMixin<TBase extends Constructor<HTMLElement>>(
+export function ShadowDOMMixin<TBase extends Constructor<ShadowDOMBase>>(
   Base: TBase
 ): TBase & Constructor<ShadowDOMMixinInterface> {
   abstract class ShadowDOMMixin extends Base implements ShadowDOMMixinInterface {
-    declare shadowRoot: ShadowRoot;
-    private _shadowSetup = false;
+    declare shadowRoot: ShadowRoot | null;
 
     constructor(...args: any[]) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       super(...args);
+    }
+
+    /**
+     * Component lifecycle - called when element is connected to DOM
+     * Creates shadowRoot when mixin is used
+     */
+    connectedCallback(): void {
+      super.connectedCallback?.();
       this.setupShadowDOM();
     }
 
     /**
-     * Sets up Shadow DOM with default or custom configuration
+     * Sets up Shadow DOM - always creates shadow root when mixin is used
      */
-    setupShadowDOM(options: ShadowRootInit = { mode: 'open' }): void {
-      if (this._shadowSetup) return;
-      this._shadowSetup = true;
-
-      if (!this.shadowRoot) {
-        this.attachShadow(options);
+    private setupShadowDOM(): void {
+      // Prevent multiple calls to attachShadow
+      if (this.shadowRoot) {
+        console.warn(
+          `ShadowDOMMixin: Shadow DOM already exists for component ${this.config.tagName}. Ignoring duplicate setup.`
+        );
+        return;
       }
-    }
 
-    /**
-     * Query selector within shadow DOM
-     */
-    shadowQuery<T extends Element = Element>(selector: string): T | null {
-      return this.shadowRoot.querySelector<T>(selector);
-    }
-
-    /**
-     * Query selector all within shadow DOM
-     */
-    shadowQueryAll<T extends Element = Element>(selector: string): NodeListOf<T> {
-      return this.shadowRoot.querySelectorAll<T>(selector);
+      try {
+        const options = this.config.shadowOptions || { mode: 'open' };
+        this.attachShadow(options);
+      } catch (error) {
+        console.error(
+          `ShadowDOMMixin: Failed to create shadow DOM for component ${this.config.tagName}:`,
+          error
+        );
+        // Don't rethrow - allow component to continue functioning without shadow DOM
+      }
     }
   }
 

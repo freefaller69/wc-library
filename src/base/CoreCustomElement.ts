@@ -72,7 +72,6 @@ export abstract class CoreCustomElement extends HTMLElement implements Lifecycle
    * Sets up base component attributes and classes
    */
   private setupBaseAttributes(): void {
-    this.classList.add('ui-reset');
     this.setAttribute('data-ui-component', this.config.tagName);
 
     if (!this.id) {
