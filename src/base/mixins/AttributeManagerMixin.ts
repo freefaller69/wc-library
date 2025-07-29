@@ -61,8 +61,8 @@ export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(
      */
     processStaticAttributes(): void {
       const staticAttrs = this.config.staticAttributes || [];
-      
-      staticAttrs.forEach(attrName => {
+
+      staticAttrs.forEach((attrName) => {
         const value = this.getAttribute(attrName);
         if (value !== null) {
           // Process static attribute value for ClassManagerMixin
@@ -102,7 +102,7 @@ export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(
       // Since static attributes are not in observedAttributes, we only receive
       // dynamic attributes and explicit attributes here
       // Static attributes are set once and don't trigger this callback
-      
+
       if (this.config.staticAttributes?.includes(name)) {
         // This should rarely happen since static attributes aren't observed,
         // but handle it gracefully if someone manually calls this method

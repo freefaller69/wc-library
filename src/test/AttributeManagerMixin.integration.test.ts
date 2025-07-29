@@ -23,16 +23,10 @@ describe('AttributeManagerMixin Integration', () => {
 
       // Should contain only dynamic and explicit attributes (static excluded)
       expect(result).toEqual(
-        expect.arrayContaining([
-          'disabled',
-          'loading',
-          'active',
-          'data-test',
-          'aria-label',
-        ])
+        expect.arrayContaining(['disabled', 'loading', 'active', 'data-test', 'aria-label'])
       );
       expect(result).toHaveLength(5); // Only dynamic + explicit attributes
-      
+
       // Verify static attributes are excluded
       expect(result).not.toContain('variant');
       expect(result).not.toContain('size');
