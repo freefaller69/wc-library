@@ -161,7 +161,7 @@ describe('ShadowDOMMixin', () => {
 
       expect(component.shadowRoot).toBeNull();
       expect(consoleSpy).toHaveBeenCalledWith(
-        'ShadowDOMMixin: Failed to create shadow DOM for component failing-shadow:',
+        'ShadowDOMMixin: Failed to create shadow DOM for component failing-shadow: attachShadow not supported',
         expect.any(Error)
       );
 
