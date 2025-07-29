@@ -26,22 +26,24 @@ export interface AttributeManagerMixinInterface {
   getTypedAttribute(name: string, type: 'boolean'): boolean;
   getTypedAttribute(name: string, type: 'number'): number | null;
   setTypedAttribute(name: string, value: string | number | boolean | null): void;
+  processStaticAttributes(): void;
 }
 
 /**
  * Helper function to generate observedAttributes from component config
+ * Static attributes are NOT included - they are set once and not observed for changes
  * @param config - Component configuration object
- * @returns Array of attribute names that should be observed
+ * @returns Array of attribute names that should be observed for changes
  */
 export function getObservedAttributes(config: ComponentConfig): string[] {
-  const staticAttrs = config.staticAttributes || [];
+  // Only observe dynamic attributes and explicitly requested ones
   const dynamicAttrs = config.dynamicAttributes || [];
   const explicitAttrs = config.observedAttributes || [];
 
-  // Merge all attribute arrays and remove duplicates
-  const allAttributes = [...new Set([...staticAttrs, ...dynamicAttrs, ...explicitAttrs])];
+  // Static attributes are intentionally excluded - they don't need change observation
+  const observedAttributes = [...new Set([...dynamicAttrs, ...explicitAttrs])];
 
-  return allAttributes;
+  return observedAttributes;
 }
 
 /**
@@ -52,6 +54,22 @@ export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(
 ): TBase & Constructor<AttributeManagerMixinInterface> {
   abstract class AttributeManagerMixin extends Base implements AttributeManagerMixinInterface {
     protected config!: ComponentConfig;
+
+    /**
+     * Process static attributes once during component initialization
+     * This should be called from connectedCallback or constructor
+     */
+    processStaticAttributes(): void {
+      const staticAttrs = this.config.staticAttributes || [];
+      
+      staticAttrs.forEach(attrName => {
+        const value = this.getAttribute(attrName);
+        if (value !== null) {
+          // Process static attribute value for ClassManagerMixin
+          this.handleStaticAttributeChange(attrName, value);
+        }
+      });
+    }
 
     /**
      * Type guard to check if the component has ClassManager capabilities
@@ -81,10 +99,16 @@ export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(
 
       if (oldValue === newValue) return;
 
-      // Handle static vs dynamic attributes differently
+      // Since static attributes are not in observedAttributes, we only receive
+      // dynamic attributes and explicit attributes here
+      // Static attributes are set once and don't trigger this callback
+      
       if (this.config.staticAttributes?.includes(name)) {
+        // This should rarely happen since static attributes aren't observed,
+        // but handle it gracefully if someone manually calls this method
         this.handleStaticAttributeChange(name, newValue);
       } else {
+        // Handle dynamic and explicit attributes (the normal case)
         this.handleDynamicAttributeChange(name, oldValue, newValue);
       }
     }
