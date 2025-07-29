@@ -64,3 +64,14 @@ This is a Vite-based TypeScript web component library project with the following
 ### Code Quality Requirements
 
 - Prettier, eslint, and build must all be error/failure free before committing any code
+
+## Code Review Agent
+
+This project includes a specialized `frontend-code-reviewer` agent for automated code quality assessment:
+
+- **Usage**: Ask Claude Code to use the frontend-code-reviewer agent before merging PRs
+- **Focus Areas**: ESLint compliance, TypeScript errors, accessibility, security, performance
+- **Process**: Validates build quality first, then provides categorized feedback (Critical/Warnings/Suggestions)
+- **Documentation**: See `docs/development/code-review-agent.md` for detailed usage guidelines
+
+The agent provides consistent, comprehensive review standards and should be used alongside human code review for optimal quality assurance.
