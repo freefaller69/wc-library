@@ -89,6 +89,7 @@ describe('StyleManagerMixin', () => {
       expect(component).toBeInstanceOf(TestStyleComponent);
       expect(component.addCSS).toBeTypeOf('function');
       expect(component.addStylesheet).toBeTypeOf('function');
+      expect(component.batchAddStylesheets).toBeTypeOf('function');
     });
 
     it('should handle connectedCallback lifecycle', () => {
@@ -97,6 +98,15 @@ describe('StyleManagerMixin', () => {
       // Should not throw when connected
       expect(() => {
         component.connectedCallback();
+      }).not.toThrow();
+    });
+
+    it('should handle disconnectedCallback lifecycle', () => {
+      const component = new TestStyleComponent();
+
+      // Should not throw when disconnected
+      expect(() => {
+        component.disconnectedCallback?.();
       }).not.toThrow();
     });
   });
@@ -135,7 +145,7 @@ describe('StyleManagerMixin', () => {
   });
 
   describe('addCSS method', () => {
-    it('should create and add dynamic stylesheet from CSS string', () => {
+    it('should create and add dynamic stylesheet from CSS string', async () => {
       const component = new TestStyleComponent();
       const mockShadowRoot = {
         adoptedStyleSheets: [],
@@ -149,10 +159,14 @@ describe('StyleManagerMixin', () => {
       const css = '.dynamic { background: blue; }';
       component.addCSS(css);
 
+      // Wait for microtask to complete debounced update
+      // eslint-disable-next-line no-undef
+      await new Promise((resolve) => queueMicrotask(() => resolve(undefined)));
+
       expect(mockShadowRoot.adoptedStyleSheets).toHaveLength(1);
     });
 
-    it('should handle multiple addCSS calls', () => {
+    it('should handle multiple addCSS calls with debouncing', async () => {
       const component = new TestStyleComponent();
       const mockShadowRoot = {
         adoptedStyleSheets: [],
@@ -165,6 +179,33 @@ describe('StyleManagerMixin', () => {
 
       component.addCSS('.first { color: red; }');
       component.addCSS('.second { color: blue; }');
+
+      // Wait for microtask to complete debounced update
+      // eslint-disable-next-line no-undef
+      await new Promise((resolve) => queueMicrotask(() => resolve(undefined)));
+
+      expect(mockShadowRoot.adoptedStyleSheets).toHaveLength(2);
+    });
+
+    it('should support batch adding stylesheets', async () => {
+      const component = new TestStyleComponent();
+      const mockShadowRoot = {
+        adoptedStyleSheets: [],
+      } as unknown as ShadowRoot;
+
+      Object.defineProperty(component, 'shadowRoot', {
+        value: mockShadowRoot,
+        writable: true,
+      });
+
+      const sheet1 = mockCSSStyleSheet('.batch1 { color: red; }') as unknown as CSSStyleSheet;
+      const sheet2 = mockCSSStyleSheet('.batch2 { color: blue; }') as unknown as CSSStyleSheet;
+
+      component.batchAddStylesheets([sheet1, sheet2]);
+
+      // Wait for microtask to complete debounced update
+      // eslint-disable-next-line no-undef
+      await new Promise((resolve) => queueMicrotask(() => resolve(undefined)));
 
       expect(mockShadowRoot.adoptedStyleSheets).toHaveLength(2);
     });
@@ -231,7 +272,7 @@ describe('StyleManagerMixin', () => {
   });
 
   describe('Shadow DOM vs Light DOM handling', () => {
-    it('should use adoptedStyleSheets when shadowRoot exists', () => {
+    it('should use adoptedStyleSheets when shadowRoot exists', async () => {
       const component = new TestStyleComponent();
       const mockShadowRoot = {
         adoptedStyleSheets: [],
@@ -244,12 +285,16 @@ describe('StyleManagerMixin', () => {
 
       component.addCSS('.shadow-test { color: green; }');
 
+      // Wait for microtask to complete debounced update
+      // eslint-disable-next-line no-undef
+      await new Promise((resolve) => queueMicrotask(() => resolve(undefined)));
+
       // Should use adoptedStyleSheets, not create style elements
       expect(mockShadowRoot.adoptedStyleSheets).toHaveLength(1);
       expect(document.querySelectorAll('style[id^="style-"]')).toHaveLength(0);
     });
 
-    it('should fall back to style elements when no shadowRoot', () => {
+    it('should fall back to style elements when no shadowRoot', async () => {
       const component = new TestStyleComponent();
 
       // Ensure no shadowRoot
@@ -259,6 +304,10 @@ describe('StyleManagerMixin', () => {
       });
 
       component.addCSS('.light-test { color: purple; }');
+
+      // Wait for microtask to complete debounced update
+      // eslint-disable-next-line no-undef
+      await new Promise((resolve) => queueMicrotask(() => resolve(undefined)));
 
       // Should create style element in document.head
       const styleElements = document.querySelectorAll('style[id^="style-TestStyleComponent"]');

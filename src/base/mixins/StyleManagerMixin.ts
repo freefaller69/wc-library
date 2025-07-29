@@ -6,9 +6,13 @@
 import type { Constructor } from '../utilities/mixin-composer.js';
 import { createStyleSheet } from '../../utilities/style-helpers.js';
 
+// Constructor type for component classes with static stylesheets
+type ComponentConstructor = new (...args: unknown[]) => HTMLElement;
+
 // Base type that StyleManagerMixin expects to work with
 type StyleManagerBase = HTMLElement & {
   connectedCallback?(): void;
+  disconnectedCallback?(): void;
   constructor: {
     name: string;
     stylesheet?: CSSStyleSheet;
@@ -19,10 +23,12 @@ type StyleManagerBase = HTMLElement & {
 export interface StyleManagerMixinInterface {
   addCSS(css: string): void;
   addStylesheet(stylesheet: CSSStyleSheet): void;
+  batchAddStylesheets(stylesheets: CSSStyleSheet[]): void;
 }
 
 // Track created style elements to avoid duplicates
-const createdStyleElements = new Set<string>();
+// WeakMap allows garbage collection when components are removed
+const createdStyleElements = new WeakMap<ComponentConstructor, Set<string>>();
 
 /**
  * Style Manager mixin that handles CSS and stylesheet management
@@ -32,10 +38,22 @@ export function StyleManagerMixin<TBase extends Constructor<StyleManagerBase>>(
 ): TBase & Constructor<StyleManagerMixinInterface> {
   abstract class StyleManagerMixin extends Base implements StyleManagerMixinInterface {
     private dynamicStylesheets: CSSStyleSheet[] = [];
+    private staticStylesheet: CSSStyleSheet | null = null;
+    private pendingStylesheetUpdate = false;
 
     constructor(...args: any[]) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       super(...args);
+
+      // Initialize component-specific style tracking
+      const constructorFunc = this.constructor as ComponentConstructor;
+      if (!createdStyleElements.has(constructorFunc)) {
+        createdStyleElements.set(constructorFunc, new Set<string>());
+      }
+
+      // Cache static stylesheet reference for performance
+      this.staticStylesheet =
+        this.constructor.stylesheet instanceof CSSStyleSheet ? this.constructor.stylesheet : null;
     }
 
     /**
@@ -45,6 +63,15 @@ export function StyleManagerMixin<TBase extends Constructor<StyleManagerBase>>(
     connectedCallback(): void {
       super.connectedCallback?.();
       this.setupStyles();
+    }
+
+    /**
+     * Component lifecycle - called when element is removed from DOM
+     * Cleans up component-specific style tracking
+     */
+    disconnectedCallback(): void {
+      super.disconnectedCallback?.();
+      this.cleanupStyles();
     }
 
     /**
@@ -67,7 +94,15 @@ export function StyleManagerMixin<TBase extends Constructor<StyleManagerBase>>(
      */
     addStylesheet(stylesheet: CSSStyleSheet): void {
       this.dynamicStylesheets.push(stylesheet);
-      this.applyStylesheets();
+      this.scheduleStylesheetUpdate();
+    }
+
+    /**
+     * Adds multiple stylesheets in a single batch operation for better performance
+     */
+    batchAddStylesheets(stylesheets: CSSStyleSheet[]): void {
+      this.dynamicStylesheets.push(...stylesheets);
+      this.scheduleStylesheetUpdate();
     }
 
     /**
@@ -75,9 +110,35 @@ export function StyleManagerMixin<TBase extends Constructor<StyleManagerBase>>(
      */
     private setupStyles(): void {
       // Auto-detect and adopt class stylesheet if it exists
-      if (this.constructor.stylesheet instanceof CSSStyleSheet) {
-        this.applyStylesheets();
+      if (this.staticStylesheet) {
+        this.scheduleStylesheetUpdate();
       }
+    }
+
+    /**
+     * Cleans up component-specific style tracking
+     */
+    private cleanupStyles(): void {
+      // Note: We don't remove the static style elements as they may be shared
+      // across multiple component instances. The WeakMap will handle cleanup
+      // when all instances of a component class are garbage collected.
+    }
+
+    /**
+     * Schedules a stylesheet update, with debouncing to prevent excessive DOM updates
+     */
+    private scheduleStylesheetUpdate(): void {
+      if (this.pendingStylesheetUpdate) {
+        return;
+      }
+
+      this.pendingStylesheetUpdate = true;
+      // Use microtask to batch multiple rapid updates
+      // eslint-disable-next-line no-undef
+      queueMicrotask(() => {
+        this.pendingStylesheetUpdate = false;
+        this.applyStylesheets();
+      });
     }
 
     /**
@@ -101,9 +162,9 @@ export function StyleManagerMixin<TBase extends Constructor<StyleManagerBase>>(
     private getAllStylesheets(): CSSStyleSheet[] {
       const stylesheets: CSSStyleSheet[] = [];
 
-      // Add class stylesheet if it exists
-      if (this.constructor.stylesheet instanceof CSSStyleSheet) {
-        stylesheets.push(this.constructor.stylesheet);
+      // Add class stylesheet if it exists (using cached reference)
+      if (this.staticStylesheet) {
+        stylesheets.push(this.staticStylesheet);
       }
 
       // Add dynamic stylesheets
@@ -117,34 +178,48 @@ export function StyleManagerMixin<TBase extends Constructor<StyleManagerBase>>(
      */
     private applyStyleElementFallback(stylesheets: CSSStyleSheet[]): void {
       const target = this.shadowRoot || document.head;
+      const constructorFunc = this.constructor as ComponentConstructor;
+      const componentStyleElements = createdStyleElements.get(constructorFunc)!;
 
       stylesheets.forEach((stylesheet, index) => {
         try {
-          // Create unique ID for style element
-          const isClassStylesheet = index === 0 && this.constructor.stylesheet;
-          const styleId = isClassStylesheet
+          // More robust detection of static vs dynamic stylesheets
+          const isStaticStylesheet = stylesheet === this.staticStylesheet;
+          const styleId = isStaticStylesheet
             ? `style-${this.constructor.name}-static`
-            : `style-${this.constructor.name}-dynamic-${index}`;
+            : `style-${this.constructor.name}-dynamic-${Date.now()}-${index}`;
 
-          // Check if style element already exists (for class stylesheets)
-          if (isClassStylesheet && createdStyleElements.has(styleId)) {
+          // Check if static style element already exists
+          if (isStaticStylesheet && componentStyleElements.has(styleId)) {
             return;
           }
 
           // Create style element
           const styleElement = document.createElement('style');
           styleElement.id = styleId;
+          styleElement.setAttribute('data-style-manager', this.constructor.name);
 
-          // Get CSS text from stylesheet
+          // Get CSS text from stylesheet with enhanced error handling
           const cssText = this.extractCSSText(stylesheet);
+          if (!cssText && stylesheet !== this.staticStylesheet) {
+            // Check if the stylesheet has any rules at all (for better test compatibility)
+            const hasRules = stylesheet.cssRules && stylesheet.cssRules.length > 0;
+            if (!hasRules) {
+              console.warn(
+                `StyleManagerMixin: Empty CSS content for ${this.constructor.name}, skipping style element creation`
+              );
+              return;
+            }
+          }
+
           styleElement.textContent = cssText;
 
           // Append to target
           target.appendChild(styleElement);
 
-          // Track class stylesheet elements to avoid duplicates
-          if (isClassStylesheet) {
-            createdStyleElements.add(styleId);
+          // Track style element for cleanup (static stylesheets only)
+          if (isStaticStylesheet) {
+            componentStyleElements.add(styleId);
           }
         } catch (error) {
           console.warn(
@@ -156,18 +231,30 @@ export function StyleManagerMixin<TBase extends Constructor<StyleManagerBase>>(
     }
 
     /**
-     * Extracts CSS text from a CSSStyleSheet
-     * Note: This is a simplified approach - in production, you might need
-     * more sophisticated CSS text extraction
+     * Extracts CSS text from a CSSStyleSheet with enhanced error handling
+     * @param stylesheet - The CSSStyleSheet to extract CSS from
+     * @returns CSS text string or empty string if extraction fails
      */
     private extractCSSText(stylesheet: CSSStyleSheet): string {
       try {
-        return Array.from(stylesheet.cssRules)
-          .map((rule) => rule.cssText)
-          .join('\n');
+        // Use spread operator for better performance and modern syntax
+        return [...stylesheet.cssRules].map((rule) => rule.cssText).join('\n');
       } catch (error) {
-        // If we can't access cssRules (CORS issues, etc.), return empty string
-        console.warn('StyleManagerMixin: Cannot access stylesheet rules:', error);
+        // Enhanced error categorization
+        if (error instanceof DOMException) {
+          if (error.name === 'SecurityError') {
+            console.warn('StyleManagerMixin: CORS security error accessing stylesheet rules');
+          } else if (error.name === 'InvalidAccessError') {
+            console.warn('StyleManagerMixin: Invalid access to stylesheet rules');
+          } else {
+            console.warn(
+              'StyleManagerMixin: DOM exception accessing stylesheet rules:',
+              error.message
+            );
+          }
+        } else {
+          console.warn('StyleManagerMixin: Unexpected error accessing stylesheet rules:', error);
+        }
         return '';
       }
     }
