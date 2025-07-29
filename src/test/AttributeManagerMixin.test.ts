@@ -11,15 +11,18 @@ describe('AttributeManagerMixin', () => {
     it('should generate observedAttributes from config correctly', () => {
       const result = getObservedAttributes({
         tagName: 'test-component',
-        staticAttributes: ['variant', 'size'],
+        staticAttributes: ['variant', 'size'], // These should NOT be in result
         dynamicAttributes: ['disabled', 'loading'],
         observedAttributes: ['custom-attr'],
       });
 
+      // Static attributes are intentionally excluded from observedAttributes
       expect(result).toEqual(
-        expect.arrayContaining(['variant', 'size', 'disabled', 'loading', 'custom-attr'])
+        expect.arrayContaining(['disabled', 'loading', 'custom-attr'])
       );
-      expect(result).toHaveLength(5);
+      expect(result).toHaveLength(3); // Only dynamic + explicit attributes
+      expect(result).not.toContain('variant'); // Static attributes excluded
+      expect(result).not.toContain('size'); // Static attributes excluded
     });
 
     it('should handle missing attribute arrays gracefully', () => {
@@ -33,15 +36,17 @@ describe('AttributeManagerMixin', () => {
     it('should remove duplicates from attribute arrays', () => {
       const result = getObservedAttributes({
         tagName: 'test-component',
-        staticAttributes: ['variant', 'disabled'],
-        dynamicAttributes: ['disabled', 'loading'],
-        observedAttributes: ['variant', 'custom-attr'],
+        staticAttributes: ['variant', 'disabled'], // variant should be excluded, disabled is also in dynamic
+        dynamicAttributes: ['disabled', 'loading'], // disabled appears twice
+        observedAttributes: ['disabled', 'custom-attr'], // disabled appears again
       });
 
+      // Only dynamic and explicit attributes, with duplicates removed
       expect(result).toEqual(
-        expect.arrayContaining(['variant', 'disabled', 'loading', 'custom-attr'])
+        expect.arrayContaining(['disabled', 'loading', 'custom-attr'])
       );
-      expect(result).toHaveLength(4);
+      expect(result).toHaveLength(3); // disabled counted once, variant excluded
+      expect(result).not.toContain('variant'); // Static attribute excluded
     });
 
     it('should handle empty arrays', () => {
@@ -53,6 +58,29 @@ describe('AttributeManagerMixin', () => {
       });
 
       expect(result).toEqual([]);
+    });
+  });
+
+  describe('Static Attribute Processing', () => {
+    it('should correctly document the processStaticAttributes method', () => {
+      // This tests that the architectural concept is understood
+      // Static attributes are processed once via processStaticAttributes()
+      // They are NOT in observedAttributes, so they don't trigger attributeChangedCallback
+      
+      const staticOnlyConfig = {
+        tagName: 'test-component',
+        staticAttributes: ['variant', 'size'],
+      };
+      
+      const observedAttrs = getObservedAttributes(staticOnlyConfig);
+      
+      // Verify static attributes are NOT observed
+      expect(observedAttrs).toEqual([]);
+      expect(observedAttrs).not.toContain('variant');
+      expect(observedAttrs).not.toContain('size');
+      
+      // The processStaticAttributes() method would handle these during initialization
+      // This architectural pattern ensures static attributes are set once and not observed
     });
   });
 

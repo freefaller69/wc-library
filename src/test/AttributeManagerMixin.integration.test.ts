@@ -14,19 +14,16 @@ describe('AttributeManagerMixin Integration', () => {
     it('should generate consistent observedAttributes for complex configurations', () => {
       const config = {
         tagName: 'complex-component',
-        staticAttributes: ['variant', 'size', 'theme'],
+        staticAttributes: ['variant', 'size', 'theme'], // Should be excluded
         dynamicAttributes: ['disabled', 'loading', 'active'],
         observedAttributes: ['data-test', 'aria-label'],
       };
 
       const result = getObservedAttributes(config);
 
-      // Should contain all attributes from all categories
+      // Should contain only dynamic and explicit attributes (static excluded)
       expect(result).toEqual(
         expect.arrayContaining([
-          'variant',
-          'size',
-          'theme',
           'disabled',
           'loading',
           'active',
@@ -34,30 +31,35 @@ describe('AttributeManagerMixin Integration', () => {
           'aria-label',
         ])
       );
-      expect(result).toHaveLength(8);
+      expect(result).toHaveLength(5); // Only dynamic + explicit attributes
+      
+      // Verify static attributes are excluded
+      expect(result).not.toContain('variant');
+      expect(result).not.toContain('size');
+      expect(result).not.toContain('theme');
     });
 
     it('should handle edge cases in configuration', () => {
       // Empty config
       expect(getObservedAttributes({ tagName: 'empty' })).toEqual([]);
 
-      // Only one category
+      // Only static attributes (should result in empty array)
       expect(
         getObservedAttributes({
           tagName: 'static-only',
           staticAttributes: ['variant'],
         })
-      ).toEqual(['variant']);
+      ).toEqual([]); // Static attributes are not observed
 
-      // Duplicates across categories
+      // Duplicates across categories (static should be excluded)
       expect(
         getObservedAttributes({
           tagName: 'with-duplicates',
-          staticAttributes: ['shared', 'static-only'],
+          staticAttributes: ['shared', 'static-only'], // These should be excluded
           dynamicAttributes: ['shared', 'dynamic-only'],
           observedAttributes: ['shared', 'explicit-only'],
         })
-      ).toEqual(expect.arrayContaining(['shared', 'static-only', 'dynamic-only', 'explicit-only']));
+      ).toEqual(expect.arrayContaining(['shared', 'dynamic-only', 'explicit-only'])); // Only dynamic + explicit, no static
     });
   });
 
@@ -65,31 +67,31 @@ describe('AttributeManagerMixin Integration', () => {
     it('should work with typical button component configuration', () => {
       const buttonConfig = {
         tagName: 'ui-button',
-        staticAttributes: ['variant', 'size', 'icon-position'],
+        staticAttributes: ['variant', 'size', 'icon-position'], // Should be excluded
         dynamicAttributes: ['disabled', 'loading', 'pressed'],
         observedAttributes: ['aria-label', 'data-testid'],
       };
 
       const result = getObservedAttributes(buttonConfig);
-      expect(result).toHaveLength(8);
-      expect(result).toContain('variant');
-      expect(result).toContain('disabled');
-      expect(result).toContain('aria-label');
+      expect(result).toHaveLength(5); // Only dynamic + explicit attributes
+      expect(result).not.toContain('variant'); // Static attributes excluded
+      expect(result).toContain('disabled'); // Dynamic attribute included
+      expect(result).toContain('aria-label'); // Explicit attribute included
     });
 
     it('should work with typical input component configuration', () => {
       const inputConfig = {
         tagName: 'ui-input',
-        staticAttributes: ['type', 'variant'],
+        staticAttributes: ['type', 'variant'], // Should be excluded
         dynamicAttributes: ['value', 'disabled', 'required', 'invalid'],
         observedAttributes: ['placeholder', 'aria-describedby'],
       };
 
       const result = getObservedAttributes(inputConfig);
-      expect(result).toHaveLength(8);
-      expect(result).toContain('type');
-      expect(result).toContain('value');
-      expect(result).toContain('placeholder');
+      expect(result).toHaveLength(6); // Only dynamic + explicit attributes
+      expect(result).not.toContain('type'); // Static attribute excluded
+      expect(result).toContain('value'); // Dynamic attribute included
+      expect(result).toContain('placeholder'); // Explicit attribute included
     });
   });
 
