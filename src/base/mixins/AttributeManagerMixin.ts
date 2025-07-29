@@ -10,12 +10,38 @@
 import type { Constructor } from '../utilities/mixin-composer.js';
 import type { ComponentConfig } from '../../types/component.js';
 
+// Type guards for cross-mixin communication interfaces
+interface ClassManagerInterface {
+  updateStaticAttributeCache(name: string, value: string | null): void;
+  updateComponentClasses(): void;
+}
+
+interface UpdateManagerInterface {
+  requestUpdate(): void;
+}
+
 // Mixin interface that defines attribute management features
 export interface AttributeManagerMixinInterface {
   getTypedAttribute(name: string): string | null;
   getTypedAttribute(name: string, type: 'boolean'): boolean;
   getTypedAttribute(name: string, type: 'number'): number | null;
   setTypedAttribute(name: string, value: string | number | boolean | null): void;
+}
+
+/**
+ * Helper function to generate observedAttributes from component config
+ * @param config - Component configuration object
+ * @returns Array of attribute names that should be observed
+ */
+export function getObservedAttributes(config: ComponentConfig): string[] {
+  const staticAttrs = config.staticAttributes || [];
+  const dynamicAttrs = config.dynamicAttributes || [];
+  const explicitAttrs = config.observedAttributes || [];
+
+  // Merge all attribute arrays and remove duplicates
+  const allAttributes = [...new Set([...staticAttrs, ...dynamicAttrs, ...explicitAttrs])];
+
+  return allAttributes;
 }
 
 /**
@@ -27,13 +53,31 @@ export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(
   abstract class AttributeManagerMixin extends Base implements AttributeManagerMixinInterface {
     protected config!: ComponentConfig;
 
+    /**
+     * Type guard to check if the component has ClassManager capabilities
+     * @private
+     */
+    private hasClassManager(): this is this & ClassManagerInterface {
+      return (
+        'updateStaticAttributeCache' in this &&
+        typeof (this as any).updateStaticAttributeCache === 'function' &&
+        'updateComponentClasses' in this &&
+        typeof (this as any).updateComponentClasses === 'function'
+      );
+    }
+
+    /**
+     * Type guard to check if the component has UpdateManager capabilities
+     * @private
+     */
+    private hasUpdateManager(): this is this & UpdateManagerInterface {
+      return 'requestUpdate' in this && typeof (this as any).requestUpdate === 'function';
+    }
+
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
-      // Call parent's attributeChangedCallback if it exists (for components that extend CoreCustomElement)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const parentProto = Object.getPrototypeOf(Object.getPrototypeOf(this));
-      if (parentProto && typeof parentProto.attributeChangedCallback === 'function') {
-        parentProto.attributeChangedCallback.call(this, name, oldValue, newValue);
-      }
+      // Call parent's attributeChangedCallback if it exists (more reliable approach)
+      // Walk up the prototype chain to find the parent implementation
+      this.callParentAttributeChangedCallback(name, oldValue, newValue);
 
       if (oldValue === newValue) return;
 
@@ -46,35 +90,63 @@ export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(
     }
 
     /**
+     * Safely calls parent attributeChangedCallback implementation
+     * More robust than direct prototype chain navigation
+     * @private
+     */
+    private callParentAttributeChangedCallback(
+      name: string,
+      oldValue: string | null,
+      newValue: string | null
+    ): void {
+      // Look for parent implementation by walking up the prototype chain
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      let currentProto: any = Object.getPrototypeOf(this);
+
+      while (currentProto && currentProto !== Object.prototype) {
+        // Skip our own implementation and look for parent
+        if (
+          currentProto.constructor !== AttributeManagerMixin &&
+          typeof currentProto.attributeChangedCallback === 'function' &&
+          currentProto.attributeChangedCallback !== this.attributeChangedCallback
+        ) {
+          try {
+            currentProto.attributeChangedCallback.call(this, name, oldValue, newValue);
+            break; // Found and called parent implementation
+          } catch (error) {
+            // Continue searching if call fails
+            console.warn('Failed to call parent attributeChangedCallback:', error);
+          }
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        currentProto = Object.getPrototypeOf(currentProto);
+      }
+    }
+
+    /**
      * Handles static attribute changes (variants, etc.)
+     * Uses type guard for safer cross-mixin communication
      */
     private handleStaticAttributeChange(name: string, value: string | null): void {
-      // Notify ClassManagerMixin if present
-      if (
-        'updateStaticAttributeCache' in this &&
-        typeof (this as any).updateStaticAttributeCache === 'function'
-      ) {
-        (this as any).updateStaticAttributeCache(name, value);
-        if (
-          'updateComponentClasses' in this &&
-          typeof (this as any).updateComponentClasses === 'function'
-        ) {
-          (this as any).updateComponentClasses();
-        }
+      // Notify ClassManagerMixin if present - now type-safe!
+      if (this.hasClassManager()) {
+        this.updateStaticAttributeCache(name, value);
+        this.updateComponentClasses();
       }
     }
 
     /**
      * Handles dynamic attribute changes (state, etc.)
+     * Uses type guard for safer cross-mixin communication
      */
     private handleDynamicAttributeChange(
       _name: string,
       _oldValue: string | null,
       _newValue: string | null
     ): void {
-      // Notify UpdateManagerMixin if present
-      if ('requestUpdate' in this && typeof (this as any).requestUpdate === 'function') {
-        (this as any).requestUpdate();
+      // Notify UpdateManagerMixin if present - now type-safe!
+      if (this.hasUpdateManager()) {
+        this.requestUpdate();
       }
     }
 
