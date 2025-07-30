@@ -1,7 +1,7 @@
 ---
 name: documentation-archivist
 description: Use this agent when you need comprehensive documentation management for your project. Examples include: after implementing new components or features that need documentation, when you notice inconsistencies between code and docs, when preparing for releases and need updated changelogs, when onboarding new developers and need to ensure docs are current, or when conducting periodic documentation audits. The agent should be used proactively whenever code changes might affect existing documentation, and reactively when developers report documentation issues or gaps.
-tools: Glob, Grep, Read, Edit, MultiEdit, Write, WebFetch, TodoWrite, WebSearch
+tools: Bash, Glob, Grep, Read, Edit, MultiEdit, Write, WebFetch, TodoWrite, WebSearch
 color: yellow
 ---
 
