@@ -34,6 +34,21 @@ export function SlotManagerMixin<TBase extends Constructor<SlotManagerBase>>(
     private _slotChangeListeners = new Map<HTMLSlotElement, EventListener>();
 
     /**
+     * Type predicate to check if the component has slot change callback capability
+     * Provides type-safe access to onSlotChange method without unsafe casting
+     * @private
+     */
+    private hasSlotChangeCallback(): this is this & {
+      onSlotChange: (slotName: string, event: Event) => void;
+    } {
+      return (
+        'onSlotChange' in this &&
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        typeof (this as any).onSlotChange === 'function'
+      );
+    }
+
+    /**
      * Gets a slot element by name
      * @param name - Slot name (undefined for default slot)
      * @returns HTMLSlotElement or null if not found
@@ -121,11 +136,8 @@ export function SlotManagerMixin<TBase extends Constructor<SlotManagerBase>>(
           const slotName = slot.getAttribute('name') || 'default';
 
           // Call the optional onSlotChange callback if implemented
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-          const self = this as any;
-          if (self.onSlotChange && typeof self.onSlotChange === 'function') {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-            self.onSlotChange(slotName, event);
+          if (this.hasSlotChangeCallback()) {
+            this.onSlotChange(slotName, event);
           }
         } catch (error) {
           console.error('SlotManagerMixin: Error in slot change handler:', error);
