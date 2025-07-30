@@ -1,12 +1,15 @@
 # Claude Code Session Brief: AccessibilityMixin Development
 
 ## Current Problem
+
 Need an AccessibilityMixin to handle dynamic ARIA states, relationships, and screen reader communication for components that require more than semantic HTML provides.
 
 ## Session Goal
+
 Build ONLY the AccessibilityMixin - focused on dynamic accessibility features that complement semantic HTML, not replace it.
 
 ## What NOT to Change
+
 - CoreCustomElement base class
 - ShadowDOMMixin (perfect as-is)
 - StyleManagerMixin (perfect as-is)
@@ -18,6 +21,7 @@ Build ONLY the AccessibilityMixin - focused on dynamic accessibility features th
 - Any other existing code
 
 ## Required Deliverables
+
 1. AccessibilityMixin implementation
 2. Unit tests for AccessibilityMixin
 3. Simple integration test with CoreCustomElement
@@ -25,6 +29,7 @@ Build ONLY the AccessibilityMixin - focused on dynamic accessibility features th
 ## Core Philosophy: Semantic HTML First
 
 ### What AccessibilityMixin Should NOT Do:
+
 ```typescript
 // DON'T recreate what semantic HTML already provides
 addRole(role: string)           // Use proper HTML elements instead
@@ -33,6 +38,7 @@ addBasicKeyboardSupport()       // Use proper focusable elements instead
 ```
 
 ### What AccessibilityMixin SHOULD Do:
+
 ```typescript
 // Dynamic ARIA states that change during component lifecycle
 setAriaExpanded(expanded: boolean): void
@@ -57,6 +63,7 @@ updateLiveRegion(message: string): void
 ## Primary Use Cases
 
 ### 1. Dynamic State Management
+
 ```typescript
 // Dropdown component
 this.setAriaExpanded(isOpen);
@@ -71,6 +78,7 @@ this.setAriaDescribedBy([this.errorMessageId]);
 ```
 
 ### 2. Complex Widget Relationships
+
 ```typescript
 // Modal/Dialog
 this.setAriaLabelledBy([this.titleId]);
@@ -82,6 +90,7 @@ this.setAriaActiveDescendant(this.selectedOptionId);
 ```
 
 ### 3. Screen Reader Communication
+
 ```typescript
 // Status updates
 this.announceToScreenReader('Form saved successfully', 'polite');
@@ -100,15 +109,15 @@ export interface AccessibilityMixinInterface {
   setAriaDisabled(disabled: boolean): void;
   setAriaBusy(busy: boolean): void;
   setAriaInvalid(invalid: boolean): void;
-  
+
   // ARIA relationships
   setAriaDescribedBy(elementIds: string[]): void;
   setAriaLabelledBy(elementIds: string[]): void;
   setAriaControls(elementIds: string[]): void;
-  
+
   // Screen reader communication
   announceToScreenReader(message: string, priority?: 'polite' | 'assertive'): void;
-  
+
   // Live region management
   createLiveRegion(priority: 'polite' | 'assertive'): HTMLElement;
   updateLiveRegion(message: string): void;
@@ -118,6 +127,7 @@ export interface AccessibilityMixinInterface {
 ## Architecture Decisions
 
 ### ARIA Attribute Management
+
 ```typescript
 // Should handle both element and shadowRoot scenarios
 // Use proper type safety and null checking
@@ -131,6 +141,7 @@ private setAriaAttribute(attribute: string, value: string | null): void {
 ```
 
 ### Live Region Strategy
+
 ```typescript
 // Should live regions be:
 // Option A: Created per component instance
@@ -141,6 +152,7 @@ private setAriaAttribute(attribute: string, value: string | null): void {
 ```
 
 ### Integration with Other Mixins
+
 ```typescript
 // Should work with UpdateManagerMixin for state changes
 // Should integrate with AttributeManagerMixin for attribute updates
@@ -150,17 +162,20 @@ private setAriaAttribute(attribute: string, value: string | null): void {
 ## Components That Need AccessibilityMixin
 
 ### High Priority:
+
 - **Dropdown/Select** - aria-expanded, aria-controls, aria-activedescendant
 - **Modal/Dialog** - aria-labelledby, aria-describedby, focus management
 - **Tabs** - aria-selected, aria-controls, aria-labelledby
 - **Accordion** - aria-expanded, aria-controls
 
 ### Medium Priority:
+
 - **Form components with validation** - aria-invalid, aria-describedby
 - **Loading states** - aria-busy
 - **Dynamic content** - live regions
 
 ### Low Priority (Semantic HTML Sufficient):
+
 - **Simple buttons** - Use `<button>` element
 - **Basic inputs** - Use proper `<input>` types
 - **Links** - Use `<a>` elements
@@ -168,6 +183,7 @@ private setAriaAttribute(attribute: string, value: string | null): void {
 ## Error Handling Requirements
 
 ### Graceful Degradation
+
 ```typescript
 // Should continue working if:
 // - Screen reader technology is not present
@@ -177,6 +193,7 @@ private setAriaAttribute(attribute: string, value: string | null): void {
 ```
 
 ### Validation
+
 ```typescript
 // Should validate:
 // - Element IDs exist before setting relationships
@@ -187,16 +204,19 @@ private setAriaAttribute(attribute: string, value: string | null): void {
 ## Performance Considerations
 
 ### Efficient Updates
+
 - Don't set ARIA attributes unnecessarily (check current value first)
 - Batch related ARIA updates when possible
 - Clean up live regions and listeners on disconnect
 
 ### Memory Management
+
 - Remove event listeners in disconnectedCallback
 - Clean up created live regions
 - Avoid memory leaks from retained references
 
 ## Success Criteria
+
 - [ ] Provides essential dynamic ARIA management without duplicating semantic HTML
 - [ ] Integrates cleanly with existing mixin patterns
 - [ ] Handles both Shadow DOM and Light DOM scenarios
@@ -208,6 +228,7 @@ private setAriaAttribute(attribute: string, value: string | null): void {
 ## Integration Examples
 
 ### With Existing Mixins
+
 ```typescript
 class DropdownComponent extends compose(
   CoreCustomElement,
@@ -228,6 +249,7 @@ class DropdownComponent extends compose(
 ```
 
 ### Type Guard Pattern
+
 ```typescript
 // Follow established pattern from other mixins
 interface UpdateManagerInterface {
@@ -242,26 +264,31 @@ private hasUpdateManager(): this is this & UpdateManagerInterface {
 ## Specific Implementation Notes
 
 ### Live Region Management
+
 - Create live regions in Shadow DOM if available, otherwise in document
 - Use unique IDs to avoid conflicts
 - Support both 'polite' and 'assertive' priorities
 
 ### ARIA Relationship Handling
+
 - Validate that referenced element IDs exist
 - Handle arrays of IDs properly (space-separated values)
 - Provide helpful warnings for missing elements
 
 ### State Management
+
 - Integrate with AttributeManagerMixin for persistent state
 - Support both direct method calls and attribute-driven updates
 
 ## Context to Provide Claude Code
+
 - All existing mixin implementations for pattern consistency
 - Emphasis on complementing semantic HTML, not replacing it
 - Focus on dynamic accessibility features only
 - Follow established error handling and type safety patterns
 
 ## Validation Steps
+
 1. Test dynamic ARIA state management
 2. Verify live region creation and updates work
 3. Check integration with other mixins
