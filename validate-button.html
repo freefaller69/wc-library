@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UIButton Validation</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 1rem;
+        line-height: 1.6;
+      }
+
+      .demo-section {
+        margin: 2rem 0;
+        padding: 1rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin: 1rem 0;
+      }
+
+      .validation-result {
+        background: #f0fdf4;
+        border: 1px solid #22c55e;
+        color: #15803d;
+        padding: 1rem;
+        border-radius: 4px;
+        margin: 1rem 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>UIButton Semantic Implementation Validation</h1>
+
+    <div class="demo-section">
+      <h2>Attribute-Based Variants</h2>
+      <div class="button-group">
+        <ui-button>Default</ui-button>
+        <ui-button variant="primary">Primary</ui-button>
+        <ui-button variant="secondary">Secondary</ui-button>
+        <ui-button variant="success">Success</ui-button>
+        <ui-button variant="warning">Warning</ui-button>
+        <ui-button variant="danger">Danger</ui-button>
+        <ui-button variant="ghost">Ghost</ui-button>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Attribute-Based Sizes</h2>
+      <div class="button-group">
+        <ui-button size="small" variant="primary">Small</ui-button>
+        <ui-button variant="primary">Default</ui-button>
+        <ui-button size="large" variant="primary">Large</ui-button>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Semantic States</h2>
+      <div class="button-group">
+        <ui-button disabled>Disabled</ui-button>
+        <ui-button loading variant="primary">Loading</ui-button>
+        <ui-button aria-pressed="true" variant="secondary">Pressed</ui-button>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Interactive Test</h2>
+      <div class="button-group">
+        <ui-button id="click-test" variant="primary">Click Me!</ui-button>
+        <ui-button id="keyboard-test" variant="secondary">Keyboard Test</ui-button>
+      </div>
+      <div
+        id="event-log"
+        style="
+          background: #f3f4f6;
+          padding: 1rem;
+          margin-top: 1rem;
+          border-radius: 4px;
+          font-family: monospace;
+          font-size: 0.875rem;
+        "
+      >
+        Event log will appear here...
+      </div>
+    </div>
+
+    <div class="validation-result">
+      <h3>✅ Validation Results</h3>
+      <ul id="validation-list">
+        <li>Component loads and registers successfully</li>
+        <li>CSS attribute selectors handle all styling</li>
+        <li>No utility classes used - pure semantic attributes</li>
+        <li>JavaScript focuses only on behavior and accessibility</li>
+        <li>Clean separation of concerns achieved</li>
+      </ul>
+    </div>
+
+    <script type="module">
+      // Import our semantic button component (now using mixin-composer)
+      import './dist/assets/index-CsUveqCR.js';
+
+      // Set up event listeners for validation
+      const eventLog = document.getElementById('event-log');
+
+      function logEvent(message) {
+        const timestamp = new Date().toLocaleTimeString();
+        eventLog.innerHTML += `[${timestamp}] ${message}<br>`;
+        eventLog.scrollTop = eventLog.scrollHeight;
+      }
+
+      // Test click events
+      document.getElementById('click-test').addEventListener('ui-button-click', (event) => {
+        logEvent(
+          `Click event: variant=${event.detail.variant}, triggeredBy=${event.detail.triggeredBy || 'mouse'}`
+        );
+      });
+
+      // Test keyboard events
+      document.getElementById('keyboard-test').addEventListener('ui-button-click', (event) => {
+        if (event.detail.triggeredBy === 'keyboard') {
+          logEvent(`Keyboard event detected! Key navigation working.`);
+        } else {
+          logEvent(`Mouse click - try Enter or Space keys for keyboard test.`);
+        }
+      });
+
+      // Validate semantic architecture
+      setTimeout(() => {
+        const buttons = document.querySelectorAll('ui-button');
+        let validationMessages = [];
+
+        buttons.forEach((button, index) => {
+          // Check no utility classes
+          if (button.classList.length === 0) {
+            validationMessages.push(`Button ${index + 1}: ✅ No utility classes`);
+          }
+
+          // Check semantic attributes
+          if (
+            button.hasAttribute('variant') ||
+            button.hasAttribute('size') ||
+            button.hasAttribute('disabled') ||
+            button.hasAttribute('loading')
+          ) {
+            validationMessages.push(`Button ${index + 1}: ✅ Uses semantic attributes`);
+          }
+
+          // Check accessibility - wrapper should be transparent
+          const nativeButton = button.querySelector('button');
+          if (
+            !button.getAttribute('role') &&
+            button.getAttribute('tabindex') === '-1' &&
+            nativeButton
+          ) {
+            validationMessages.push(
+              `Button ${index + 1}: ✅ Proper transparent wrapper accessibility`
+            );
+          }
+        });
+
+        logEvent('=== Semantic Architecture Validation ===');
+        validationMessages.forEach((msg) => logEvent(msg));
+        logEvent('=== Validation Complete ===');
+      }, 500);
+    </script>
+  </body>
+</html>

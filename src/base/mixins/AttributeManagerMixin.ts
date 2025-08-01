@@ -53,7 +53,10 @@ export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(
   Base: TBase
 ): TBase & Constructor<AttributeManagerMixinInterface> {
   abstract class AttributeManagerMixin extends Base implements AttributeManagerMixinInterface {
-    protected config!: ComponentConfig;
+    // Access config from CoreCustomElement - no redeclaration needed
+    protected get config(): ComponentConfig {
+      return (this as any).config;
+    }
 
     /**
      * Process static attributes once during component initialization
@@ -190,7 +193,9 @@ export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(
 
       switch (type) {
         case 'boolean':
-          return value !== 'false' && value !== '';
+          // For boolean attributes, presence = true, absence = false
+          // Empty string means the attribute is present (like <input disabled>)
+          return value !== 'false';
         case 'number': {
           const num = Number(value);
           return isNaN(num) ? null : num;

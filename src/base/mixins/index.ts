@@ -3,7 +3,7 @@
  */
 
 export { AccessibilityMixin } from './AccessibilityMixin.js';
-export { AttributeManagerMixin } from './AttributeManagerMixin.js';
+export { AttributeManagerMixin, getObservedAttributes } from './AttributeManagerMixin.js';
 export { EventManagerMixin } from './EventManagerMixin.js';
 export { ShadowDOMMixin } from './ShadowDOMMixin.js';
 export { StyleManagerMixin } from './StyleManagerMixin.js';
