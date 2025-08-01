@@ -1,0 +1,277 @@
+/**
+ * UIButton Component Styles
+ * 
+ * Truly semantic styling that enhances the native <button> element
+ * Uses attribute selectors and CSS custom properties for theming
+ */
+
+/* =============================================================================
+   BASE BUTTON STYLES - Applied to the native button element
+   ============================================================================= */
+
+ui-button {
+  /* CSS custom properties for theming */
+  --button-font-family: var(--ui-font-family-sans);
+  --button-font-weight: var(--ui-font-weight-medium);
+  --button-line-height: var(--ui-line-height-tight);
+  --button-border-width: 1px;
+  --button-border-style: solid;
+  --button-transition: var(--ui-transition-base);
+
+  /* Default size - overridden by size attributes */
+  --button-font-size: var(--ui-font-size-base);
+  --button-padding-x: var(--ui-space-4);
+  --button-padding-y: var(--ui-space-2);
+  --button-border-radius: var(--ui-radius-md);
+  --button-min-height: 2.75rem; /* 44px - touch friendly */
+
+  /* Default colors - overridden by variant attributes */
+  --button-bg-color: var(--ui-color-neutral-100);
+  --button-text-color: var(--ui-color-text-primary);
+  --button-border-color: var(--ui-color-border-primary);
+
+  /* Hover state defaults */
+  --button-hover-bg-color: var(--ui-color-neutral-200);
+  --button-hover-text-color: var(--ui-color-text-primary);
+  --button-hover-border-color: var(--ui-color-border-primary);
+
+  /* Focus state */
+  --button-focus-shadow: var(--ui-shadow-focus);
+
+  /* Container styles - minimal since native button does the work */
+  display: inline-block;
+}
+
+/* Style the native button element */
+ui-button button {
+  /* Inherit design system properties */
+  font-family: var(--button-font-family);
+  font-size: var(--button-font-size);
+  font-weight: var(--button-font-weight);
+  line-height: var(--button-line-height);
+  color: var(--button-text-color);
+  background-color: var(--button-bg-color);
+  border: var(--button-border-width) var(--button-border-style) var(--button-border-color);
+  border-radius: var(--button-border-radius);
+  padding: var(--button-padding-y) var(--button-padding-x);
+  min-height: var(--button-min-height);
+  cursor: pointer;
+  transition: var(--button-transition);
+
+  /* Layout and alignment */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ui-space-2);
+  text-decoration: none;
+  user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Hover state - native button handles :hover automatically */
+ui-button:not([disabled]):not([loading]) button:hover {
+  background-color: var(--button-hover-bg-color);
+  color: var(--button-hover-text-color);
+  border-color: var(--button-hover-border-color);
+}
+
+/* Focus state - native button handles :focus automatically */
+ui-button button:focus-visible {
+  outline: none;
+  box-shadow: var(--button-focus-shadow);
+}
+
+/* Active state - native button handles :active automatically */
+ui-button:not([disabled]):not([loading]) button:active {
+  transform: translateY(1px);
+}
+
+/* =============================================================================
+   SIZE VARIANTS - Using attribute selectors
+   ============================================================================= */
+
+/* Small size */
+ui-button[size='small'] {
+  --button-font-size: var(--ui-font-size-sm);
+  --button-padding-x: var(--ui-space-3);
+  --button-padding-y: var(--ui-space-1);
+  --button-min-height: 2rem; /* 32px */
+  --button-border-radius: var(--ui-radius-base);
+}
+
+/* Large size */
+ui-button[size='large'] {
+  --button-font-size: var(--ui-font-size-lg);
+  --button-padding-x: var(--ui-space-6);
+  --button-padding-y: var(--ui-space-3);
+  --button-min-height: 3.5rem; /* 56px */
+  --button-border-radius: var(--ui-radius-lg);
+}
+
+/* =============================================================================
+   VARIANT STYLES - Using attribute selectors
+   ============================================================================= */
+
+/* Primary variant */
+ui-button[variant='primary'] {
+  --button-bg-color: var(--ui-color-primary-600);
+  --button-text-color: var(--ui-color-text-inverse);
+  --button-border-color: var(--ui-color-primary-600);
+
+  --button-hover-bg-color: var(--ui-color-primary-700);
+  --button-hover-text-color: var(--ui-color-text-inverse);
+  --button-hover-border-color: var(--ui-color-primary-700);
+}
+
+/* Secondary variant */
+ui-button[variant='secondary'] {
+  --button-bg-color: transparent;
+  --button-text-color: var(--ui-color-primary-600);
+  --button-border-color: var(--ui-color-primary-600);
+
+  --button-hover-bg-color: var(--ui-color-primary-50);
+  --button-hover-text-color: var(--ui-color-primary-700);
+  --button-hover-border-color: var(--ui-color-primary-700);
+}
+
+/* Success variant */
+ui-button[variant='success'] {
+  --button-bg-color: var(--ui-color-success-600);
+  --button-text-color: var(--ui-color-text-inverse);
+  --button-border-color: var(--ui-color-success-600);
+
+  --button-hover-bg-color: var(--ui-color-success-500);
+  --button-hover-text-color: var(--ui-color-text-inverse);
+  --button-hover-border-color: var(--ui-color-success-500);
+}
+
+/* Warning variant */
+ui-button[variant='warning'] {
+  --button-bg-color: var(--ui-color-warning-500);
+  --button-text-color: var(--ui-color-text-inverse);
+  --button-border-color: var(--ui-color-warning-500);
+
+  --button-hover-bg-color: var(--ui-color-warning-600);
+  --button-hover-text-color: var(--ui-color-text-inverse);
+  --button-hover-border-color: var(--ui-color-warning-600);
+}
+
+/* Danger variant */
+ui-button[variant='danger'] {
+  --button-bg-color: var(--ui-color-error-500);
+  --button-text-color: var(--ui-color-text-inverse);
+  --button-border-color: var(--ui-color-error-500);
+
+  --button-hover-bg-color: var(--ui-color-error-600);
+  --button-hover-text-color: var(--ui-color-text-inverse);
+  --button-hover-border-color: var(--ui-color-error-600);
+}
+
+/* Ghost variant - minimal styling */
+ui-button[variant='ghost'] {
+  --button-bg-color: transparent;
+  --button-text-color: var(--ui-color-text-secondary);
+  --button-border-color: transparent;
+
+  --button-hover-bg-color: var(--ui-color-neutral-100);
+  --button-hover-text-color: var(--ui-color-text-primary);
+  --button-hover-border-color: transparent;
+}
+
+/* =============================================================================
+   STATE STYLES - Using attribute selectors
+   ============================================================================= */
+
+/* Disabled state - native button handles most of this automatically */
+ui-button[disabled] button,
+ui-button[loading] button {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Loading state */
+ui-button[loading] button::after {
+  content: '';
+  display: inline-block;
+  width: 0.875rem;
+  height: 0.875rem;
+  margin-left: var(--ui-space-2);
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: ui-button-spin 0.8s linear infinite;
+}
+
+@keyframes ui-button-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =============================================================================
+   CONTENT SUPPORT - Native buttons with light DOM content
+   ============================================================================= */
+
+/* Content spacing for buttons with mixed content */
+ui-button button > * + * {
+  margin-left: var(--ui-space-2);
+}
+
+ui-button button > *:first-child {
+  margin-left: calc(var(--ui-space-1) * -1);
+}
+
+ui-button button > *:last-child {
+  margin-right: calc(var(--ui-space-1) * -1);
+}
+
+/* Icon-only buttons */
+ui-button:empty button,
+ui-button[aria-label]:not([aria-label='']):empty button {
+  --button-padding-x: var(--button-padding-y);
+}
+
+/* =============================================================================
+   ACCESSIBILITY ENHANCEMENTS
+   ============================================================================= */
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  ui-button {
+    --button-transition: none;
+  }
+
+  ui-button[loading] button::after {
+    animation: none;
+  }
+
+  ui-button:not([disabled]):not([loading]) button:active {
+    transform: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  ui-button {
+    --button-border-width: 2px;
+  }
+
+  ui-button[variant='ghost'] {
+    --button-border-color: var(--ui-color-border-primary);
+  }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  ui-button[variant='secondary'] {
+    --button-hover-bg-color: var(--ui-color-primary-900);
+  }
+
+  ui-button[variant='ghost'] {
+    --button-hover-bg-color: var(--ui-color-neutral-800);
+  }
+}

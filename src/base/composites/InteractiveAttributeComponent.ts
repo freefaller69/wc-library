@@ -11,6 +11,7 @@ import { EventManagerMixin } from '../mixins/EventManagerMixin.js';
 import { UpdateManagerMixin } from '../mixins/UpdateManagerMixin.js';
 import type { ComponentConfig, AccessibilityOptions } from '../../types/component.js';
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const InteractiveAttributeBase = compose(
   CoreCustomElement,
   AccessibilityMixin,
@@ -21,6 +22,7 @@ const InteractiveAttributeBase = compose(
 
 export abstract class InteractiveAttributeComponent extends InteractiveAttributeBase {
   constructor(config: ComponentConfig) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     super(config);
   }
 

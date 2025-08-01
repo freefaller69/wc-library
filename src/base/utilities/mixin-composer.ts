@@ -11,7 +11,7 @@ export type Mixin<T extends Constructor> = (Base: T) => T;
 /**
  * Composes multiple mixins with a base class
  */
-export function compose<T extends Constructor>(Base: T, ...mixins: Mixin<any>[]): T {
+export function compose<T extends Constructor>(Base: T, ...mixins: Mixin<any>[]): any {
   return mixins.reduce((accumulator, mixin) => mixin(accumulator), Base);
 }
 

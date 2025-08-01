@@ -10,6 +10,7 @@ import { ClassManagerMixin } from '../mixins/ClassManagerMixin.js';
 import { UpdateManagerMixin } from '../mixins/UpdateManagerMixin.js';
 import type { ComponentConfig } from '../../types/component.js';
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const AttributeClassBase = compose(
   CoreCustomElement,
   AttributeManagerMixin,
@@ -19,6 +20,7 @@ const AttributeClassBase = compose(
 
 export abstract class AttributeClassComponent extends AttributeClassBase {
   constructor(config: ComponentConfig) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     super(config);
   }
 
