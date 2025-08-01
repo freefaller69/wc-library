@@ -15,6 +15,9 @@ dist-ssr
 # Generated performance files
 performance-results.json
 
+# Screenshots for development/debugging
+screenshots/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

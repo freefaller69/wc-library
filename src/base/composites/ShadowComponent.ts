@@ -13,6 +13,7 @@ import type { ShadowDOMMixinInterface } from '../mixins/ShadowDOMMixin.js';
 import type { UpdateManagerMixinInterface } from '../mixins/UpdateManagerMixin.js';
 import type { ComponentConfig } from '../../types/component.js';
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const ShadowBase = compose(
   CoreCustomElement,
   ShadowDOMMixin,
@@ -35,6 +36,7 @@ export abstract class ShadowComponent
   declare render?: () => void;
 
   constructor(config: ComponentConfig) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     super(config);
   }
 

@@ -410,3 +410,24 @@ export class ToggleSwitch extends FullComponent {
 - Screen reader announcements
 
 This architecture provides a solid foundation for building scalable, performant, and accessible web components while maintaining developer productivity and code quality.
+
+## Strategic Development Integration
+
+This architecture guide supports our **3-Phase Component Development Strategy** documented in `/docs/development/strategic-component-roadmap.md`. The component types and patterns described here provide the technical foundation for:
+
+### Phase 1: Core Primitives
+
+- **SimpleComponent**: Used for display-only primitives (ui-heading, ui-text, ui-icon)
+- **FullComponent**: Used for interactive primitives (ui-button, ui-input, ui-select, ui-checkbox)
+
+### Phase 2: Molecule Components
+
+- **FullComponent**: Used for composite components that combine multiple primitives
+- **Mixin Patterns**: Validated composition strategies from primitive implementations
+
+### Phase 3: Architecture Optimization
+
+- **Performance Benchmarks**: Based on real component measurements
+- **Mixin Enhancements**: Driven by evidence from component implementations
+
+See the strategic roadmap for detailed implementation phases and success criteria.

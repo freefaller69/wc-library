@@ -1,13 +1,32 @@
 # Component Roadmap
 
-This document outlines the planned components for our web component library, organized by atomic design principles. Each component includes its base class inheritance, key features, and dependencies.
+This document outlines the planned components for our web component library, organized by atomic design principles and integrated with our **3-Phase Component Development Strategy**. Each component includes its base class inheritance, key features, and dependencies.
+
+**📋 Strategic Context**: This roadmap supports our evidence-based development approach documented in `/docs/development/strategic-component-roadmap.md` and `/docs/architecture/adr-001-phased-development-strategy.md`.
 
 ## Component Status Legend
 
 - ⭐ **Planned** - Not yet implemented
-- 🚧 **In Progress** - Currently being developed
+- 🔄 **In Progress** - Currently being developed
 - ✅ **Completed** - Implemented and tested
 - 📋 **Needs Review** - Implementation complete, awaiting review
+- 🎯 **Phase Priority** - Strategic priority for current development phase
+
+---
+
+## Strategic Development Phases
+
+### 🎯 Phase 1: Core Primitives Portfolio (Current Focus)
+
+**Objective**: Validate mixin composition patterns with diverse primitive components
+
+### Phase 2: Molecule Components
+
+**Objective**: Validate component composition and communication patterns
+
+### Phase 3: Architecture Optimization & Tooling
+
+**Objective**: Optimize architecture based on collected evidence
 
 ---
 
@@ -15,24 +34,28 @@ This document outlines the planned components for our web component library, org
 
 ### Form Controls
 
-#### ui-button ⭐
+#### ui-button ✅ 🎯
 
-- **Extends**: `BaseComponent`
+- **Phase**: 1 (Completed)
+- **Extends**: `FullComponent` (with mixin composition)
 - **Variants**: primary, secondary, tertiary, danger, success
 - **Sizes**: small, medium, large
 - **States**: disabled, loading, pressed
 - **Features**: Icon support, full accessibility, keyboard navigation
 - **Dependencies**: None
+- **Evidence Provided**: Mixin composition validation, event handling patterns, accessibility integration
 
-#### ui-input ⭐
+#### ui-input 🔄 🎯
 
-- **Extends**: `BaseInputComponent` (extends `BaseComponent`)
+- **Phase**: 1 (In Progress - Next Priority)
+- **Extends**: `FullComponent` (with input-specific mixins)
 - **Types**: text, email, tel, url, password, search
 - **Variants**: default, filled, outlined
 - **Sizes**: small, medium, large
 - **States**: disabled, readonly, invalid, valid
 - **Features**: Label association, error states, help text
 - **Dependencies**: None
+- **Evidence Goal**: Complex attribute management, validation state patterns, keyboard navigation
 
 #### ui-textarea ⭐
 
@@ -40,19 +63,23 @@ This document outlines the planned components for our web component library, org
 - **Features**: Auto-resize, character count, validation states
 - **Dependencies**: None
 
-#### ui-select ⭐
+#### ui-select 🔄 🎯
 
-- **Extends**: `BaseInputComponent`
+- **Phase**: 1 (Planned - High Priority)
+- **Extends**: `FullComponent` (with advanced interaction mixins)
 - **Features**: Custom dropdown, search filtering, multi-select
 - **Variants**: native, custom
 - **Dependencies**: ui-icon, ui-button
+- **Evidence Goal**: Advanced interaction patterns, keyboard navigation, event coordination
 
-#### ui-checkbox ⭐
+#### ui-checkbox 🔄 🎯
 
-- **Extends**: `BooleanInputComponent` (extends `BaseInputComponent`)
+- **Phase**: 1 (Planned - Medium Priority)
+- **Extends**: `FullComponent` (with boolean input patterns)
 - **States**: checked, unchecked, indeterminate
 - **Features**: Custom styling, label association
 - **Dependencies**: ui-icon
+- **Evidence Goal**: Boolean input patterns, tri-state management, custom styling of native inputs
 
 #### ui-radio ⭐
 
@@ -224,12 +251,14 @@ This document outlines the planned components for our web component library, org
 
 ### Form Molecules
 
-#### ui-field ⭐
+#### ui-field 🔄 🎯
 
-- **Extends**: `BaseComponent`
+- **Phase**: 2 (Planned - High Priority)
+- **Extends**: `FullComponent` (with composition patterns)
 - **Components**: label + input + help text + error
 - **Features**: Validation states, required indicators
 - **Dependencies**: ui-label, ui-input/ui-textarea/ui-select, ui-icon
+- **Evidence Goal**: Multi-component composition, state coordination, inter-component communication
 
 #### ui-fieldset ⭐
 
@@ -252,13 +281,15 @@ This document outlines the planned components for our web component library, org
 
 ### Display Molecules
 
-#### ui-card ⭐
+#### ui-card 🔄 🎯
 
-- **Extends**: `ShadowComponent`
+- **Phase**: 2 (Planned - High Priority)
+- **Extends**: `FullComponent` (with flexible layout patterns)
 - **Sections**: header, body, footer, media
 - **Variants**: elevated, outlined, filled
 - **Features**: Interactive states, actions
 - **Dependencies**: ui-button, ui-icon
+- **Evidence Goal**: Layout flexibility, content projection, slot management patterns
 
 #### ui-alert ⭐
 
@@ -583,48 +614,67 @@ Typography primitives (`ui-heading`, `ui-paragraph`, `ui-text`) use light DOM fo
 
 ---
 
-## Implementation Priorities
+## Strategic Implementation Priorities
 
-### Phase 2: Core Primitives
+### 🎯 Phase 1: Core Primitives Portfolio (Current Focus)
 
-1. ui-button (foundation example)
-2. ui-input (inheritance pattern validation)
-3. ui-icon (dependency for many components)
-4. ui-label (field composition)
-5. ui-heading (typography foundation)
-6. ui-paragraph (text content)
-7. ui-image (media foundation)
+**Objective**: Validate mixin composition patterns with diverse primitive components
 
-### Phase 3: Essential Molecules
+**Priority Order**:
 
-1. ui-field (form building block)
-2. ui-alert (feedback pattern)
-3. ui-card (layout pattern)
-4. ui-text-block (structured content)
-5. ui-picture (responsive images)
+1. ✅ **ui-button** (Completed - Mixin composition validation)
+2. 🔄 **ui-input** (Next - Complex attribute management evidence)
+3. 🔄 **ui-select** (Advanced interaction patterns evidence)
+4. 🔄 **ui-checkbox** (Boolean input patterns evidence)
 
-### Phase 4: Advanced Components
+**Success Criteria**:
 
-1. ui-select (complex interaction)
-2. ui-table (data display)
-3. ui-modal (overlay pattern)
-4. ui-video (media player foundation)
+- [ ] 4 primitive components demonstrate consistent patterns
+- [ ] Mixin composition validated across component types
+- [ ] Performance baseline established (<2ms initialization)
+- [ ] Accessibility patterns proven (WCAG 2.1 AA compliance)
 
-### Phase 5: Specialized Components
+### Phase 2: Molecule Components (Evidence Integration)
 
-1. ui-data-grid (advanced data)
-2. ui-multi-step-form (complex flows)
-3. ui-drawer (advanced navigation)
-4. ui-article (rich content structure)
-5. ui-content-card (media + typography)
+**Objective**: Validate component composition and communication patterns
 
-### Phase 6: Advanced Media Components
+**Priority Order**:
 
-1. ui-media-embed (privacy-first embeds)
-2. ui-media-gallery (image/video galleries)
-3. ui-media-player (unified media player)
-4. ui-lightbox (full-screen media viewing)
-5. ui-media-uploader (file upload with preview)
+1. 🔄 **ui-form-field** (Multi-component composition evidence)
+2. 🔄 **ui-card** (Layout flexibility and slot management evidence)
+
+**Success Criteria**:
+
+- [ ] 2 molecule components demonstrate effective primitive composition
+- [ ] Component communication patterns documented
+- [ ] Slot management strategies validated
+- [ ] Performance impact of composite components measured
+
+### Phase 3: Architecture Optimization & Tooling (Refinement)
+
+**Objective**: Optimize architecture based on collected evidence
+
+**Priority Order**:
+
+1. **Performance Monitoring Integration** (Performance API + Playwright)
+2. **Enhanced Mixin Communication Patterns** (Based on evidence from Phases 1-2)
+3. **Bundle Analysis and Optimization** (Tree-shaking validation)
+4. **Advanced Testing Utilities** (Component testing helpers)
+
+**Success Criteria**:
+
+- [ ] Performance monitoring system operational
+- [ ] Architecture optimizations implemented based on evidence
+- [ ] Advanced tooling reduces development friction
+- [ ] Library ready for production adoption
+
+### Future Phases: Advanced Components
+
+**Objective**: Scale the library with complex organisms
+
+**Components**: ui-table, ui-modal, ui-data-grid, ui-multi-step-form, ui-media-player, ui-lightbox
+
+**Note**: These will be developed after Phase 3 optimization, using patterns validated in earlier phases.
 
 ---
 
@@ -640,3 +690,12 @@ Typography primitives (`ui-heading`, `ui-paragraph`, `ui-text`) use light DOM fo
 - **Performance first**: Lazy loading, intersection observers, and efficient rendering
 
 This roadmap provides a comprehensive view of where the component library is headed while maintaining flexibility to adapt as requirements evolve.
+
+## Strategic Documentation Links
+
+- **📋 Strategic Roadmap**: `/docs/development/strategic-component-roadmap.md` - Detailed 3-phase strategy
+- **🏗️ Architecture Guide**: `/docs/architecture/component-architecture-guide.md` - Technical patterns and decisions
+- **📝 ADR-001**: `/docs/architecture/adr-001-phased-development-strategy.md` - Architectural decision rationale
+- **🔘 Button Session Brief**: `/docs/session_briefs/button-session-brief.md` - Phase 1 completion example
+
+This integrated approach ensures our component development aligns with architectural evidence collection and optimization goals.
