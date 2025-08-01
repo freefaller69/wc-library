@@ -54,32 +54,44 @@ describe('UIButton - Interactive Component', () => {
   });
 
   describe('Accessibility Configuration', () => {
-    it('should have proper accessibility config by default', () => {
+    it('should have proper accessibility config by default (transparent wrapper)', () => {
       const config = button.getAccessibilityConfig();
-      expect(config.role).toBe('button');
-      expect(config.focusable).toBe(true);
-      expect(config.tabIndex).toBe(0);
+      // Wrapper should be transparent to avoid conflicts with native button
+      expect(config.role).toBeUndefined();
+      expect(config.focusable).toBe(false);
+      expect(config.tabIndex).toBe(-1);
     });
 
-    it('should have correct initial ARIA attributes', () => {
-      expect(button.getAttribute('role')).toBe('button');
-      expect(button.getAttribute('tabindex')).toBe('0');
+    it('should have transparent wrapper with no ARIA attributes', () => {
+      // Wrapper should not have accessibility attributes - native button handles this
+      expect(button.getAttribute('role')).toBeNull();
+      expect(button.getAttribute('tabindex')).toBe('-1');
     });
 
-    it('should update accessibility when disabled', () => {
+    it('should delegate ARIA attributes to native button when disabled', () => {
       button.disabled = true;
 
+      // Wrapper config should remain transparent
       const config = button.getAccessibilityConfig();
       expect(config.focusable).toBe(false);
       expect(config.tabIndex).toBe(-1);
-      expect(button.getAttribute('tabindex')).toBe('-1');
-      expect(button.getAttribute('aria-disabled')).toBe('true');
+
+      // Native button should have proper disabled state
+      expect(button.nativeButtonElement.disabled).toBe(true);
+      expect(button.nativeButtonElement.getAttribute('aria-disabled')).toBe('true');
     });
 
-    it('should handle custom aria-label', () => {
+    it('should delegate custom aria-label to native button', () => {
       button.setAttribute('aria-label', 'Custom Button Label');
-      const config = button.getAccessibilityConfig();
-      expect(config.ariaLabel).toBe('Custom Button Label');
+
+      // Trigger the accessibility update to delegate the attribute
+      button.updateAccessibilityState();
+
+      // Wrapper should keep the aria-label attribute (for API consistency)
+      expect(button.getAttribute('aria-label')).toBe('Custom Button Label');
+
+      // Native button should receive the delegated aria-label
+      expect(button.nativeButtonElement.getAttribute('aria-label')).toBe('Custom Button Label');
     });
   });
 
@@ -380,12 +392,17 @@ describe('UIButton - Interactive Component', () => {
   });
 
   describe('Component Lifecycle', () => {
-    it('should setup properly on connection', () => {
+    it('should setup properly on connection with transparent wrapper', () => {
       const newButton = new UIButton();
       document.body.appendChild(newButton);
 
-      expect(newButton.getAttribute('role')).toBe('button');
-      expect(newButton.getAttribute('tabindex')).toBe('0');
+      // Wrapper should be transparent
+      expect(newButton.getAttribute('role')).toBeNull();
+      expect(newButton.getAttribute('tabindex')).toBe('-1');
+
+      // Native button should be properly set up
+      expect(newButton.nativeButtonElement).toBeDefined();
+      expect(newButton.nativeButtonElement.tagName).toBe('BUTTON');
 
       newButton.remove();
     });

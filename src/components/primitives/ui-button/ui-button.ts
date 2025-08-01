@@ -8,13 +8,20 @@
  * - Design system styling via CSS custom properties
  * - Enhanced event dispatching with context
  * - Consistent theming and variant system
- * - Slot-based content projection
+ * - Light DOM content projection
  * - Minimal JavaScript footprint
  */
 
 import { CoreCustomElement } from '../../../base/CoreCustomElement.js';
-import { AttributeManagerMixin, AccessibilityMixin, getObservedAttributes } from '../../../base/mixins/index.js';
+import {
+  AttributeManagerMixin,
+  AccessibilityMixin,
+  getObservedAttributes,
+} from '../../../base/mixins/index.js';
+import { compose, type Constructor } from '../../../base/utilities/mixin-composer.js';
 import type { ComponentConfig, AccessibilityOptions } from '../../../types/component.js';
+import type { AttributeManagerMixinInterface } from '../../../base/mixins/AttributeManagerMixin.js';
+import type { AccessibilityMixinInterface } from '../../../base/mixins/AccessibilityMixin.js';
 import './ui-button.css';
 
 export interface UIButtonClickEventDetail {
@@ -25,7 +32,28 @@ export interface UIButtonClickEventDetail {
   triggeredBy?: 'mouse' | 'keyboard';
 }
 
-export class UIButton extends AttributeManagerMixin(AccessibilityMixin(CoreCustomElement)) {
+// Type alias for the composed base class with proper mixin interfaces
+type UIButtonBase = Constructor<
+  CoreCustomElement & AccessibilityMixinInterface & AttributeManagerMixinInterface
+> & {
+  new (
+    config: ComponentConfig
+  ): CoreCustomElement & AccessibilityMixinInterface & AttributeManagerMixinInterface;
+};
+
+/**
+ * UIButton implementation using mixin-composer for clean mixin composition
+ *
+ * Composition order (applied left-to-right):
+ * 1. CoreCustomElement - Base functionality and lifecycle
+ * 2. AccessibilityMixin - ARIA attributes and keyboard handling
+ * 3. AttributeManagerMixin - Typed attribute getters/setters
+ */
+export class UIButton extends (compose(
+  CoreCustomElement,
+  AccessibilityMixin,
+  AttributeManagerMixin
+) as UIButtonBase) {
   private nativeButton!: HTMLButtonElement;
   private lastTriggerSource: 'mouse' | 'keyboard' = 'mouse';
 
@@ -38,6 +66,8 @@ export class UIButton extends AttributeManagerMixin(AccessibilityMixin(CoreCusto
   }
 
   constructor() {
+    // TypeScript has difficulty inferring constructor args through mixin composition
+    // eslint-disable-next-line constructor-super
     super({
       tagName: 'ui-button',
       // Dynamic attributes - observed for changes, trigger state updates
@@ -62,12 +92,12 @@ export class UIButton extends AttributeManagerMixin(AccessibilityMixin(CoreCusto
     this.nativeButton = document.createElement('button');
     this.nativeButton.setAttribute('part', 'button');
 
-    // Move all content to the native button
-    const slot = document.createElement('slot');
-    this.nativeButton.appendChild(slot);
+    // Simple: move all content directly to native button
+    while (this.firstChild) {
+      this.nativeButton.appendChild(this.firstChild);
+    }
 
-    // Clear any existing content and add the native button
-    this.innerHTML = '';
+    // Add the native button to the wrapper
     this.appendChild(this.nativeButton);
   }
 
@@ -75,14 +105,13 @@ export class UIButton extends AttributeManagerMixin(AccessibilityMixin(CoreCusto
     // Let the native button handle all the accessibility automatically
     // We just listen for the native click event and enhance it
     this.nativeButton.addEventListener('click', this.handleNativeClick.bind(this));
-    
-    // Override AccessibilityMixin's keyboard handling - we need it on wrapper
-    // to detect trigger source, but native button handles the actual behavior
+
+    // Listen for keyboard events on wrapper to detect trigger source
+    // AccessibilityMixin provides transparent wrapper, so no conflict with native button
     this.addEventListener('keydown', this.handleKeydown);
   }
 
-
-  // Override AccessibilityMixin's handleKeydown with button-specific logic
+  // Handle keyboard events to detect trigger source for enhanced event dispatching
   handleKeydown = (event: KeyboardEvent): void => {
     if (event.key === 'Enter' || event.key === ' ') {
       // Prevent default to avoid double-firing
@@ -92,7 +121,7 @@ export class UIButton extends AttributeManagerMixin(AccessibilityMixin(CoreCusto
       // Trigger click on native button (which will call handleNativeClick)
       this.nativeButton.click();
     }
-  }
+  };
 
   private handleNativeClick(event: Event): void {
     // Native button already handled disabled state, keyboard events, etc.
@@ -144,7 +173,7 @@ export class UIButton extends AttributeManagerMixin(AccessibilityMixin(CoreCusto
     }
   }
 
-  private updateAccessibilityState(): void {
+  public updateAccessibilityState(): void {
     // Apply accessibility attributes to native button where they belong
     if (this.disabled || this.loading) {
       this.nativeButton.setAttribute('aria-disabled', 'true');
@@ -244,12 +273,12 @@ export class UIButton extends AttributeManagerMixin(AccessibilityMixin(CoreCusto
 
   /**
    * Gets accessibility configuration for the button wrapper
-   * 
+   *
    * ACCESSIBILITY DECISION: Wrapper should be transparent to avoid conflicts
    * - NO role="button" (native button provides this)
-   * - NO tabindex (native button handles focus)  
+   * - NO tabindex (native button handles focus)
    * - ARIA attributes delegated to native button where they belong
-   * 
+   *
    * This prevents screen reader confusion and keyboard navigation issues.
    * Required by AccessibilityMixin interface
    */

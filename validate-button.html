@@ -104,8 +104,8 @@
     </div>
 
     <script type="module">
-      // Import our semantic button component
-      import './dist/assets/index-CdBi7OmA.js';
+      // Import our semantic button component (pure light DOM)
+      import './dist/assets/index-MHUPe_V9.js';
 
       // Set up event listeners for validation
       const eventLog = document.getElementById('event-log');
@@ -153,9 +153,16 @@
             validationMessages.push(`Button ${index + 1}: ✅ Uses semantic attributes`);
           }
 
-          // Check accessibility
-          if (button.getAttribute('role') === 'button' && button.hasAttribute('tabindex')) {
-            validationMessages.push(`Button ${index + 1}: ✅ Proper accessibility`);
+          // Check accessibility - wrapper should be transparent
+          const nativeButton = button.querySelector('button');
+          if (
+            !button.getAttribute('role') &&
+            button.getAttribute('tabindex') === '-1' &&
+            nativeButton
+          ) {
+            validationMessages.push(
+              `Button ${index + 1}: ✅ Proper transparent wrapper accessibility`
+            );
           }
         });
 

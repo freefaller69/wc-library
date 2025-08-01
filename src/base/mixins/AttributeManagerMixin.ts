@@ -55,6 +55,7 @@ export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(
   abstract class AttributeManagerMixin extends Base implements AttributeManagerMixinInterface {
     // Access config from CoreCustomElement - no redeclaration needed
     protected get config(): ComponentConfig {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return (this as any).config;
     }
 

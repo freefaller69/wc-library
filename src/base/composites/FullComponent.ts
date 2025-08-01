@@ -17,6 +17,7 @@ import {
 import type { ShadowDOMMixinInterface } from '../mixins/ShadowDOMMixin.js';
 import type { ComponentConfig, AccessibilityOptions } from '../../types/component.js';
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const FullBase = compose(
   CoreCustomElement,
   AccessibilityMixin,
@@ -35,6 +36,7 @@ export abstract class FullComponent extends FullBase implements ShadowDOMMixinIn
   declare hasShadowDOM: () => this is { shadowRoot: ShadowRoot };
 
   constructor(config: ComponentConfig) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     super(config);
   }
 

@@ -31,7 +31,8 @@ describe('UIButton - Semantic Implementation', () => {
       expect(button.tagName.toLowerCase()).toBe('ui-button');
       expect(button.id).toBeTruthy();
       expect(button.getAttribute('data-ui-component')).toBe('ui-button');
-      expect(button.getAttribute('role')).toBe('button');
+      // Wrapper should be transparent - no role attribute
+      expect(button.getAttribute('role')).toBeNull();
     });
 
     it('should have observed attributes from configuration', () => {
@@ -46,13 +47,14 @@ describe('UIButton - Semantic Implementation', () => {
   describe('Semantic Attribute Management', () => {
     it('should handle disabled state semantically', () => {
       expect(button.disabled).toBe(false);
-      expect(button.getAttribute('tabindex')).toBe('0');
+      expect(button.getAttribute('tabindex')).toBe('-1');
 
       button.disabled = true;
       expect(button.disabled).toBe(true);
       expect(button.hasAttribute('disabled')).toBe(true);
       expect(button.getAttribute('tabindex')).toBe('-1');
-      expect(button.getAttribute('aria-disabled')).toBe('true');
+      // aria-disabled should be on the native button, not the wrapper
+      expect(button.nativeButtonElement.getAttribute('aria-disabled')).toBe('true');
     });
 
     it('should handle loading state semantically', () => {
@@ -85,24 +87,30 @@ describe('UIButton - Semantic Implementation', () => {
   });
 
   describe('Accessibility Features', () => {
-    it('should have proper accessibility setup', () => {
-      expect(button.getAttribute('role')).toBe('button');
-      expect(button.getAttribute('tabindex')).toBe('0');
+    it('should have proper accessibility setup (transparent wrapper)', () => {
+      // Wrapper should be transparent - no role or focusable attributes
+      expect(button.getAttribute('role')).toBeNull();
+      expect(button.getAttribute('tabindex')).toBe('-1');
     });
 
-    it('should provide accessibility configuration', () => {
+    it('should provide accessibility configuration (transparent wrapper)', () => {
       const config = button.getAccessibilityConfig();
-      expect(config.role).toBe('button');
-      expect(config.focusable).toBe(true);
-      expect(config.tabIndex).toBe(0);
+      // Wrapper should be transparent to avoid conflicts with native button
+      expect(config.role).toBeUndefined();
+      expect(config.focusable).toBe(false);
+      expect(config.tabIndex).toBe(-1);
     });
 
     it('should update accessibility on disabled state', () => {
       button.disabled = true;
 
       const config = button.getAccessibilityConfig();
+      // Wrapper remains transparent
       expect(config.focusable).toBe(false);
       expect(config.tabIndex).toBe(-1);
+
+      // Native button should be disabled
+      expect(button.nativeButtonElement.disabled).toBe(true);
     });
 
     it('should handle aria-pressed correctly', () => {
