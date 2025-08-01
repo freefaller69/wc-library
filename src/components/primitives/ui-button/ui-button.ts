@@ -8,7 +8,7 @@
  * - Design system styling via CSS custom properties
  * - Enhanced event dispatching with context
  * - Consistent theming and variant system
- * - Slot-based content projection
+ * - Light DOM content projection
  * - Minimal JavaScript footprint
  */
 
@@ -92,12 +92,12 @@ export class UIButton extends (compose(
     this.nativeButton = document.createElement('button');
     this.nativeButton.setAttribute('part', 'button');
 
-    // Move all content to the native button
-    const slot = document.createElement('slot');
-    this.nativeButton.appendChild(slot);
+    // Simple: move all content directly to native button
+    while (this.firstChild) {
+      this.nativeButton.appendChild(this.firstChild);
+    }
 
-    // Clear any existing content and add the native button
-    this.innerHTML = '';
+    // Add the native button to the wrapper
     this.appendChild(this.nativeButton);
   }
 

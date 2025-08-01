@@ -213,17 +213,19 @@ ui-button[loading] button::after {
 }
 
 /* =============================================================================
-   SLOT SUPPORT - Native buttons with slots work seamlessly
+   CONTENT SUPPORT - Native buttons with light DOM content
    ============================================================================= */
 
-/* Icon slots - common pattern for buttons with icons */
-ui-button button ::slotted([slot='start']) {
-  margin-right: var(--ui-space-2);
+/* Content spacing for buttons with mixed content */
+ui-button button > * + * {
+  margin-left: var(--ui-space-2);
+}
+
+ui-button button > *:first-child {
   margin-left: calc(var(--ui-space-1) * -1);
 }
 
-ui-button button ::slotted([slot='end']) {
-  margin-left: var(--ui-space-2);
+ui-button button > *:last-child {
   margin-right: calc(var(--ui-space-1) * -1);
 }
 

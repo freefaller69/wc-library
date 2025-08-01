@@ -148,13 +148,18 @@ describe('UIButton - Semantic Validation', () => {
     });
   });
 
-  describe('Slot-Based Content Projection', () => {
-    it('should support slotted content in native button', () => {
-      button.innerHTML = 'Button Text';
+  describe('Light DOM Content Projection', () => {
+    it('should move content directly to native button', () => {
+      // Create a new button with initial content (before connection)
+      const newButton = new UIButton();
+      newButton.textContent = 'Button Text';
+      document.body.appendChild(newButton);
 
-      const nativeButton = button.nativeButtonElement;
-      const slot = nativeButton.querySelector('slot');
-      expect(slot).toBeInstanceOf(HTMLSlotElement);
+      const nativeButton = newButton.nativeButtonElement;
+      expect(nativeButton.textContent).toBe('Button Text');
+      expect(nativeButton.innerHTML).toContain('Button Text');
+
+      newButton.remove();
     });
 
     it('should support complex content', () => {
