@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StaticStylesheetMixin Demo</title>
+    <style>
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        line-height: 1.6;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: #f8fafc;
+      }
+
+      .demo-section {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .demo-section h2 {
+        margin-top: 0;
+        color: #334155;
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 0.5rem;
+      }
+
+      .component-demo {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+
+      .demo-info {
+        background: #f1f5f9;
+        padding: 1rem;
+        border-radius: 4px;
+        margin: 1rem 0;
+        border-left: 4px solid #3b82f6;
+      }
+
+      .code-block {
+        background: #1e293b;
+        color: #e2e8f0;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin: 1rem 0;
+      }
+
+      .lifecycle-controls {
+        display: flex;
+        gap: 0.5rem;
+        margin: 1rem 0;
+      }
+
+      .lifecycle-controls button {
+        padding: 0.5rem 1rem;
+        border: 1px solid #cbd5e1;
+        background: white;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .lifecycle-controls button:hover {
+        background: #f1f5f9;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>StaticStylesheetMixin Demo</h1>
+    <p>
+      This demo shows the StaticStylesheetMixin automatically detecting and applying static
+      stylesheets to components.
+    </p>
+
+    <div class="demo-section">
+      <h2>Single Static Stylesheet</h2>
+      <div class="demo-info">
+        <strong>Pattern:</strong> Component with <code>static stylesheet</code> property
+      </div>
+      <div class="component-demo">
+        <demo-single-sheet>Single Stylesheet Component</demo-single-sheet>
+      </div>
+      <div class="lifecycle-controls">
+        <button onclick="testSingleSheetLifecycle()">Test Connect/Disconnect</button>
+        <button onclick="inspectSingleSheet()">Inspect Styles</button>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Multiple Static Stylesheets</h2>
+      <div class="demo-info">
+        <strong>Pattern:</strong> Component with <code>static stylesheets</code> array property
+      </div>
+      <div class="component-demo">
+        <demo-multi-sheet>Multiple Stylesheets Component</demo-multi-sheet>
+      </div>
+      <div class="lifecycle-controls">
+        <button onclick="testMultiSheetLifecycle()">Test Connect/Disconnect</button>
+        <button onclick="inspectMultiSheet()">Inspect Styles</button>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Shadow DOM Component</h2>
+      <div class="demo-info">
+        <strong>Pattern:</strong> Component with Shadow DOM uses adoptedStyleSheets automatically
+      </div>
+      <div class="component-demo">
+        <demo-shadow-sheet>Shadow DOM Component</demo-shadow-sheet>
+      </div>
+      <div class="lifecycle-controls">
+        <button onclick="testShadowSheetLifecycle()">Test Connect/Disconnect</button>
+        <button onclick="inspectShadowSheet()">Inspect Shadow Styles</button>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>No Static Stylesheets</h2>
+      <div class="demo-info">
+        <strong>Pattern:</strong> Component without static stylesheets (should work without errors)
+      </div>
+      <div class="component-demo">
+        <demo-no-sheet>No Stylesheets Component</demo-no-sheet>
+      </div>
+      <div class="lifecycle-controls">
+        <button onclick="testNoSheetLifecycle()">Test Connect/Disconnect</button>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Manual Stylesheet Management</h2>
+      <div class="demo-info">
+        <strong>Pattern:</strong> Manually calling applyStaticStylesheets() and
+        removeStaticStylesheets()
+      </div>
+      <div class="component-demo">
+        <demo-manual-sheet>Manual Control Component</demo-manual-sheet>
+      </div>
+      <div class="lifecycle-controls">
+        <button onclick="manualApply()">Apply Styles</button>
+        <button onclick="manualRemove()">Remove Styles</button>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Code Examples</h2>
+      <div class="code-block">
+        <pre><code>// Single static stylesheet
+class DemoComponent extends compose(
+  CoreCustomElement,
+  StaticStylesheetMixin
+) {
+  static stylesheet = createStyleSheet(`
+    :host {
+      display: block;
+      padding: 1rem;
+      background: lightblue;
+      border-radius: 4px;
+    }
+  `);
+}
+
+// Multiple static stylesheets
+class MultiSheetComponent extends compose(
+  CoreCustomElement,
+  StaticStylesheetMixin
+) {
+  static stylesheets = [
+    createStyleSheet(baseStyles),
+    createStyleSheet(themeStyles),
+    createStyleSheet(layoutStyles)
+  ];
+}</code></pre>
+      </div>
+    </div>
+
+    <script type="module">
+      import { createStyleSheet } from './src/utilities/style-helpers.js';
+      import { StaticStylesheetMixin } from './src/base/mixins/StaticStylesheetMixin.js';
+      import { compose } from './src/base/utilities/mixin-composer.js';
+
+      // Base element for demos
+      class DemoElement extends HTMLElement {
+        connectedCallback() {
+          if (!this.textContent.trim()) {
+            this.textContent = 'Demo Component';
+          }
+        }
+      }
+
+      // Demo component with single static stylesheet
+      class DemoSingleSheet extends compose(DemoElement, StaticStylesheetMixin) {
+        static stylesheet = createStyleSheet(`
+        demo-single-sheet {
+          display: block;
+          padding: 1rem;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          border-radius: 8px;
+          text-align: center;
+          font-weight: bold;
+          margin: 0.5rem;
+          transition: transform 0.2s ease;
+        }
+        
+        demo-single-sheet:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+      `);
+      }
+
+      // Demo component with multiple static stylesheets
+      class DemoMultiSheet extends compose(DemoElement, StaticStylesheetMixin) {
+        static stylesheets = [
+          createStyleSheet(`
+          demo-multi-sheet {
+            display: block;
+            padding: 1rem;
+            margin: 0.5rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+          }
+        `),
+          createStyleSheet(`
+          demo-multi-sheet {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+          }
+        `),
+          createStyleSheet(`
+          demo-multi-sheet:hover {
+            transform: scale(1.02);
+            transition: transform 0.2s ease;
+          }
+        `),
+        ];
+      }
+
+      // Demo component with Shadow DOM
+      class DemoShadowSheet extends compose(DemoElement, StaticStylesheetMixin) {
+        static stylesheet = createStyleSheet(`
+        :host {
+          display: block;
+          padding: 1rem;
+          background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+          color: white;
+          border-radius: 8px;
+          text-align: center;
+          font-weight: bold;
+          margin: 0.5rem;
+        }
+        
+        :host(:hover) {
+          box-shadow: 0 0 20px rgba(79, 172, 254, 0.5);
+        }
+      `);
+
+        constructor() {
+          super();
+          this.attachShadow({ mode: 'open' });
+          this.shadowRoot.innerHTML = '<slot></slot>';
+        }
+      }
+
+      // Demo component without static stylesheets
+      class DemoNoSheet extends compose(DemoElement, StaticStylesheetMixin) {
+        connectedCallback() {
+          super.connectedCallback();
+          this.style.cssText = `
+          display: block;
+          padding: 1rem;
+          background: #e2e8f0;
+          color: #475569;
+          border-radius: 8px;
+          text-align: center;
+          margin: 0.5rem;
+          border: 2px dashed #cbd5e1;
+        `;
+        }
+      }
+
+      // Demo component for manual control
+      class DemoManualSheet extends compose(DemoElement, StaticStylesheetMixin) {
+        static stylesheet = createStyleSheet(`
+        demo-manual-sheet {
+          display: block;
+          padding: 1rem;
+          background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+          color: #333;
+          border-radius: 8px;
+          text-align: center;
+          font-weight: bold;
+          margin: 0.5rem;
+        }
+      `);
+
+        connectedCallback() {
+          // Don't automatically apply styles - we'll control them manually
+          if (super.connectedCallback) {
+            super.connectedCallback();
+          }
+          // Skip automatic style application by not calling applyStaticStylesheets
+        }
+      }
+
+      // Register components
+      customElements.define('demo-single-sheet', DemoSingleSheet);
+      customElements.define('demo-multi-sheet', DemoMultiSheet);
+      customElements.define('demo-shadow-sheet', DemoShadowSheet);
+      customElements.define('demo-no-sheet', DemoNoSheet);
+      customElements.define('demo-manual-sheet', DemoManualSheet);
+
+      // Global functions for demo interaction
+      window.testSingleSheetLifecycle = () => {
+        const component = document.querySelector('demo-single-sheet');
+        const parent = component.parentNode;
+
+        console.log('Disconnecting single sheet component...');
+        parent.removeChild(component);
+
+        setTimeout(() => {
+          console.log('Reconnecting single sheet component...');
+          parent.appendChild(component);
+        }, 1000);
+      };
+
+      window.inspectSingleSheet = () => {
+        const component = document.querySelector('demo-single-sheet');
+        const manager = component.getStaticStylesheetManager();
+        console.log('Single sheet manager:', manager);
+        console.log('Stylesheets:', manager.getStylesheets());
+      };
+
+      window.testMultiSheetLifecycle = () => {
+        const component = document.querySelector('demo-multi-sheet');
+        const parent = component.parentNode;
+
+        console.log('Disconnecting multi sheet component...');
+        parent.removeChild(component);
+
+        setTimeout(() => {
+          console.log('Reconnecting multi sheet component...');
+          parent.appendChild(component);
+        }, 1000);
+      };
+
+      window.inspectMultiSheet = () => {
+        const component = document.querySelector('demo-multi-sheet');
+        const manager = component.getStaticStylesheetManager();
+        console.log('Multi sheet manager:', manager);
+        console.log('Stylesheets:', manager.getStylesheets());
+      };
+
+      window.testShadowSheetLifecycle = () => {
+        const component = document.querySelector('demo-shadow-sheet');
+        const parent = component.parentNode;
+
+        console.log('Disconnecting shadow sheet component...');
+        parent.removeChild(component);
+
+        setTimeout(() => {
+          console.log('Reconnecting shadow sheet component...');
+          parent.appendChild(component);
+        }, 1000);
+      };
+
+      window.inspectShadowSheet = () => {
+        const component = document.querySelector('demo-shadow-sheet');
+        const manager = component.getStaticStylesheetManager();
+        console.log('Shadow sheet manager:', manager);
+        console.log('Shadow root adoptedStyleSheets:', component.shadowRoot.adoptedStyleSheets);
+      };
+
+      window.testNoSheetLifecycle = () => {
+        const component = document.querySelector('demo-no-sheet');
+        const parent = component.parentNode;
+
+        console.log('Disconnecting no-sheet component...');
+        parent.removeChild(component);
+
+        setTimeout(() => {
+          console.log('Reconnecting no-sheet component...');
+          parent.appendChild(component);
+        }, 1000);
+      };
+
+      window.manualApply = () => {
+        const component = document.querySelector('demo-manual-sheet');
+        console.log('Manually applying static stylesheets...');
+        component.applyStaticStylesheets();
+      };
+
+      window.manualRemove = () => {
+        const component = document.querySelector('demo-manual-sheet');
+        console.log('Manually removing static stylesheets...');
+        component.removeStaticStylesheets();
+      };
+
+      // Log initialization
+      console.log('StaticStylesheetMixin demo loaded. Check the console during interactions!');
+    </script>
+  </body>
+</html>
