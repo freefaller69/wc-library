@@ -11,6 +11,7 @@ import { UpdateManagerMixin } from '../mixins/UpdateManagerMixin.js';
 import type { UpdateManagerMixinInterface } from '../mixins/UpdateManagerMixin.js';
 import type { ComponentConfig, AccessibilityOptions } from '../../types/component.js';
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const InteractiveBase = compose(
   CoreCustomElement,
   AccessibilityMixin,
@@ -27,6 +28,7 @@ export abstract class InteractiveComponent
   declare render?: () => void;
 
   constructor(config: ComponentConfig) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     super(config);
   }
 
