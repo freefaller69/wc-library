@@ -56,6 +56,8 @@ export class UIButton extends (compose(
 ) as UIButtonBase) {
   private nativeButton!: HTMLButtonElement;
   private lastTriggerSource: 'mouse' | 'keyboard' = 'mouse';
+  private announcementDebouncer = new Map<string, number>();
+  private readonly ANNOUNCEMENT_DEBOUNCE_MS = 150;
 
   static get observedAttributes(): string[] {
     return getObservedAttributes({
@@ -155,6 +157,15 @@ export class UIButton extends (compose(
       case 'disabled':
         this.nativeButton.disabled = this.disabled;
         this.updateAccessibilityState();
+
+        // Announce disabled state changes to screen readers
+        if (this.disabled && !oldValue) {
+          // Becoming disabled
+          this.announceWithDebouncing('Button disabled', 'polite');
+        } else if (!this.disabled && oldValue) {
+          // Becoming enabled
+          this.announceWithDebouncing('Button enabled', 'polite');
+        }
         break;
       case 'type':
         this.nativeButton.type = this.type as 'button' | 'submit' | 'reset';
@@ -163,6 +174,15 @@ export class UIButton extends (compose(
         // Loading state affects disabled behavior
         this.nativeButton.disabled = this.loading || this.disabled;
         this.updateAccessibilityState();
+
+        // Announce loading state changes to screen readers
+        if (this.loading && !oldValue) {
+          // Starting to load
+          this.announceWithDebouncing('Button is loading', 'polite');
+        } else if (!this.loading && oldValue) {
+          // Finished loading
+          this.announceWithDebouncing('Button ready', 'polite');
+        }
         break;
       case 'aria-pressed':
         // For tests that call attributeChangedCallback directly, ensure attribute is set
@@ -173,12 +193,43 @@ export class UIButton extends (compose(
     }
   }
 
+  /**
+   * Determines if the button is in a non-interactive state
+   * @returns true if disabled or loading, false otherwise
+   * @private
+   */
+  private get isNonInteractive(): boolean {
+    return this.disabled || this.loading;
+  }
+
+  /**
+   * Updates accessibility attributes on the native button element
+   *
+   * This method ensures proper ARIA state management by:
+   * - Setting aria-disabled when button is disabled or loading
+   * - Setting aria-busy during loading states
+   * - Delegating user-provided ARIA attributes from wrapper to native button
+   * - Maintaining wrapper transparency for screen readers
+   *
+   * Called automatically when disabled/loading states change via attributeChangedCallback
+   */
   public updateAccessibilityState(): void {
+    // Use AccessibilityMixin methods for consistent ARIA management
+    const isDisabledOrLoading = this.isNonInteractive;
+
     // Apply accessibility attributes to native button where they belong
-    if (this.disabled || this.loading) {
+    if (isDisabledOrLoading) {
       this.nativeButton.setAttribute('aria-disabled', 'true');
     } else {
       this.nativeButton.removeAttribute('aria-disabled');
+    }
+
+    // Use mixin method for busy state during loading
+    if (this.loading) {
+      // Set aria-busy on native button for loading state
+      this.nativeButton.setAttribute('aria-busy', 'true');
+    } else {
+      this.nativeButton.removeAttribute('aria-busy');
     }
 
     // Delegate user-provided ARIA attributes from wrapper to native button
@@ -201,7 +252,7 @@ export class UIButton extends (compose(
 
   private syncAttributes(): void {
     // Sync initial attributes using type-safe property accessors
-    this.nativeButton.disabled = this.disabled || this.loading;
+    this.nativeButton.disabled = this.isNonInteractive;
     this.nativeButton.type = this.type as 'button' | 'submit' | 'reset';
 
     // Set up initial accessibility state
@@ -214,8 +265,8 @@ export class UIButton extends (compose(
   }
 
   public focus(): void {
-    // Only focus if not disabled or loading
-    if (!this.disabled && !this.loading) {
+    // Only focus if interactive
+    if (!this.isNonInteractive) {
       this.nativeButton.focus();
     }
   }
@@ -269,6 +320,37 @@ export class UIButton extends (compose(
   // Access to the native button for advanced use cases
   public get nativeButtonElement(): HTMLButtonElement {
     return this.nativeButton;
+  }
+
+  /**
+   * Announces a message to screen readers with debouncing to prevent spam
+   * @param message - The message to announce
+   * @param priority - The announcement priority (defaults to 'polite')
+   * @private
+   */
+  private announceWithDebouncing(
+    message: string,
+    priority: 'polite' | 'assertive' = 'polite'
+  ): void {
+    try {
+      const key = `${message}-${priority}`;
+      const now = Date.now();
+      const lastAnnouncement = this.announcementDebouncer.get(key);
+
+      // Skip if same announcement was made recently
+      if (lastAnnouncement && now - lastAnnouncement < this.ANNOUNCEMENT_DEBOUNCE_MS) {
+        return;
+      }
+
+      // Update debounce tracker
+      this.announcementDebouncer.set(key, now);
+
+      // Make the announcement using AccessibilityMixin
+      this.announceToScreenReader(message, priority);
+    } catch (error) {
+      console.warn('UIButton: Failed to announce accessibility message:', error);
+      // Graceful degradation - accessibility announcement failure shouldn't break the component
+    }
   }
 
   /**

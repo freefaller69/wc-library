@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UI Button Accessibility Enhancements Test</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+        line-height: 1.6;
+      }
+
+      .test-section {
+        margin: 2rem 0;
+        padding: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      .controls {
+        margin: 1rem 0;
+      }
+
+      button {
+        margin: 0.5rem;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+      }
+
+      ui-button {
+        margin: 0.5rem;
+      }
+
+      #log {
+        max-height: 200px;
+        overflow-y: auto;
+        background: #f5f5f5;
+        padding: 1rem;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 0.9em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>UI Button Accessibility Enhancements Test</h1>
+
+    <div class="test-section">
+      <h2>Enhanced UI Button with Accessibility Features</h2>
+      <p>Test the new accessibility announcements:</p>
+
+      <ui-button id="test-button" variant="primary"> Test Button </ui-button>
+
+      <div class="controls">
+        <button onclick="toggleLoading()">Toggle Loading State</button>
+        <button onclick="toggleDisabled()">Toggle Disabled State</button>
+        <button onclick="testDebouncing()">Test Debouncing (Rapid Toggle)</button>
+        <button onclick="clearLog()">Clear Log</button>
+      </div>
+
+      <h3>Screen Reader Announcements Log</h3>
+      <div id="log"></div>
+    </div>
+
+    <div class="test-section">
+      <h2>Manual Testing Instructions</h2>
+      <ol>
+        <li>Open your browser's developer tools console</li>
+        <li>Use the toggle buttons above to change the UI button's state</li>
+        <li>Watch for accessibility announcements in the log below</li>
+        <li>Use a screen reader (if available) to verify the announcements</li>
+        <li>Check that aria-busy is set during loading states</li>
+        <li>Verify aria-disabled is set when disabled</li>
+      </ol>
+    </div>
+
+    <script type="module">
+      import './src/main.js';
+
+      const button = document.getElementById('test-button');
+      const log = document.getElementById('log');
+
+      // Intercept announcements for logging
+      const originalAnnounce = window.announceToScreenReader || (() => {});
+      window.announceToScreenReader = function (message, priority = 'polite') {
+        logMessage(`[${priority.toUpperCase()}] ${message}`);
+        originalAnnounce.call(this, message, priority);
+      };
+
+      function logMessage(message) {
+        const timestamp = new Date().toLocaleTimeString();
+        const entry = document.createElement('div');
+        entry.textContent = `${timestamp}: ${message}`;
+        log.appendChild(entry);
+        log.scrollTop = log.scrollHeight;
+        console.log(`Accessibility: ${message}`);
+      }
+
+      window.toggleLoading = function () {
+        const isLoading = button.hasAttribute('loading');
+        if (isLoading) {
+          button.removeAttribute('loading');
+          logMessage('Removed loading attribute');
+        } else {
+          button.setAttribute('loading', '');
+          logMessage('Added loading attribute');
+        }
+      };
+
+      window.toggleDisabled = function () {
+        const isDisabled = button.hasAttribute('disabled');
+        if (isDisabled) {
+          button.removeAttribute('disabled');
+          logMessage('Removed disabled attribute');
+        } else {
+          button.setAttribute('disabled', '');
+          logMessage('Added disabled attribute');
+        }
+      };
+
+      window.clearLog = function () {
+        log.innerHTML = '';
+      };
+
+      window.testDebouncing = function () {
+        logMessage('Testing debouncing with rapid toggles...');
+        const button = document.getElementById('test-button');
+
+        // Rapidly toggle loading state 5 times
+        for (let i = 0; i < 5; i++) {
+          setTimeout(() => {
+            const isLoading = button.hasAttribute('loading');
+            if (isLoading) {
+              button.removeAttribute('loading');
+              logMessage(`Rapid toggle ${i + 1}: Removed loading`);
+            } else {
+              button.setAttribute('loading', '');
+              logMessage(`Rapid toggle ${i + 1}: Added loading`);
+            }
+          }, i * 50); // 50ms intervals to test debouncing
+        }
+      };
+
+      // Log initial state
+      logMessage('Test page loaded - UI Button accessibility enhancements ready for testing');
+    </script>
+  </body>
+</html>
