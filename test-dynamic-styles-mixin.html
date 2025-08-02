@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DynamicStylesMixin Demo</title>
+    <style>
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        line-height: 1.6;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: #f8fafc;
+      }
+
+      .demo-section {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .demo-section h2 {
+        margin-top: 0;
+        color: #334155;
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 0.5rem;
+      }
+
+      .component-demo {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+
+      .demo-info {
+        background: #f1f5f9;
+        padding: 1rem;
+        border-radius: 4px;
+        margin: 1rem 0;
+        border-left: 4px solid #3b82f6;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+
+      .controls label {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        font-weight: 500;
+      }
+
+      .controls input,
+      .controls select {
+        padding: 0.5rem;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+      }
+
+      .controls button {
+        padding: 0.5rem 1rem;
+        border: 1px solid #cbd5e1;
+        background: white;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .controls button:hover {
+        background: #f1f5f9;
+      }
+
+      .code-block {
+        background: #1e293b;
+        color: #e2e8f0;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin: 1rem 0;
+      }
+
+      .theme-selector {
+        display: flex;
+        gap: 0.5rem;
+        margin: 1rem 0;
+      }
+
+      .theme-button {
+        padding: 0.5rem 1rem;
+        border: 2px solid;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+      }
+
+      .theme-button.active {
+        background: currentColor;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>DynamicStylesMixin Demo</h1>
+    <p>
+      This demo shows the DynamicStylesMixin generating CSS dynamically based on component state,
+      props, and theme.
+    </p>
+
+    <div class="demo-section">
+      <h2>Basic Dynamic Styling</h2>
+      <div class="demo-info">
+        <strong>Pattern:</strong> Component generates CSS based on internal state
+      </div>
+      <div class="component-demo">
+        <demo-basic-dynamic>Basic Dynamic Component</demo-basic-dynamic>
+      </div>
+      <div class="controls">
+        <label>
+          Color:
+          <input type="color" id="basicColor" value="#3b82f6" />
+        </label>
+        <label>
+          Size:
+          <input type="range" id="basicSize" min="12" max="48" value="16" />
+          <span id="basicSizeValue">16px</span>
+        </label>
+        <label>
+          Opacity:
+          <input type="range" id="basicOpacity" min="0" max="100" value="100" step="5" />
+          <span id="basicOpacityValue">100%</span>
+        </label>
+        <button onclick="randomizeBasic()">Randomize</button>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Theme-Aware Component</h2>
+      <div class="demo-info">
+        <strong>Pattern:</strong> Component reacts to theme changes automatically
+      </div>
+      <div class="theme-selector">
+        <div
+          class="theme-button active"
+          onclick="setTheme('default')"
+          style="border-color: #3b82f6; color: #3b82f6"
+        >
+          Default
+        </div>
+        <div
+          class="theme-button"
+          onclick="setTheme('dark')"
+          style="border-color: #1f2937; color: #1f2937"
+        >
+          Dark
+        </div>
+        <div
+          class="theme-button"
+          onclick="setTheme('neon')"
+          style="border-color: #06ffa5; color: #06ffa5"
+        >
+          Neon
+        </div>
+        <div
+          class="theme-button"
+          onclick="setTheme('sunset')"
+          style="border-color: #f97316; color: #f97316"
+        >
+          Sunset
+        </div>
+      </div>
+      <div class="component-demo">
+        <demo-theme-aware>Theme-Aware Component</demo-theme-aware>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Combined Static + Dynamic Styles</h2>
+      <div class="demo-info">
+        <strong>Pattern:</strong> Component uses both StaticStylesheetMixin and DynamicStylesMixin
+      </div>
+      <div class="component-demo">
+        <demo-combined-styles data-variant="primary"
+          >Combined Styles Component</demo-combined-styles
+        >
+      </div>
+      <div class="controls">
+        <label>
+          Variant:
+          <select id="combinedVariant">
+            <option value="primary">Primary</option>
+            <option value="secondary">Secondary</option>
+            <option value="success">Success</option>
+            <option value="warning">Warning</option>
+            <option value="danger">Danger</option>
+          </select>
+        </label>
+        <label>
+          Dynamic Color:
+          <input type="color" id="combinedColor" value="#8b5cf6" />
+        </label>
+        <label>
+          Border Radius:
+          <input type="range" id="combinedRadius" min="0" max="20" value="8" />
+          <span id="combinedRadiusValue">8px</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Performance Testing</h2>
+      <div class="demo-info">
+        <strong>Pattern:</strong> Rapid updates to test caching and debouncing
+      </div>
+      <div class="component-demo">
+        <demo-performance-test>Performance Test Component</demo-performance-test>
+      </div>
+      <div class="controls">
+        <button onclick="startPerformanceTest()">Start Rapid Updates (100 changes)</button>
+        <button onclick="stopPerformanceTest()">Stop</button>
+        <span id="performanceStatus"></span>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Error Handling</h2>
+      <div class="demo-info">
+        <strong>Pattern:</strong> Component with intentional CSS generation errors
+      </div>
+      <div class="component-demo">
+        <demo-error-handling>Error Handling Component</demo-error-handling>
+      </div>
+      <div class="controls">
+        <button onclick="triggerCSSError()">Trigger CSS Error</button>
+        <button onclick="fixCSSError()">Fix Error</button>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Code Examples</h2>
+      <div class="code-block">
+        <pre><code>// Basic dynamic styling
+class DemoComponent extends compose(
+  CoreCustomElement,
+  DynamicStylesMixin
+) {
+  color = '#3b82f6';
+  size = '16px';
+  
+  generateDynamicCSS() {
+    return `
+      :host {
+        --dynamic-color: ${this.color};
+        --dynamic-size: ${this.size};
+        background: var(--dynamic-color);
+        font-size: var(--dynamic-size);
+      }
+    `;
+  }
+}
+
+// Theme-aware component
+class ThemeComponent extends compose(
+  CoreCustomElement,
+  DynamicStylesMixin
+) {
+  theme = { primary: '#3b82f6', spacing: '1rem' };
+  
+  generateDynamicCSS() {
+    return this.wrapInHostSelector(
+      this.createCSSProperties({
+        'theme-primary': this.theme.primary,
+        'theme-spacing': this.theme.spacing,
+      })
+    );
+  }
+}
+
+// Combined static + dynamic
+class CombinedComponent extends compose(
+  CoreCustomElement,
+  StaticStylesheetMixin,
+  DynamicStylesMixin
+) {
+  static stylesheet = createStyleSheet(`
+    :host {
+      display: block;
+      padding: 1rem;
+      border: 1px solid #e2e8f0;
+    }
+  `);
+  
+  dynamicColor = '#8b5cf6';
+  
+  generateDynamicCSS() {
+    return `:host {
+      --dynamic-accent: ${this.dynamicColor};
+      border-color: var(--dynamic-accent);
+    }`;
+  }
+}</code></pre>
+      </div>
+    </div>
+
+    <script type="module">
+      import { createStyleSheet } from './src/utilities/style-helpers.js';
+      import { DynamicStylesMixin, StaticStylesheetMixin } from './src/base/mixins/index.js';
+      import { compose } from './src/base/utilities/mixin-composer.js';
+
+      // Base element for demos
+      class DemoElement extends HTMLElement {
+        isConnected = false;
+
+        connectedCallback() {
+          this.isConnected = true;
+          if (!this.textContent.trim()) {
+            this.textContent = 'Demo Component';
+          }
+        }
+
+        disconnectedCallback() {
+          this.isConnected = false;
+        }
+
+        attributeChangedCallback(name, oldValue, newValue) {
+          // Base implementation
+        }
+      }
+
+      // Basic dynamic styling component
+      class DemoBasicDynamic extends compose(DemoElement, DynamicStylesMixin) {
+        color = '#3b82f6';
+        size = 16;
+        opacity = 1.0;
+
+        generateDynamicCSS() {
+          return `
+          :host {
+            display: block;
+            padding: 1rem;
+            margin: 0.5rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+            background: ${this.color};
+            font-size: ${this.size}px;
+            opacity: ${this.opacity};
+            transition: all 0.3s ease;
+          }
+          
+          :host(:hover) {
+            transform: scale(1.05);
+          }
+        `;
+        }
+      }
+
+      // Theme-aware component
+      class DemoThemeAware extends compose(DemoElement, DynamicStylesMixin) {
+        theme = {
+          primary: '#3b82f6',
+          secondary: '#64748b',
+          background: '#ffffff',
+          text: '#1e293b',
+          spacing: '1rem',
+          borderRadius: '8px',
+        };
+
+        generateDynamicCSS() {
+          return `
+          :host {
+            display: block;
+            padding: ${this.theme.spacing};
+            margin: 0.5rem;
+            background: ${this.theme.background};
+            color: ${this.theme.text};
+            border: 2px solid ${this.theme.primary};
+            border-radius: ${this.theme.borderRadius};
+            text-align: center;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+          }
+          
+          :host::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, ${this.theme.secondary}20, transparent);
+            transition: left 0.5s ease;
+          }
+          
+          :host(:hover)::before {
+            left: 100%;
+          }
+        `;
+        }
+
+        updateTheme(newTheme) {
+          this.theme = { ...this.theme, ...newTheme };
+          this.updateDynamicStyles();
+        }
+      }
+
+      // Combined static + dynamic styles
+      class DemoCombinedStyles extends compose(
+        DemoElement,
+        StaticStylesheetMixin,
+        DynamicStylesMixin
+      ) {
+        static stylesheet = createStyleSheet(`
+        :host {
+          display: block;
+          padding: 1rem;
+          margin: 0.5rem;
+          border: 2px solid #e2e8f0;
+          text-align: center;
+          font-weight: bold;
+          position: relative;
+          transition: all 0.3s ease;
+        }
+        
+        :host([data-variant="primary"]) {
+          background: #dbeafe;
+          border-color: #3b82f6;
+        }
+        
+        :host([data-variant="secondary"]) {
+          background: #f1f5f9;
+          border-color: #64748b;
+        }
+        
+        :host([data-variant="success"]) {
+          background: #dcfce7;
+          border-color: #22c55e;
+        }
+        
+        :host([data-variant="warning"]) {
+          background: #fef3c7;
+          border-color: #f59e0b;
+        }
+        
+        :host([data-variant="danger"]) {
+          background: #fecaca;
+          border-color: #ef4444;
+        }
+      `);
+
+        dynamicColor = '#8b5cf6';
+        borderRadius = 8;
+
+        generateDynamicCSS() {
+          return `
+          :host {
+            --dynamic-accent: ${this.dynamicColor};
+            border-radius: ${this.borderRadius}px;
+            box-shadow: 0 4px 6px ${this.dynamicColor}20;
+          }
+          
+          :host::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--dynamic-accent);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+          }
+          
+          :host(:hover)::after {
+            transform: scaleX(1);
+          }
+        `;
+        }
+      }
+
+      // Performance test component
+      class DemoPerformanceTest extends compose(DemoElement, DynamicStylesMixin) {
+        updateCount = 0;
+        hue = 0;
+
+        generateDynamicCSS() {
+          return `
+          :host {
+            display: block;
+            padding: 1rem;
+            margin: 0.5rem;
+            text-align: center;
+            font-weight: bold;
+            background: hsl(${this.hue}, 70%, 60%);
+            color: white;
+            border-radius: 8px;
+            transform: rotate(${this.hue / 10}deg);
+            transition: all 0.1s ease;
+          }
+          
+          :host::before {
+            content: 'Updates: ${this.updateCount}';
+            display: block;
+            font-size: 0.8em;
+            opacity: 0.8;
+          }
+        `;
+        }
+
+        performUpdate() {
+          this.updateCount++;
+          this.hue = (this.hue + 36) % 360;
+          this.updateDynamicStyles();
+        }
+      }
+
+      // Error handling component
+      class DemoErrorHandling extends compose(DemoElement, DynamicStylesMixin) {
+        hasError = false;
+
+        generateDynamicCSS() {
+          if (this.hasError) {
+            // Intentionally throw error for testing
+            throw new Error('Intentional CSS generation error for demo');
+          }
+
+          return `
+          :host {
+            display: block;
+            padding: 1rem;
+            margin: 0.5rem;
+            text-align: center;
+            font-weight: bold;
+            background: ${this.hasError ? '#ef4444' : '#22c55e'};
+            color: white;
+            border-radius: 8px;
+          }
+        `;
+        }
+
+        triggerError() {
+          this.hasError = true;
+          this.updateDynamicStyles();
+        }
+
+        fixError() {
+          this.hasError = false;
+          this.updateDynamicStyles();
+        }
+      }
+
+      // Register components
+      customElements.define('demo-basic-dynamic', DemoBasicDynamic);
+      customElements.define('demo-theme-aware', DemoThemeAware);
+      customElements.define('demo-combined-styles', DemoCombinedStyles);
+      customElements.define('demo-performance-test', DemoPerformanceTest);
+      customElements.define('demo-error-handling', DemoErrorHandling);
+
+      // Global demo functions
+      let performanceInterval = null;
+
+      window.randomizeBasic = () => {
+        const component = document.querySelector('demo-basic-dynamic');
+        const colors = ['#3b82f6', '#ef4444', '#22c55e', '#f59e0b', '#8b5cf6', '#06b6d4'];
+
+        component.color = colors[Math.floor(Math.random() * colors.length)];
+        component.size = Math.floor(Math.random() * 30) + 12;
+        component.opacity = Math.random() * 0.5 + 0.5;
+        component.updateDynamicStyles();
+
+        // Update UI controls
+        document.getElementById('basicColor').value = component.color;
+        document.getElementById('basicSize').value = component.size;
+        document.getElementById('basicOpacity').value = Math.round(component.opacity * 100);
+        document.getElementById('basicSizeValue').textContent = component.size + 'px';
+        document.getElementById('basicOpacityValue').textContent =
+          Math.round(component.opacity * 100) + '%';
+      };
+
+      window.setTheme = (themeName) => {
+        const component = document.querySelector('demo-theme-aware');
+        const themes = {
+          default: {
+            primary: '#3b82f6',
+            secondary: '#64748b',
+            background: '#ffffff',
+            text: '#1e293b',
+            spacing: '1rem',
+            borderRadius: '8px',
+          },
+          dark: {
+            primary: '#1f2937',
+            secondary: '#4b5563',
+            background: '#111827',
+            text: '#f9fafb',
+            spacing: '1.5rem',
+            borderRadius: '12px',
+          },
+          neon: {
+            primary: '#06ffa5',
+            secondary: '#06b6d4',
+            background: '#0f0f23',
+            text: '#ffffff',
+            spacing: '1.25rem',
+            borderRadius: '16px',
+          },
+          sunset: {
+            primary: '#f97316',
+            secondary: '#fb7185',
+            background: '#fef7ed',
+            text: '#7c2d12',
+            spacing: '1rem',
+            borderRadius: '20px',
+          },
+        };
+
+        component.updateTheme(themes[themeName]);
+
+        // Update active theme button
+        document.querySelectorAll('.theme-button').forEach((btn) => btn.classList.remove('active'));
+        event.target.classList.add('active');
+      };
+
+      window.startPerformanceTest = () => {
+        const component = document.querySelector('demo-performance-test');
+        const status = document.getElementById('performanceStatus');
+
+        if (performanceInterval) {
+          clearInterval(performanceInterval);
+        }
+
+        component.updateCount = 0;
+        let updateCount = 0;
+        const startTime = Date.now();
+
+        performanceInterval = setInterval(() => {
+          component.performUpdate();
+          updateCount++;
+
+          if (updateCount >= 100) {
+            clearInterval(performanceInterval);
+            const endTime = Date.now();
+            status.textContent = `Completed 100 updates in ${endTime - startTime}ms`;
+            performanceInterval = null;
+          } else {
+            status.textContent = `${updateCount}/100 updates...`;
+          }
+        }, 50);
+      };
+
+      window.stopPerformanceTest = () => {
+        if (performanceInterval) {
+          clearInterval(performanceInterval);
+          performanceInterval = null;
+          document.getElementById('performanceStatus').textContent = 'Stopped';
+        }
+      };
+
+      window.triggerCSSError = () => {
+        const component = document.querySelector('demo-error-handling');
+        component.triggerError();
+      };
+
+      window.fixCSSError = () => {
+        const component = document.querySelector('demo-error-handling');
+        component.fixError();
+      };
+
+      // Set up control event listeners
+      document.getElementById('basicColor').addEventListener('input', (e) => {
+        const component = document.querySelector('demo-basic-dynamic');
+        component.color = e.target.value;
+        component.updateDynamicStyles();
+      });
+
+      document.getElementById('basicSize').addEventListener('input', (e) => {
+        const component = document.querySelector('demo-basic-dynamic');
+        component.size = parseInt(e.target.value);
+        component.updateDynamicStyles();
+        document.getElementById('basicSizeValue').textContent = e.target.value + 'px';
+      });
+
+      document.getElementById('basicOpacity').addEventListener('input', (e) => {
+        const component = document.querySelector('demo-basic-dynamic');
+        component.opacity = parseInt(e.target.value) / 100;
+        component.updateDynamicStyles();
+        document.getElementById('basicOpacityValue').textContent = e.target.value + '%';
+      });
+
+      document.getElementById('combinedVariant').addEventListener('change', (e) => {
+        const component = document.querySelector('demo-combined-styles');
+        component.setAttribute('data-variant', e.target.value);
+      });
+
+      document.getElementById('combinedColor').addEventListener('input', (e) => {
+        const component = document.querySelector('demo-combined-styles');
+        component.dynamicColor = e.target.value;
+        component.updateDynamicStyles();
+      });
+
+      document.getElementById('combinedRadius').addEventListener('input', (e) => {
+        const component = document.querySelector('demo-combined-styles');
+        component.borderRadius = parseInt(e.target.value);
+        component.updateDynamicStyles();
+        document.getElementById('combinedRadiusValue').textContent = e.target.value + 'px';
+      });
+
+      // Log initialization
+      console.log('DynamicStylesMixin demo loaded. Try the interactive controls!');
+    </script>
+  </body>
+</html>
