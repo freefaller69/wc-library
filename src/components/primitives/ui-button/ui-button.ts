@@ -59,7 +59,6 @@ type UIButtonBase = Constructor<
  * 2. AccessibilityMixin - ARIA attributes and keyboard handling
  * 3. AttributeManagerMixin - Typed attribute getters/setters
  * 4. StaticStylesheetMixin - Automatic static stylesheet management
- * 5. DynamicStylesMixin - Runtime CSS generation for theming
  */
 export class UIButton extends (compose(
   CoreCustomElement,
@@ -69,13 +68,6 @@ export class UIButton extends (compose(
 ) as UIButtonBase) {
   // Static stylesheet - automatically applied by StaticStylesheetMixin
   static stylesheet = createStyleSheet(uiButtonCSS);
-
-  // Temporarily remove mixin method declarations
-  // declare createCSSProperties: (
-  //   properties: Record<string, string | number | null | undefined>,
-  //   prefix?: string
-  // ) => string;
-  // declare wrapInHostSelector: (css: string) => string;
 
   private nativeButton!: HTMLButtonElement;
   private lastTriggerSource: 'mouse' | 'keyboard' = 'mouse';
@@ -375,11 +367,6 @@ export class UIButton extends (compose(
       // Graceful degradation - accessibility announcement failure shouldn't break the component
     }
   }
-
-  // Temporarily remove dynamic CSS generation method
-  // generateDynamicCSS(): string {
-  //   return '';
-  // }
 
   /**
    * Gets accessibility configuration for the button wrapper
