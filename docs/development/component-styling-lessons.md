@@ -15,20 +15,23 @@ During Phase 4 implementation and testing, we identified important patterns and 
 
 **Issue Identified**: UI Button text color inheriting from page-level dark mode settings instead of being explicitly defined relative to button background.
 
-**Observation**: 
+**Observation**:
+
 - **Expected**: Button text color should adapt to the button's background color
 - **Actual**: Button text color inheriting from system/page dark mode preferences
 - **Result**: Light text on light button backgrounds in dark mode
 
 **Principle Established**:
+
 > **Components should be fully self-contained with explicit color definitions that don't rely on page-level inheritance.**
 
 **Best Practice**:
+
 ```css
 /* ✅ Good - Explicit color definitions */
 .ui-button {
   background: var(--ui-button-bg, #3b82f6);
-  color: var(--ui-button-text, #ffffff);  /* Explicit text color */
+  color: var(--ui-button-text, #ffffff); /* Explicit text color */
 }
 
 /* ❌ Avoid - Relying on inheritance */
@@ -40,16 +43,19 @@ During Phase 4 implementation and testing, we identified important patterns and 
 
 ### 2. **CSS Specificity and Inline Styles**
 
-**Critical Learning**: 
+**Critical Learning**:
+
 > **"Avoid inline styles as much as possible for development as they are equivalent to using !important and pretty much always win on specificity."**
 
 **Impact on Light DOM Components**:
+
 - UI Button uses Light DOM (no Shadow DOM encapsulation)
 - Inherits styles from parent page context
 - Inline styles on test pages can override component styling
 - Creates unexpected behavior differences between test and production environments
 
 **Best Practices**:
+
 1. **Test Pages**: Use CSS classes with design tokens, avoid inline styles
 2. **Components**: Define explicit styles that don't rely on inheritance
 3. **Design System**: Provide comprehensive token coverage for all component states
@@ -57,11 +63,13 @@ During Phase 4 implementation and testing, we identified important patterns and 
 ### 3. **Dark Mode Integration Patterns**
 
 **Challenges Identified**:
+
 - Page-level dark mode affecting component behavior
 - Components needing to work in both light and dark contexts
 - Design token inheritance vs. explicit definitions
 
 **Pattern Recommendations**:
+
 ```css
 /* Component should define all its colors explicitly */
 .ui-button--primary {
@@ -88,12 +96,14 @@ During Phase 4 implementation and testing, we identified important patterns and 
 
 **Scope**: Review all components for explicit color definitions
 **Focus Areas**:
+
 - Text colors relative to component backgrounds
-- Border colors that complement component themes  
+- Border colors that complement component themes
 - Hover/focus states with proper contrast
 - Disabled states with appropriate visual hierarchy
 
 **Components to Review**:
+
 - UI Button (identified issue)
 - UI Heading
 - Future form components
@@ -103,11 +113,13 @@ During Phase 4 implementation and testing, we identified important patterns and 
 
 **Scope**: Expand design tokens to support component self-containment
 **Additions Needed**:
+
 - Component-specific color tokens (e.g., `--ui-button-primary-text`)
 - Semantic color relationships (e.g., text-on-primary, text-on-secondary)
 - State-based color variations (hover, focus, disabled)
 
 **Example Token Structure**:
+
 ```css
 /* Button-specific tokens */
 --ui-button-primary-bg: #3b82f6;
@@ -124,6 +136,7 @@ During Phase 4 implementation and testing, we identified important patterns and 
 
 **Scope**: Establish standards for creating realistic test pages
 **Guidelines**:
+
 1. **Real-world styling contexts** that mirror actual usage
 2. **Minimal page-level styles** that don't interfere with components
 3. **Design token usage** for all page-level styling
@@ -181,7 +194,7 @@ During Phase 4 implementation and testing, we identified important patterns and 
 ✅ **Core Objective Achieved**: Modern adoptedStyleSheets delivery working perfectly  
 ✅ **Performance Improved**: Zero additional HTTP requests, shared stylesheets  
 ✅ **Architecture Validated**: Phase 1-3 infrastructure proven with real component  
-✅ **Production Ready**: All functional requirements met  
+✅ **Production Ready**: All functional requirements met
 
 The styling refinements identified are **enhancement opportunities** that will improve the component library's robustness and consistency in diverse usage contexts.
 
@@ -205,4 +218,4 @@ The styling refinements identified are **enhancement opportunities** that will i
 
 ---
 
-*This document will be updated as we address the identified enhancement opportunities and develop new components.*
+_This document will be updated as we address the identified enhancement opportunities and develop new components._

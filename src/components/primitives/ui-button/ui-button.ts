@@ -38,15 +38,15 @@ export interface UIButtonClickEventDetail {
 
 // Type alias for the composed base class with proper mixin interfaces
 type UIButtonBase = Constructor<
-  CoreCustomElement & 
-  AccessibilityMixinInterface & 
-  AttributeManagerMixinInterface &
-  StaticStylesheetMixinInterface
+  CoreCustomElement &
+    AccessibilityMixinInterface &
+    AttributeManagerMixinInterface &
+    StaticStylesheetMixinInterface
 > & {
   new (
     config: ComponentConfig
-  ): CoreCustomElement & 
-    AccessibilityMixinInterface & 
+  ): CoreCustomElement &
+    AccessibilityMixinInterface &
     AttributeManagerMixinInterface &
     StaticStylesheetMixinInterface;
 };
@@ -69,14 +69,14 @@ export class UIButton extends (compose(
 ) as UIButtonBase) {
   // Static stylesheet - automatically applied by StaticStylesheetMixin
   static stylesheet = createStyleSheet(uiButtonCSS);
-  
+
   // Temporarily remove mixin method declarations
   // declare createCSSProperties: (
   //   properties: Record<string, string | number | null | undefined>,
   //   prefix?: string
   // ) => string;
   // declare wrapInHostSelector: (css: string) => string;
-  
+
   private nativeButton!: HTMLButtonElement;
   private lastTriggerSource: 'mouse' | 'keyboard' = 'mouse';
   private announcementDebouncer = new Map<string, number>();
