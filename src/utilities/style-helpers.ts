@@ -28,7 +28,6 @@ export function createStyleSheet(cssText: string): CSSStyleSheet {
   return sheet;
 }
 
-
 /**
  * Adopts stylesheets globally for all components
  */
@@ -345,4 +344,3 @@ export class AdoptedStyleSheetsManager {
     }
   }
 }
-
