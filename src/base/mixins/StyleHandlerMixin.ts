@@ -1,5 +1,5 @@
 /**
- * StaticStylesheetMixin - Auto-detection and application of static component stylesheets
+ * StyleHandlerMixin - Auto-detection and application of static component stylesheets
  *
  * This mixin provides automatic detection and application of static stylesheets defined
  * on component classes. It uses the bulletproof AdoptedStyleSheetsManager for modern
@@ -9,7 +9,7 @@
  * ```typescript
  * export class MyComponent extends compose(
  *   CoreCustomElement,
- *   StaticStylesheetMixin
+ *   StyleHandlerMixin
  * ) {
  *   static stylesheet = createStyleSheet(myComponentCSS);
  *   // Stylesheet automatically applied when component connects!
@@ -20,8 +20,8 @@
 import type { Constructor } from '../utilities/mixin-composer.js';
 import { AdoptedStyleSheetsManager } from '../../utilities/style-helpers.js';
 
-// Base type that StaticStylesheetMixin expects to work with
-type StaticStylesheetBase = {
+// Base type that StyleHandlerMixin expects to work with
+type StyleHandlerBase = {
   connectedCallback?(): void;
   disconnectedCallback?(): void;
 };
@@ -29,7 +29,7 @@ type StaticStylesheetBase = {
 /**
  * Interface for components that support static stylesheets
  */
-export interface StaticStylesheetMixinInterface {
+export interface StyleHandlerMixinInterface {
   /**
    * Gets the static stylesheet manager for this component instance
    */
@@ -51,7 +51,7 @@ export interface StaticStylesheetMixinInterface {
 /**
  * Interface for component classes that define static stylesheets
  */
-export interface StaticStylesheetClass {
+export interface StyleHandlerClass {
   /**
    * Static stylesheet defined on the component class
    */
@@ -64,7 +64,7 @@ export interface StaticStylesheetClass {
 }
 
 /**
- * StaticStylesheetMixin - Provides automatic static stylesheet management
+ * StyleHandlerMixin - Provides automatic static stylesheet management
  *
  * Features:
  * - Auto-detects static `stylesheet` or `stylesheets` properties on component classes
@@ -77,10 +77,10 @@ export interface StaticStylesheetClass {
  * @param Base - The base class to extend
  * @returns Extended class with static stylesheet functionality
  */
-export function StaticStylesheetMixin<TBase extends Constructor<StaticStylesheetBase>>(
+export function StyleHandlerMixin<TBase extends Constructor<StyleHandlerBase>>(
   Base: TBase
-): TBase & Constructor<StaticStylesheetMixinInterface> {
-  abstract class StaticStylesheetMixin extends Base implements StaticStylesheetMixinInterface {
+): TBase & Constructor<StyleHandlerMixinInterface> {
+  abstract class StyleHandlerMixin extends Base implements StyleHandlerMixinInterface {
     private staticStylesheetManager: AdoptedStyleSheetsManager | null = null;
     private hasAppliedStaticStyles = false;
 
@@ -101,7 +101,7 @@ export function StaticStylesheetMixin<TBase extends Constructor<StaticStylesheet
      * @private
      */
     private detectStaticStylesheets(): CSSStyleSheet[] {
-      const constructor = this.constructor as StaticStylesheetClass;
+      const constructor = this.constructor as StyleHandlerClass;
       const stylesheets: CSSStyleSheet[] = [];
 
       // Check for single static stylesheet
@@ -158,7 +158,7 @@ export function StaticStylesheetMixin<TBase extends Constructor<StaticStylesheet
 
         if (!target) {
           console.warn(
-            `StaticStylesheetMixin: No suitable style target found for component ${this.constructor.name}`
+            `StyleHandlerMixin: No suitable style target found for component ${this.constructor.name}`
           );
           return;
         }
@@ -172,7 +172,7 @@ export function StaticStylesheetMixin<TBase extends Constructor<StaticStylesheet
         this.hasAppliedStaticStyles = true;
       } catch (error) {
         console.warn(
-          `StaticStylesheetMixin: Failed to apply static stylesheets for ${this.constructor.name}:`,
+          `StyleHandlerMixin: Failed to apply static stylesheets for ${this.constructor.name}:`,
           error
         );
         // Graceful degradation - styling failure shouldn't break the component
@@ -197,7 +197,7 @@ export function StaticStylesheetMixin<TBase extends Constructor<StaticStylesheet
         this.hasAppliedStaticStyles = false;
       } catch (error) {
         console.warn(
-          `StaticStylesheetMixin: Failed to remove static stylesheets for ${this.constructor.name}:`,
+          `StyleHandlerMixin: Failed to remove static stylesheets for ${this.constructor.name}`,
           error
         );
         // Continue cleanup even if removal fails
@@ -227,5 +227,5 @@ export function StaticStylesheetMixin<TBase extends Constructor<StaticStylesheet
     }
   }
 
-  return StaticStylesheetMixin as TBase & Constructor<StaticStylesheetMixinInterface>;
+  return StyleHandlerMixin as TBase & Constructor<StyleHandlerMixinInterface>;
 }

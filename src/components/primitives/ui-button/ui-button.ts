@@ -16,7 +16,7 @@ import { CoreCustomElement } from '../../../base/CoreCustomElement.js';
 import {
   AttributeManagerMixin,
   AccessibilityMixin,
-  StaticStylesheetMixin,
+  StyleHandlerMixin,
   getObservedAttributes,
 } from '../../../base/mixins/index.js';
 import { compose, type Constructor } from '../../../base/utilities/mixin-composer.js';
@@ -24,7 +24,7 @@ import { createStyleSheet } from '../../../utilities/style-helpers.js';
 import type { ComponentConfig, AccessibilityOptions } from '../../../types/component.js';
 import type { AttributeManagerMixinInterface } from '../../../base/mixins/AttributeManagerMixin.js';
 import type { AccessibilityMixinInterface } from '../../../base/mixins/AccessibilityMixin.js';
-import type { StaticStylesheetMixinInterface } from '../../../base/mixins/StaticStylesheetMixin.js';
+import type { StyleHandlerMixinInterface } from '../../../base/mixins/StyleHandlerMixin.js';
 // Import CSS as inline string for modern delivery
 import uiButtonCSS from './ui-button.css?inline';
 
@@ -41,14 +41,14 @@ type UIButtonBase = Constructor<
   CoreCustomElement &
     AccessibilityMixinInterface &
     AttributeManagerMixinInterface &
-    StaticStylesheetMixinInterface
+    StyleHandlerMixinInterface
 > & {
   new (
     config: ComponentConfig
   ): CoreCustomElement &
     AccessibilityMixinInterface &
     AttributeManagerMixinInterface &
-    StaticStylesheetMixinInterface;
+    StyleHandlerMixinInterface;
 };
 
 /**
@@ -58,15 +58,15 @@ type UIButtonBase = Constructor<
  * 1. CoreCustomElement - Base functionality and lifecycle
  * 2. AccessibilityMixin - ARIA attributes and keyboard handling
  * 3. AttributeManagerMixin - Typed attribute getters/setters
- * 4. StaticStylesheetMixin - Automatic static stylesheet management
+ * 4. StyleHandlerMixin - Automatic static stylesheet management
  */
 export class UIButton extends (compose(
   CoreCustomElement,
   AccessibilityMixin,
   AttributeManagerMixin,
-  StaticStylesheetMixin
+  StyleHandlerMixin
 ) as UIButtonBase) {
-  // Static stylesheet - automatically applied by StaticStylesheetMixin
+  // Static stylesheet - automatically applied by StyleHandlerMixin
   static stylesheet = createStyleSheet(uiButtonCSS);
 
   private nativeButton!: HTMLButtonElement;
