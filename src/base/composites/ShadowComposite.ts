@@ -1,5 +1,5 @@
 /**
- * ShadowComponent - Component with Shadow DOM, styles, and updates
+ * ShadowComposite - Component with Shadow DOM, styles, and updates
  * For components that need Shadow DOM encapsulation
  */
 
@@ -22,7 +22,7 @@ const ShadowBase = compose(
   UpdateManagerMixin
 );
 
-export abstract class ShadowComponent
+export abstract class ShadowComposite
   extends ShadowBase
   implements ShadowDOMMixinInterface, UpdateManagerMixinInterface
 {

@@ -1,5 +1,5 @@
 /**
- * AttributeClassComponent - Component with attribute management and utility class generation
+ * AttributeClassComposite - Component with attribute management and utility class generation
  * For components that need both attribute handling and CSS class-based styling
  */
 
@@ -18,7 +18,7 @@ const AttributeClassBase = compose(
   UpdateManagerMixin
 );
 
-export abstract class AttributeClassComponent extends AttributeClassBase {
+export abstract class AttributeClassComposite extends AttributeClassBase {
   constructor(config: ComponentConfig) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     super(config);
