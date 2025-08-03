@@ -1,5 +1,5 @@
 /**
- * FullComponent - Complete component with all mixins
+ * FullComposite - Complete component with all mixins
  * Equivalent to the current BaseComponent but built with mixins
  */
 
@@ -29,7 +29,7 @@ const FullBase = compose(
   UpdateManagerMixin
 );
 
-export abstract class FullComponent extends FullBase implements ShadowDOMMixinInterface {
+export abstract class FullComposite extends FullBase implements ShadowDOMMixinInterface {
   // Declare properties from ShadowDOMMixin
   declare shadowRoot: ShadowRoot | null;
   declare shadowDOMCreated: boolean;

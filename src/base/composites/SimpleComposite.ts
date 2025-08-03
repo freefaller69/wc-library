@@ -1,12 +1,12 @@
 /**
- * SimpleComponent - Minimal component for display-only elements
+ * SimpleComposite - Minimal component for display-only elements
  * Uses only CoreCustomElement without any mixins
  */
 
 import { CoreCustomElement } from '../CoreCustomElement.js';
 import type { ComponentConfig } from '../../types/component.js';
 
-export abstract class SimpleComponent extends CoreCustomElement {
+export abstract class SimpleComposite extends CoreCustomElement {
   constructor(config: ComponentConfig) {
     super(config);
   }

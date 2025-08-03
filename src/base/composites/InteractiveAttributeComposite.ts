@@ -1,5 +1,5 @@
 /**
- * InteractiveAttributeComponent - Component with accessibility, attributes, events, and updates
+ * InteractiveAttributeComposite - Component with accessibility, attributes, events, and updates
  * For interactive elements that need sophisticated attribute handling
  */
 
@@ -20,7 +20,7 @@ const InteractiveAttributeBase = compose(
   UpdateManagerMixin
 );
 
-export abstract class InteractiveAttributeComponent extends InteractiveAttributeBase {
+export abstract class InteractiveAttributeComposite extends InteractiveAttributeBase {
   constructor(config: ComponentConfig) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     super(config);

@@ -1,5 +1,5 @@
 /**
- * InteractiveComponent - Component with accessibility, events, and updates
+ * InteractiveComposite - Component with accessibility, events, and updates
  * For interactive elements like buttons that don't need attribute management
  */
 
@@ -19,7 +19,7 @@ const InteractiveBase = compose(
   UpdateManagerMixin
 );
 
-export abstract class InteractiveComponent
+export abstract class InteractiveComposite
   extends InteractiveBase
   implements UpdateManagerMixinInterface
 {
