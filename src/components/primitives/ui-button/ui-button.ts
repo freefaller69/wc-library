@@ -16,13 +16,17 @@ import { CoreCustomElement } from '../../../base/CoreCustomElement.js';
 import {
   AttributeManagerMixin,
   AccessibilityMixin,
+  StaticStylesheetMixin,
   getObservedAttributes,
 } from '../../../base/mixins/index.js';
 import { compose, type Constructor } from '../../../base/utilities/mixin-composer.js';
+import { createStyleSheet } from '../../../utilities/style-helpers.js';
 import type { ComponentConfig, AccessibilityOptions } from '../../../types/component.js';
 import type { AttributeManagerMixinInterface } from '../../../base/mixins/AttributeManagerMixin.js';
 import type { AccessibilityMixinInterface } from '../../../base/mixins/AccessibilityMixin.js';
-import './ui-button.css';
+import type { StaticStylesheetMixinInterface } from '../../../base/mixins/StaticStylesheetMixin.js';
+// Import CSS as inline string for modern delivery
+import uiButtonCSS from './ui-button.css?inline';
 
 export interface UIButtonClickEventDetail {
   originalEvent: Event;
@@ -34,11 +38,17 @@ export interface UIButtonClickEventDetail {
 
 // Type alias for the composed base class with proper mixin interfaces
 type UIButtonBase = Constructor<
-  CoreCustomElement & AccessibilityMixinInterface & AttributeManagerMixinInterface
+  CoreCustomElement & 
+  AccessibilityMixinInterface & 
+  AttributeManagerMixinInterface &
+  StaticStylesheetMixinInterface
 > & {
   new (
     config: ComponentConfig
-  ): CoreCustomElement & AccessibilityMixinInterface & AttributeManagerMixinInterface;
+  ): CoreCustomElement & 
+    AccessibilityMixinInterface & 
+    AttributeManagerMixinInterface &
+    StaticStylesheetMixinInterface;
 };
 
 /**
@@ -48,12 +58,25 @@ type UIButtonBase = Constructor<
  * 1. CoreCustomElement - Base functionality and lifecycle
  * 2. AccessibilityMixin - ARIA attributes and keyboard handling
  * 3. AttributeManagerMixin - Typed attribute getters/setters
+ * 4. StaticStylesheetMixin - Automatic static stylesheet management
+ * 5. DynamicStylesMixin - Runtime CSS generation for theming
  */
 export class UIButton extends (compose(
   CoreCustomElement,
   AccessibilityMixin,
-  AttributeManagerMixin
+  AttributeManagerMixin,
+  StaticStylesheetMixin
 ) as UIButtonBase) {
+  // Static stylesheet - automatically applied by StaticStylesheetMixin
+  static stylesheet = createStyleSheet(uiButtonCSS);
+  
+  // Temporarily remove mixin method declarations
+  // declare createCSSProperties: (
+  //   properties: Record<string, string | number | null | undefined>,
+  //   prefix?: string
+  // ) => string;
+  // declare wrapInHostSelector: (css: string) => string;
+  
   private nativeButton!: HTMLButtonElement;
   private lastTriggerSource: 'mouse' | 'keyboard' = 'mouse';
   private announcementDebouncer = new Map<string, number>();
@@ -352,6 +375,11 @@ export class UIButton extends (compose(
       // Graceful degradation - accessibility announcement failure shouldn't break the component
     }
   }
+
+  // Temporarily remove dynamic CSS generation method
+  // generateDynamicCSS(): string {
+  //   return '';
+  // }
 
   /**
    * Gets accessibility configuration for the button wrapper
