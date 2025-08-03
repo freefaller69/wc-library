@@ -1,5 +1,5 @@
 /**
- * Unit tests for StaticStylesheetMixin
+ * Unit tests for StyleHandlerMixin
  */
 
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -50,7 +50,7 @@ vi.mock('../../utilities/style-helpers.js', () => ({
   createStyleSheet: vi.fn((css: string) => mockCSSStyleSheet(css)),
 }));
 
-import { StaticStylesheetMixin } from '../base/mixins/StaticStylesheetMixin.js';
+import { StyleHandlerMixin } from '../base/mixins/StyleHandlerMixin.js';
 import { compose } from '../base/utilities/mixin-composer.js';
 
 // Mock base element class
@@ -83,7 +83,7 @@ interface ComponentWithInternalState extends TestComponentInstance {
 }
 
 // Test component with single static stylesheet
-class TestComponentWithStylesheet extends compose(MockBaseElement, StaticStylesheetMixin) {
+class TestComponentWithStylesheet extends compose(MockBaseElement, StyleHandlerMixin) {
   static stylesheet = mockCSSStyleSheet('.test-single { color: red; }') as unknown as CSSStyleSheet;
 
   constructor() {
@@ -92,7 +92,7 @@ class TestComponentWithStylesheet extends compose(MockBaseElement, StaticStylesh
 }
 
 // Test component with multiple static stylesheets
-class TestComponentWithMultipleStylesheets extends compose(MockBaseElement, StaticStylesheetMixin) {
+class TestComponentWithMultipleStylesheets extends compose(MockBaseElement, StyleHandlerMixin) {
   static stylesheets = [
     mockCSSStyleSheet('.test-multi-1 { color: blue; }') as unknown as CSSStyleSheet,
     mockCSSStyleSheet('.test-multi-2 { color: green; }') as unknown as CSSStyleSheet,
@@ -104,7 +104,7 @@ class TestComponentWithMultipleStylesheets extends compose(MockBaseElement, Stat
 }
 
 // Test component with both single and multiple stylesheets (to test priority)
-class TestComponentWithBoth extends compose(MockBaseElement, StaticStylesheetMixin) {
+class TestComponentWithBoth extends compose(MockBaseElement, StyleHandlerMixin) {
   static stylesheet = mockCSSStyleSheet(
     '.test-both-single { color: red; }'
   ) as unknown as CSSStyleSheet;
@@ -118,14 +118,14 @@ class TestComponentWithBoth extends compose(MockBaseElement, StaticStylesheetMix
 }
 
 // Test component without static stylesheets
-class TestComponentWithoutStylesheets extends compose(MockBaseElement, StaticStylesheetMixin) {
+class TestComponentWithoutStylesheets extends compose(MockBaseElement, StyleHandlerMixin) {
   constructor() {
     super();
   }
 }
 
 // Component with shadow DOM
-class TestComponentWithShadowDOM extends compose(MockBaseElement, StaticStylesheetMixin) {
+class TestComponentWithShadowDOM extends compose(MockBaseElement, StyleHandlerMixin) {
   static stylesheet = mockCSSStyleSheet(
     '.shadow-test { color: purple; }'
   ) as unknown as CSSStyleSheet;
@@ -142,7 +142,7 @@ class TestComponentWithShadowDOM extends compose(MockBaseElement, StaticStyleshe
   }
 }
 
-describe('StaticStylesheetMixin', () => {
+describe('StyleHandlerMixin', () => {
   let consoleSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
@@ -158,7 +158,7 @@ describe('StaticStylesheetMixin', () => {
   });
 
   describe('Basic mixin functionality', () => {
-    it('should create component instance with StaticStylesheetMixin methods', () => {
+    it('should create component instance with StyleHandlerMixin methods', () => {
       const component = new TestComponentWithStylesheet();
 
       expect(component).toBeInstanceOf(TestComponentWithStylesheet);
@@ -310,7 +310,7 @@ describe('StaticStylesheetMixin', () => {
         disconnectedCallback = vi.fn();
       }
 
-      class TestSpyComponent extends compose(SpyableBase, StaticStylesheetMixin) {
+      class TestSpyComponent extends compose(SpyableBase, StyleHandlerMixin) {
         constructor() {
           super();
         }
