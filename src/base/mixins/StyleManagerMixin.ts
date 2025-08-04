@@ -1,6 +1,33 @@
 /**
  * StyleManagerMixin - Provides CSS and stylesheet management for components
  * Works with both Shadow DOM and Light DOM scenarios
+ *
+ * @deprecated Since version 1.0.0. Use StyleHandlerMixin instead.
+ *
+ * StyleManagerMixin is deprecated in favor of the new unified style management system:
+ * - StyleHandlerMixin: For automatic static stylesheet management
+ * - AdoptedStyleSheetsManager: For advanced CSS delivery
+ *
+ * Migration Guide:
+ * ```typescript
+ * // Before (StyleManagerMixin)
+ * class MyComponent extends compose(CoreCustomElement, StyleManagerMixin) {
+ *   static stylesheet = createStyleSheet(css`...`);
+ * }
+ *
+ * // After (StyleHandlerMixin)
+ * class MyComponent extends compose(CoreCustomElement, StyleHandlerMixin) {
+ *   static stylesheet = createStyleSheet(css`...`);
+ * }
+ * ```
+ *
+ * Benefits of migration:
+ * - Better performance with modern CSS delivery
+ * - Automatic static stylesheet detection
+ * - Improved error handling and debugging
+ * - Reduced bundle size and memory usage
+ *
+ * This mixin will be removed in a future major version.
  */
 
 import type { Constructor } from '../utilities/mixin-composer.js';
@@ -20,9 +47,15 @@ type StyleManagerBase = HTMLElement & {
 };
 
 // Mixin interface that defines style management features
+/**
+ * @deprecated Use StyleHandlerMixinInterface instead
+ */
 export interface StyleManagerMixinInterface {
+  /** @deprecated Use StyleHandlerMixin with static stylesheets instead */
   addCSS(css: string): void;
+  /** @deprecated Use StyleHandlerMixin with static stylesheets instead */
   addStylesheet(stylesheet: CSSStyleSheet): void;
+  /** @deprecated Use StyleHandlerMixin with static stylesheets instead */
   batchAddStylesheets(stylesheets: CSSStyleSheet[]): void;
 }
 
@@ -32,6 +65,12 @@ const createdStyleElements = new WeakMap<ComponentConstructor, Set<string>>();
 
 /**
  * Style Manager mixin that handles CSS and stylesheet management
+ *
+ * @deprecated Since version 1.0.0. Use StyleHandlerMixin instead.
+ * This mixin will be removed in a future major version.
+ *
+ * @param Base - The base class to extend
+ * @returns Extended class with style management functionality
  */
 export function StyleManagerMixin<TBase extends Constructor<StyleManagerBase>>(
   Base: TBase
@@ -44,6 +83,13 @@ export function StyleManagerMixin<TBase extends Constructor<StyleManagerBase>>(
     constructor(...args: any[]) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       super(...args);
+
+      // DEPRECATION WARNING
+      console.warn(
+        `[DEPRECATED] StyleManagerMixin is deprecated and will be removed in a future version. ` +
+          `Component "${this.constructor.name}" should migrate to StyleHandlerMixin for better performance and modern CSS delivery. ` +
+          `See documentation for migration guide: https://github.com/freefaller69/wc-library/docs/architecture/stylemanager-refactoring-plan.md`
+      );
 
       // Initialize component-specific style tracking
       const constructorFunc = this.constructor as ComponentConstructor;
