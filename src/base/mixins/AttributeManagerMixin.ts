@@ -53,6 +53,11 @@ export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(
   Base: TBase
 ): TBase & Constructor<AttributeManagerMixinInterface> {
   abstract class AttributeManagerMixin extends Base implements AttributeManagerMixinInterface {
+    // Runtime safety guards for recursion prevention
+    private _attributeCallbackDepth = 0;
+    private readonly MAX_CALLBACK_DEPTH = 5;
+    private readonly MAX_PROTOTYPE_SEARCH_DEPTH = 10;
+
     // Access config from CoreCustomElement - no redeclaration needed
     protected get config(): ComponentConfig {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
@@ -97,29 +102,51 @@ export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(
     }
 
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
-      // Call parent's attributeChangedCallback if it exists (more reliable approach)
-      // Walk up the prototype chain to find the parent implementation
-      this.callParentAttributeChangedCallback(name, oldValue, newValue);
+      // Prevent infinite recursion with depth tracking
+      if (this._attributeCallbackDepth >= this.MAX_CALLBACK_DEPTH) {
+        console.error(
+          `AttributeManagerMixin: Maximum callback depth (${this.MAX_CALLBACK_DEPTH}) exceeded for attribute "${name}". ` +
+            'This indicates a potential infinite recursion in the attribute callback chain. ' +
+            'Stack overflow prevented.'
+        );
+        return;
+      }
 
-      if (oldValue === newValue) return;
+      this._attributeCallbackDepth++;
 
-      // Since static attributes are not in observedAttributes, we only receive
-      // dynamic attributes and explicit attributes here
-      // Static attributes are set once and don't trigger this callback
+      try {
+        // Call parent's attributeChangedCallback if it exists (with enhanced safety)
+        this.callParentAttributeChangedCallback(name, oldValue, newValue);
 
-      if (this.config.staticAttributes?.includes(name)) {
-        // This should rarely happen since static attributes aren't observed,
-        // but handle it gracefully if someone manually calls this method
-        this.handleStaticAttributeChange(name, newValue);
-      } else {
-        // Handle dynamic and explicit attributes (the normal case)
-        this.handleDynamicAttributeChange(name, oldValue, newValue);
+        if (oldValue === newValue) return;
+
+        // Since static attributes are not in observedAttributes, we only receive
+        // dynamic attributes and explicit attributes here
+        // Static attributes are set once and don't trigger this callback
+
+        if (this.config.staticAttributes?.includes(name)) {
+          // This should rarely happen since static attributes aren't observed,
+          // but handle it gracefully if someone manually calls this method
+          this.handleStaticAttributeChange(name, newValue);
+        } else {
+          // Handle dynamic and explicit attributes (the normal case)
+          this.handleDynamicAttributeChange(name, oldValue, newValue);
+        }
+      } catch (error) {
+        console.error(
+          `AttributeManagerMixin: Error in attributeChangedCallback for "${name}":`,
+          error
+        );
+        // Continue execution to prevent breaking the component entirely
+      } finally {
+        // Always decrement depth counter, even if an error occurred
+        this._attributeCallbackDepth--;
       }
     }
 
     /**
      * Safely calls parent attributeChangedCallback implementation
-     * More robust than direct prototype chain navigation
+     * Enhanced with comprehensive safety guards against infinite recursion
      * @private
      */
     private callParentAttributeChangedCallback(
@@ -130,8 +157,24 @@ export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(
       // Look for parent implementation by walking up the prototype chain
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       let currentProto: any = Object.getPrototypeOf(this);
+      let searchDepth = 0;
+      const visitedPrototypes = new Set<any>();
 
-      while (currentProto && currentProto !== Object.prototype) {
+      while (
+        currentProto &&
+        currentProto !== Object.prototype &&
+        searchDepth < this.MAX_PROTOTYPE_SEARCH_DEPTH
+      ) {
+        // Prevent circular reference loops
+        if (visitedPrototypes.has(currentProto)) {
+          console.warn(
+            `AttributeManagerMixin: Circular prototype reference detected while searching for parent attributeChangedCallback for attribute "${name}". ` +
+              'Stopping search to prevent infinite loop.'
+          );
+          break;
+        }
+        visitedPrototypes.add(currentProto);
+
         // Skip our own implementation and look for parent
         if (
           currentProto.constructor !== AttributeManagerMixin &&
@@ -139,15 +182,44 @@ export function AttributeManagerMixin<TBase extends Constructor<HTMLElement>>(
           currentProto.attributeChangedCallback !== this.attributeChangedCallback
         ) {
           try {
-            currentProto.attributeChangedCallback.call(this, name, oldValue, newValue);
-            break; // Found and called parent implementation
+            // Additional safety check: only warn for exact method references that could cause infinite loops
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            const methodString = currentProto.attributeChangedCallback.toString();
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            const hasCallParentRef = methodString.includes('callParentAttributeChangedCallback');
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            const isAttributeManagerMethod = methodString.includes('AttributeManagerMixin');
+
+            // Only skip if it's clearly a recursive AttributeManagerMixin method
+            if (hasCallParentRef && isAttributeManagerMethod) {
+              console.warn(
+                `AttributeManagerMixin: Skipping recursive AttributeManagerMixin method in prototype chain for attribute "${name}".`
+              );
+              // Continue searching rather than calling potentially recursive method
+            } else {
+              currentProto.attributeChangedCallback.call(this, name, oldValue, newValue);
+              break; // Found and called parent implementation
+            }
           } catch (error) {
             // Continue searching if call fails
-            console.warn('Failed to call parent attributeChangedCallback:', error);
+            console.warn(
+              `Failed to call parent attributeChangedCallback for attribute "${name}":`,
+              error
+            );
           }
         }
+
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         currentProto = Object.getPrototypeOf(currentProto);
+        searchDepth++;
+      }
+
+      // Only warn if we hit search depth limit AND there were potential circular references
+      if (searchDepth >= this.MAX_PROTOTYPE_SEARCH_DEPTH && visitedPrototypes.size < searchDepth) {
+        console.warn(
+          `AttributeManagerMixin: Maximum prototype search depth (${this.MAX_PROTOTYPE_SEARCH_DEPTH}) reached for attribute "${name}" with potential circular references. ` +
+            'Some parent attributeChangedCallback implementations may have been skipped.'
+        );
       }
     }
 
