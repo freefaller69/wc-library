@@ -6,7 +6,7 @@
 import { CoreCustomElement } from '../CoreCustomElement.js';
 import { compose } from '../utilities/mixin-composer.js';
 import { ShadowDOMMixin } from '../mixins/ShadowDOMMixin.js';
-import { StyleManagerMixin } from '../mixins/StyleManagerMixin.js';
+import { StyleHandlerMixin } from '../mixins/StyleHandlerMixin.js';
 import { SlotManagerMixin } from '../mixins/SlotManagerMixin.js';
 import { UpdateManagerMixin } from '../mixins/UpdateManagerMixin.js';
 import type { ShadowDOMMixinInterface } from '../mixins/ShadowDOMMixin.js';
@@ -17,7 +17,7 @@ import type { ComponentConfig } from '../../types/component.js';
 const ShadowBase = compose(
   CoreCustomElement,
   ShadowDOMMixin,
-  StyleManagerMixin,
+  StyleHandlerMixin,
   SlotManagerMixin,
   UpdateManagerMixin
 );
