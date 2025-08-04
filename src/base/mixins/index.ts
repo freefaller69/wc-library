@@ -4,7 +4,6 @@
 
 export { AccessibilityMixin } from './AccessibilityMixin.js';
 export { AttributeManagerMixin, getObservedAttributes } from './AttributeManagerMixin.js';
-export { DynamicStylesMixin } from './DynamicStylesMixin.js';
 export { EventManagerMixin } from './EventManagerMixin.js';
 export { ShadowDOMMixin } from './ShadowDOMMixin.js';
 export { StyleHandlerMixin } from './StyleHandlerMixin.js';
@@ -14,12 +13,6 @@ export { UpdateManagerMixin } from './UpdateManagerMixin.js';
 
 export type { AccessibilityMixinInterface } from './AccessibilityMixin.js';
 export type { AttributeManagerMixinInterface } from './AttributeManagerMixin.js';
-export type {
-  DynamicStylesMixinInterface,
-  DynamicStylesConfig,
-  DynamicStylesConstructorOptions,
-  ThemeAwareComponent,
-} from './DynamicStylesMixin.js';
 export type { EventManagerMixinInterface } from './EventManagerMixin.js';
 export type { ShadowDOMMixinInterface } from './ShadowDOMMixin.js';
 export type { StyleHandlerMixinInterface } from './StyleHandlerMixin.js';

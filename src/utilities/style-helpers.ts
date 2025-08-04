@@ -29,15 +29,6 @@ export function createStyleSheet(cssText: string): CSSStyleSheet {
 }
 
 /**
- * Loads CSS file and returns as CSSStyleSheet
- */
-export async function loadStyleSheet(url: string): Promise<CSSStyleSheet> {
-  const response = await fetch(url);
-  const cssText = await response.text();
-  return createStyleSheet(cssText);
-}
-
-/**
  * Adopts stylesheets globally for all components
  */
 export function adoptGlobalStyleSheets(sheets: CSSStyleSheet[]): void {
@@ -353,36 +344,3 @@ export class AdoptedStyleSheetsManager {
     }
   }
 }
-
-/**
- * CSS custom property utilities
- */
-export const CSSProps = {
-  /**
-   * Sets CSS custom properties on an element
-   */
-  set(element: HTMLElement, properties: Record<string, string | number>): void {
-    Object.entries(properties).forEach(([key, value]) => {
-      const propName = key.startsWith('--') ? key : `--${key}`;
-      element.style.setProperty(propName, String(value));
-    });
-  },
-
-  /**
-   * Gets a CSS custom property value
-   */
-  get(element: HTMLElement, property: string): string {
-    const propName = property.startsWith('--') ? property : `--${property}`;
-    return getComputedStyle(element).getPropertyValue(propName).trim();
-  },
-
-  /**
-   * Removes CSS custom properties from an element
-   */
-  remove(element: HTMLElement, properties: string[]): void {
-    properties.forEach((property) => {
-      const propName = property.startsWith('--') ? property : `--${property}`;
-      element.style.removeProperty(propName);
-    });
-  },
-};
