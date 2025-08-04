@@ -1,5 +1,30 @@
 /**
  * BaseComponent - Foundation class for all UI components
+ *
+ * @deprecated Since version 1.0.0. Use CoreCustomElement with mixins instead.
+ *
+ * BaseComponent has been replaced by the new modular mixin-based architecture:
+ * - Use `CoreCustomElement` as the base class
+ * - Apply specific mixins for required functionality (AccessibilityMixin, AttributeManagerMixin, etc.)
+ * - Use pre-composed classes from `src/base/composites/` for common patterns
+ *
+ * Migration examples:
+ * ```typescript
+ * // OLD
+ * import { BaseComponent } from './base/BaseComponent.js';
+ * class MyComponent extends BaseComponent { ... }
+ *
+ * // NEW - Using composites
+ * import { InteractiveComposite } from './base/composites/InteractiveComposite.js';
+ * class MyComponent extends InteractiveComposite { ... }
+ *
+ * // NEW - Custom mixin composition
+ * import { CoreCustomElement } from './base/CoreCustomElement.js';
+ * import { AccessibilityMixin, AttributeManagerMixin } from './base/mixins/index.js';
+ * class MyComponent extends compose(CoreCustomElement, AccessibilityMixin, AttributeManagerMixin) { ... }
+ * ```
+ *
+ * This class will be removed in a future major version.
  */
 
 import { generateId, setAriaState } from '../utilities/accessibility.js';
@@ -18,6 +43,15 @@ export abstract class BaseComponent extends HTMLElement implements LifecycleCall
 
   constructor(config: ComponentConfig) {
     super();
+
+    // Runtime deprecation warning
+    console.warn(
+      `[DEPRECATED] BaseComponent is deprecated and will be removed in a future version. ` +
+        `Component "${this.constructor.name}" should migrate to the new mixin-based architecture. ` +
+        `Use CoreCustomElement with mixins or pre-composed classes from 'src/base/composites/'. ` +
+        `See migration guide: https://github.com/freefaller69/wc-library/blob/main/docs/development/component-migration-guide.md`
+    );
+
     this.componentId = generateId(config.tagName);
     this.config = config;
     this.setupBaseAttributes();

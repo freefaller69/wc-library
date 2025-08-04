@@ -1,5 +1,40 @@
 /**
  * ShadowComponent - Base class for components that need Shadow DOM
+ *
+ * @deprecated Since version 1.0.0. Use ShadowComposite or FullComposite instead.
+ *
+ * ShadowComponent has been replaced by the new modular mixin-based architecture:
+ * - Use `ShadowComposite` for Shadow DOM with attribute management
+ * - Use `FullComposite` for complete Shadow DOM component functionality
+ * - Or compose your own using `CoreCustomElement` with `ShadowDOMMixin`
+ *
+ * Migration examples:
+ * ```typescript
+ * // OLD
+ * import { ShadowComponent } from './base/ShadowComponent.js';
+ * class MyComponent extends ShadowComponent { ... }
+ *
+ * // NEW - Using composites (recommended)
+ * import { ShadowComposite } from './base/composites/ShadowComposite.js';
+ * class MyComponent extends ShadowComposite { ... }
+ *
+ * // NEW - Full featured composite
+ * import { FullComposite } from './base/composites/FullComposite.js';
+ * class MyComponent extends FullComposite { ... }
+ *
+ * // NEW - Custom composition
+ * import { CoreCustomElement } from './base/CoreCustomElement.js';
+ * import { ShadowDOMMixin, StyleHandlerMixin } from './base/mixins/index.js';
+ * class MyComponent extends compose(CoreCustomElement, ShadowDOMMixin, StyleHandlerMixin) { ... }
+ * ```
+ *
+ * Benefits of the new approach:
+ * - Uses StyleHandlerMixin (unified style management) instead of deprecated StyleManager
+ * - Better performance with adoptedStyleSheets API
+ * - More modular and composable architecture
+ * - Better TypeScript support
+ *
+ * This class will be removed in a future major version.
  */
 
 import { BaseComponent } from './BaseComponent.js';
@@ -18,6 +53,14 @@ export abstract class ShadowComponent extends BaseComponent {
 
   constructor(config: ShadowComponentConfig) {
     super(config);
+
+    // Runtime deprecation warning
+    console.warn(
+      `[DEPRECATED] ShadowComponent is deprecated and will be removed in a future version. ` +
+        `Component "${this.constructor.name}" should migrate to ShadowComposite or FullComposite. ` +
+        `These use the modern StyleHandlerMixin instead of deprecated StyleManager. ` +
+        `See migration guide: https://github.com/freefaller69/wc-library/blob/main/docs/development/component-migration-guide.md`
+    );
 
     // Create shadow root
     this.shadowRoot = this.attachShadow({
