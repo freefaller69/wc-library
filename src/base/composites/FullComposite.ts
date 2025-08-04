@@ -10,7 +10,7 @@ import {
   AttributeManagerMixin,
   EventManagerMixin,
   ShadowDOMMixin,
-  StyleManagerMixin,
+  StyleHandlerMixin,
   SlotManagerMixin,
   UpdateManagerMixin,
 } from '../mixins/index.js';
@@ -24,7 +24,7 @@ const FullBase = compose(
   AttributeManagerMixin,
   EventManagerMixin,
   ShadowDOMMixin,
-  StyleManagerMixin,
+  StyleHandlerMixin,
   SlotManagerMixin,
   UpdateManagerMixin
 );
