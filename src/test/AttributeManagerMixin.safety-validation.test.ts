@@ -58,8 +58,8 @@ describe('AttributeManagerMixin Safety Validation', () => {
       expect(element.getMaxCallbackDepth()).toBe(5);
       expect(element.getMaxPrototypeSearchDepth()).toBe(10);
 
-      // Note: Constants are readonly due to TypeScript readonly keyword, 
-      // but JavaScript runtime doesn't enforce this. The TypeScript compiler 
+      // Note: Constants are readonly due to TypeScript readonly keyword,
+      // but JavaScript runtime doesn't enforce this. The TypeScript compiler
       // provides the compile-time protection we need.
     });
 
@@ -163,10 +163,10 @@ describe('AttributeManagerMixin Safety Validation', () => {
         testCircularDetection() {
           const visitedPrototypes = new Set<any>();
           const circularProto = { test: 'circular' };
-          
+
           // Simulate first visit
           visitedPrototypes.add(circularProto);
-          
+
           // Simulate encountering same object again (circular reference)
           if (visitedPrototypes.has(circularProto)) {
             console.warn(
@@ -201,7 +201,7 @@ describe('AttributeManagerMixin Safety Validation', () => {
         testDepthLimitProtection() {
           let searchDepth = 0;
           const MAX_PROTOTYPE_SEARCH_DEPTH = 10;
-          
+
           // Simulate deep prototype chain traversal
           while (searchDepth < MAX_PROTOTYPE_SEARCH_DEPTH + 5) {
             searchDepth++;
@@ -210,7 +210,7 @@ describe('AttributeManagerMixin Safety Validation', () => {
               break;
             }
           }
-          
+
           return searchDepth;
         }
       }
@@ -378,7 +378,9 @@ describe('AttributeManagerMixin Safety Validation', () => {
         }).not.toThrow();
 
         expect(consoleWarnSpy).toHaveBeenCalledWith(
-          expect.stringContaining('Failed to call parent attributeChangedCallback for attribute "test-attr"'),
+          expect.stringContaining(
+            'Failed to call parent attributeChangedCallback for attribute "test-attr"'
+          ),
           expect.any(Error)
         );
       } finally {
@@ -413,7 +415,9 @@ describe('AttributeManagerMixin Safety Validation', () => {
         }).not.toThrow();
 
         expect(consoleWarnSpy).toHaveBeenCalledWith(
-          expect.stringContaining('Failed to call parent attributeChangedCallback for attribute "test-attr"'),
+          expect.stringContaining(
+            'Failed to call parent attributeChangedCallback for attribute "test-attr"'
+          ),
           expect.any(Error)
         );
       } finally {
@@ -450,7 +454,9 @@ describe('AttributeManagerMixin Safety Validation', () => {
 
         // Should have logged parent error
         expect(consoleWarnSpy).toHaveBeenCalledWith(
-          expect.stringContaining('Failed to call parent attributeChangedCallback for attribute "test-attr"'),
+          expect.stringContaining(
+            'Failed to call parent attributeChangedCallback for attribute "test-attr"'
+          ),
           expect.any(Error)
         );
 
