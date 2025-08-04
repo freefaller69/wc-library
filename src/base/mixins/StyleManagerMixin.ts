@@ -1,32 +1,32 @@
 /**
  * StyleManagerMixin - Provides CSS and stylesheet management for components
  * Works with both Shadow DOM and Light DOM scenarios
- * 
+ *
  * @deprecated Since version 1.0.0. Use StyleHandlerMixin instead.
- * 
+ *
  * StyleManagerMixin is deprecated in favor of the new unified style management system:
  * - StyleHandlerMixin: For automatic static stylesheet management
  * - AdoptedStyleSheetsManager: For advanced CSS delivery
- * 
+ *
  * Migration Guide:
  * ```typescript
  * // Before (StyleManagerMixin)
  * class MyComponent extends compose(CoreCustomElement, StyleManagerMixin) {
  *   static stylesheet = createStyleSheet(css`...`);
  * }
- * 
+ *
  * // After (StyleHandlerMixin)
  * class MyComponent extends compose(CoreCustomElement, StyleHandlerMixin) {
  *   static stylesheet = createStyleSheet(css`...`);
  * }
  * ```
- * 
+ *
  * Benefits of migration:
  * - Better performance with modern CSS delivery
  * - Automatic static stylesheet detection
  * - Improved error handling and debugging
  * - Reduced bundle size and memory usage
- * 
+ *
  * This mixin will be removed in a future major version.
  */
 
@@ -65,10 +65,10 @@ const createdStyleElements = new WeakMap<ComponentConstructor, Set<string>>();
 
 /**
  * Style Manager mixin that handles CSS and stylesheet management
- * 
+ *
  * @deprecated Since version 1.0.0. Use StyleHandlerMixin instead.
  * This mixin will be removed in a future major version.
- * 
+ *
  * @param Base - The base class to extend
  * @returns Extended class with style management functionality
  */
@@ -87,8 +87,8 @@ export function StyleManagerMixin<TBase extends Constructor<StyleManagerBase>>(
       // DEPRECATION WARNING
       console.warn(
         `[DEPRECATED] StyleManagerMixin is deprecated and will be removed in a future version. ` +
-        `Component "${this.constructor.name}" should migrate to StyleHandlerMixin for better performance and modern CSS delivery. ` +
-        `See documentation for migration guide: https://github.com/freefaller69/wc-library/docs/architecture/stylemanager-refactoring-plan.md`
+          `Component "${this.constructor.name}" should migrate to StyleHandlerMixin for better performance and modern CSS delivery. ` +
+          `See documentation for migration guide: https://github.com/freefaller69/wc-library/docs/architecture/stylemanager-refactoring-plan.md`
       );
 
       // Initialize component-specific style tracking
