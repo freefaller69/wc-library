@@ -1,15 +1,17 @@
 /**
  * @file AttributeManagerMixin.safety-validation.test.ts
  * Comprehensive safety validation tests for AttributeManagerMixin recursion protection
- * 
+ *
  * This test suite validates the critical safety measures implemented to prevent
  * infinite recursion and stack overflow in AttributeManagerMixin.
- * 
+ *
  * Priority Coverage:
  * - HIGH: Recursion depth protection and depth counter management
  * - MEDIUM: Circular prototype reference detection and method string analysis
  * - Integration: Error handling, recovery, and normal operation validation
  */
+
+/* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AttributeManagerMixin } from '../base/mixins/AttributeManagerMixin.js';
@@ -51,11 +53,11 @@ describe('AttributeManagerMixin Safety Validation', () => {
       }
 
       const element = new TestElement();
-      
+
       // Verify constants are set to expected safe values
       expect(element.getMaxCallbackDepth()).toBe(5);
       expect(element.getMaxPrototypeSearchDepth()).toBe(10);
-      
+
       // Verify constants are readonly
       expect(() => {
         (element as any).MAX_CALLBACK_DEPTH = 100;
@@ -90,7 +92,7 @@ describe('AttributeManagerMixin Safety Validation', () => {
 
       const element = new TestElement();
       element.setDepthToMax();
-      
+
       // This should trigger depth protection immediately
       element.attributeChangedCallback('test-attr', null, 'value');
 
@@ -114,7 +116,7 @@ describe('AttributeManagerMixin Safety Validation', () => {
       }
 
       const element = new TestElement();
-      
+
       expect(element.getDepthCounter()).toBe(0);
       element.attributeChangedCallback('test-attr', null, 'value1');
       expect(element.getDepthCounter()).toBe(0); // Should reset after completion
@@ -136,16 +138,16 @@ describe('AttributeManagerMixin Safety Validation', () => {
       }
 
       const element = new TestElement();
-      
+
       expect(element.getDepthCounter()).toBe(0);
       element.attributeChangedCallback('test-attr', null, 'error-value');
-      
+
       // Should have caught and logged the error
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         expect.stringContaining('Error in attributeChangedCallback for "test-attr"'),
         expect.any(Error)
       );
-      
+
       // Depth counter should still be reset due to finally block
       expect(element.getDepthCounter()).toBe(0);
     });
@@ -159,19 +161,19 @@ describe('AttributeManagerMixin Safety Validation', () => {
 
       class TestElement extends AttributeManagerMixin(MockBase as any) {}
       const element = new TestElement();
-      
+
       // Mock circular prototype reference
       const originalGetPrototypeOf = Object.getPrototypeOf;
-      const circularProto = { 
+      const circularProto = {
         constructor: class MockClass {},
-        attributeChangedCallback: vi.fn()
+        attributeChangedCallback: vi.fn(),
       };
-      
+
       Object.getPrototypeOf = vi.fn(() => circularProto); // Always return same object
 
       try {
         element.attributeChangedCallback('test-attr', null, 'value1');
-        
+
         expect(consoleWarnSpy).toHaveBeenCalledWith(
           expect.stringContaining('Circular prototype reference detected')
         );
@@ -190,18 +192,19 @@ describe('AttributeManagerMixin Safety Validation', () => {
 
       class TestElement extends AttributeManagerMixin(MockBase as any) {}
       const element = new TestElement();
-      
+
       // Mock deep prototype chain
       const originalGetPrototypeOf = Object.getPrototypeOf;
       let depth = 0;
-      
+
       Object.getPrototypeOf = vi.fn(() => {
         depth++;
-        if (depth <= 12) { // Exceed MAX_PROTOTYPE_SEARCH_DEPTH
+        if (depth <= 12) {
+          // Exceed MAX_PROTOTYPE_SEARCH_DEPTH
           return {
             constructor: class DeepClass {},
             attributeChangedCallback: vi.fn(),
-            depth: depth // Make each unique
+            depth: depth, // Make each unique
           };
         }
         return Object.prototype;
@@ -209,10 +212,10 @@ describe('AttributeManagerMixin Safety Validation', () => {
 
       try {
         element.attributeChangedCallback('test-attr', null, 'value1');
-        
+
         // Should have reached the search depth limit
         expect(depth).toBeGreaterThanOrEqual(10);
-        
+
         // Should not warn about circular references (since there were none)
         expect(consoleWarnSpy).not.toHaveBeenCalledWith(
           expect.stringContaining('Circular prototype reference detected')
@@ -231,20 +234,21 @@ describe('AttributeManagerMixin Safety Validation', () => {
 
       class TestElement extends AttributeManagerMixin(MockBase as any) {}
       const element = new TestElement();
-      
+
       // Mock method with recursive patterns
       const recursiveMethod = vi.fn();
-      recursiveMethod.toString = () => 'function() { this.callParentAttributeChangedCallback(); /* AttributeManagerMixin */ }';
-      
+      recursiveMethod.toString = () =>
+        'function() { this.callParentAttributeChangedCallback(); /* AttributeManagerMixin */ }';
+
       const originalGetPrototypeOf = Object.getPrototypeOf;
       Object.getPrototypeOf = vi.fn(() => ({
         constructor: class RecursiveClass {},
-        attributeChangedCallback: recursiveMethod
+        attributeChangedCallback: recursiveMethod,
       }));
 
       try {
         element.attributeChangedCallback('test-attr', null, 'value1');
-        
+
         expect(consoleWarnSpy).toHaveBeenCalledWith(
           expect.stringContaining('Skipping recursive AttributeManagerMixin method')
         );
@@ -261,20 +265,20 @@ describe('AttributeManagerMixin Safety Validation', () => {
 
       class TestElement extends AttributeManagerMixin(MockBase as any) {}
       const element = new TestElement();
-      
+
       // Mock safe method
       const safeMethod = vi.fn();
       safeMethod.toString = () => 'function() { console.log("Safe method"); }';
-      
+
       const originalGetPrototypeOf = Object.getPrototypeOf;
       Object.getPrototypeOf = vi.fn(() => ({
         constructor: class SafeClass {},
-        attributeChangedCallback: safeMethod
+        attributeChangedCallback: safeMethod,
       }));
 
       try {
         element.attributeChangedCallback('test-attr', null, 'value1');
-        
+
         expect(consoleWarnSpy).not.toHaveBeenCalledWith(
           expect.stringContaining('Skipping recursive AttributeManagerMixin method')
         );
@@ -291,40 +295,41 @@ describe('AttributeManagerMixin Safety Validation', () => {
 
       class TestElement extends AttributeManagerMixin(MockBase as any) {}
       const element = new TestElement();
-      
+
       const testCases = [
         {
           name: 'Only callParentAttributeChangedCallback',
           toString: () => 'function() { this.callParentAttributeChangedCallback(); }',
-          shouldSkip: false
+          shouldSkip: false,
         },
         {
           name: 'Only AttributeManagerMixin',
           toString: () => 'function() { /* AttributeManagerMixin */ }',
-          shouldSkip: false
+          shouldSkip: false,
         },
         {
           name: 'Both patterns',
-          toString: () => 'function() { this.callParentAttributeChangedCallback(); /* AttributeManagerMixin */ }',
-          shouldSkip: true
-        }
+          toString: () =>
+            'function() { this.callParentAttributeChangedCallback(); /* AttributeManagerMixin */ }',
+          shouldSkip: true,
+        },
       ];
 
       testCases.forEach((testCase) => {
         consoleWarnSpy.mockClear();
-        
+
         const testMethod = vi.fn();
         testMethod.toString = testCase.toString;
-        
+
         const originalGetPrototypeOf = Object.getPrototypeOf;
         Object.getPrototypeOf = vi.fn(() => ({
           constructor: class TestClass {},
-          attributeChangedCallback: testMethod
+          attributeChangedCallback: testMethod,
         }));
 
         try {
           element.attributeChangedCallback('test-attr', null, 'test-value');
-          
+
           if (testCase.shouldSkip) {
             expect(consoleWarnSpy).toHaveBeenCalledWith(
               expect.stringContaining('Skipping recursive AttributeManagerMixin method')
@@ -349,24 +354,24 @@ describe('AttributeManagerMixin Safety Validation', () => {
 
       class TestElement extends AttributeManagerMixin(MockBase as any) {}
       const element = new TestElement();
-      
+
       // Mock method where toString() throws
       const problematicMethod = vi.fn();
       problematicMethod.toString = () => {
         throw new Error('toString() error');
       };
-      
+
       const originalGetPrototypeOf = Object.getPrototypeOf;
       Object.getPrototypeOf = vi.fn(() => ({
         constructor: class ProblematicClass {},
-        attributeChangedCallback: problematicMethod
+        attributeChangedCallback: problematicMethod,
       }));
 
       try {
         expect(() => {
           element.attributeChangedCallback('test-attr', null, 'value1');
         }).not.toThrow();
-        
+
         expect(consoleWarnSpy).toHaveBeenCalledWith(
           expect.stringContaining('Failed to call parent attributeChangedCallback'),
           expect.any(Error)
@@ -385,23 +390,23 @@ describe('AttributeManagerMixin Safety Validation', () => {
 
       class TestElement extends AttributeManagerMixin(MockBase as any) {}
       const element = new TestElement();
-      
+
       // Mock method that throws during execution
       const throwingMethod = vi.fn(() => {
         throw new Error('Parent method error');
       });
-      
+
       const originalGetPrototypeOf = Object.getPrototypeOf;
       Object.getPrototypeOf = vi.fn(() => ({
         constructor: class ThrowingClass {},
-        attributeChangedCallback: throwingMethod
+        attributeChangedCallback: throwingMethod,
       }));
 
       try {
         expect(() => {
           element.attributeChangedCallback('test-attr', null, 'value1');
         }).not.toThrow();
-        
+
         expect(consoleWarnSpy).toHaveBeenCalledWith(
           expect.stringContaining('Failed to call parent attributeChangedCallback'),
           expect.any(Error)
@@ -425,22 +430,24 @@ describe('AttributeManagerMixin Safety Validation', () => {
       }
 
       const element = new TestElement();
-      
+
       // Mock parent that throws error
       const originalGetPrototypeOf = Object.getPrototypeOf;
       Object.getPrototypeOf = vi.fn(() => ({
         constructor: class ErrorClass {},
-        attributeChangedCallback: () => { throw new Error('Parent error'); }
+        attributeChangedCallback: () => {
+          throw new Error('Parent error');
+        },
       }));
 
       try {
         element.attributeChangedCallback('test-attr', null, 'value1');
-        
+
         // Should have logged parent error
         expect(consoleWarnSpy).toHaveBeenCalledWith(
           expect.stringContaining('Failed to call parent attributeChangedCallback')
         );
-        
+
         // Should still have continued with normal processing
         expect(element.processedNormally).toBe(true);
       } finally {
@@ -457,11 +464,11 @@ describe('AttributeManagerMixin Safety Validation', () => {
 
       class TestElement extends AttributeManagerMixin(MockBase as any) {}
       const element = new TestElement();
-      
+
       // Normal attribute change should work without warnings
       element.attributeChangedCallback('test-attr', null, 'normal-value');
       element.attributeChangedCallback('test-attr', 'normal-value', 'another-value');
-      
+
       // Should not have any error or warning messages for normal operation
       expect(consoleErrorSpy).not.toHaveBeenCalled();
       expect(consoleWarnSpy).not.toHaveBeenCalled();
@@ -481,10 +488,10 @@ describe('AttributeManagerMixin Safety Validation', () => {
       }
 
       const element = new TestElement();
-      
+
       // Same value should short-circuit processing
       element.attributeChangedCallback('test-attr', 'same-value', 'same-value');
-      
+
       // Should not have processed the change (short-circuited)
       expect(element.changeProcessed).toBe(false);
       expect(consoleErrorSpy).not.toHaveBeenCalled();
