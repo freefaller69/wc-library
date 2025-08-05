@@ -1,0 +1,72 @@
+/**
+ * UIHeading Component Styles
+ * 
+ * Uses CSS custom properties for easy theming.
+ * Consumers can override any --ui-heading-legacy-* variable to customize appearance.
+ */
+
+ui-heading-legacy {
+  /* Base heading styles */
+  display: block;
+  font-family: var(--ui-heading-legacy-font-family, inherit);
+  font-weight: var(--ui-heading-legacy-font-weight, 600);
+  line-height: var(--ui-heading-legacy-line-height, 1.2);
+  color: var(--ui-heading-legacy-color, inherit);
+  margin: var(--ui-heading-legacy-margin, 0 0 1rem 0);
+
+  /* No default font-size - level attribute is required */
+  font-size: var(--ui-heading-legacy-font-size, 1rem);
+}
+
+/* Level-specific font sizes */
+ui-heading-legacy[level='1'] {
+  font-size: var(--ui-heading-legacy-h1-size, 2.5rem);
+  font-weight: var(--ui-heading-legacy-h1-weight, var(--ui-heading-legacy-font-weight, 700));
+}
+
+ui-heading-legacy[level='2'] {
+  font-size: var(--ui-heading-legacy-h2-size, 2rem);
+  font-weight: var(--ui-heading-legacy-h2-weight, var(--ui-heading-legacy-font-weight, 600));
+}
+
+ui-heading-legacy[level='3'] {
+  font-size: var(--ui-heading-legacy-h3-size, 1.5rem);
+  font-weight: var(--ui-heading-legacy-h3-weight, var(--ui-heading-legacy-font-weight, 600));
+}
+
+ui-heading-legacy[level='4'] {
+  font-size: var(--ui-heading-legacy-h4-size, 1.25rem);
+  font-weight: var(--ui-heading-legacy-h4-weight, var(--ui-heading-legacy-font-weight, 600));
+}
+
+ui-heading-legacy[level='5'] {
+  font-size: var(--ui-heading-legacy-h5-size, 1.125rem);
+  font-weight: var(--ui-heading-legacy-h5-weight, var(--ui-heading-legacy-font-weight, 600));
+}
+
+ui-heading-legacy[level='6'] {
+  font-size: var(--ui-heading-legacy-h6-size, 1rem);
+  font-weight: var(--ui-heading-legacy-h6-weight, var(--ui-heading-legacy-font-weight, 600));
+}
+
+/* 
+ * Theme integration
+ * These can be overridden in the design system's main CSS file
+ */
+
+/* Example: Brand theming
+:root {
+  --ui-heading-legacy-font-family: 'Inter', system-ui, sans-serif;
+  --ui-heading-legacy-color: var(--color-neutral-900);
+  --ui-heading-legacy-h1-size: 3rem;
+  --ui-heading-legacy-h2-size: 2.25rem;
+}
+*/
+
+/* Example: Dark mode support
+@media (prefers-color-scheme: dark) {
+  ui-heading-legacy {
+    --ui-heading-legacy-color: var(--color-neutral-100);
+  }
+}
+*/
