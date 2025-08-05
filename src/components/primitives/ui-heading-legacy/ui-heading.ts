@@ -22,7 +22,7 @@ export type UIHeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 export class UIHeading extends CoreCustomElement {
   constructor() {
     super({
-      tagName: 'ui-heading',
+      tagName: 'ui-heading-legacy',
     });
   }
 
@@ -107,6 +107,6 @@ export class UIHeading extends CoreCustomElement {
 }
 
 // Register the component
-if (!customElements.get('ui-heading')) {
-  customElements.define('ui-heading', UIHeading);
+if (!customElements.get('ui-heading-legacy')) {
+  customElements.define('ui-heading-legacy', UIHeading);
 }

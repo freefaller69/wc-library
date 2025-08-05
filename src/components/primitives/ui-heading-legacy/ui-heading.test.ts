@@ -22,7 +22,7 @@ describe('UIHeading - Minimal Implementation', () => {
 
   describe('Component Registration', () => {
     it('should be defined as a custom element', () => {
-      expect(customElements.get('ui-heading')).toBeDefined();
+      expect(customElements.get('ui-heading-legacy')).toBeDefined();
     });
 
     it('should create an instance', () => {
@@ -135,11 +135,11 @@ describe('UIHeading - Minimal Implementation', () => {
       element.connectedCallback();
 
       // Should only have the base attributes from CoreCustomElement
-      expect(element.getAttribute('data-ui-component')).toBe('ui-heading');
+      expect(element.getAttribute('data-ui-component')).toBe('ui-heading-legacy');
 
       // Should NOT have utility classes
-      expect(element.classList.contains('ui-heading')).toBe(false);
-      expect(element.classList.contains('ui-heading--level-3')).toBe(false);
+      expect(element.classList.contains('ui-heading-legacy')).toBe(false);
+      expect(element.classList.contains('ui-heading-legacy--level-3')).toBe(false);
     });
 
     it('should update attribute when level changes for CSS targeting', () => {
