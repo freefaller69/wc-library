@@ -55,19 +55,11 @@ export function compose<T extends Constructor>(Base: T, ...mixins: Mixin<any>[])
 }
 
 /**
- * Type-safe mixin composition with interface merging
+ * Additional utility functions available in the actual implementation:
+ * - createMixin: Creates a mixin with improved type inference
+ * - applyMixin: Helper for single mixin application
+ * - implementsMixin: Type-safe mixin interface checking
  */
-export function typedCompose<TBase extends Constructor, TMixins extends readonly Mixin<any>[]>(
-  Base: TBase,
-  ...mixins: TMixins
-): TBase & UnionToIntersection<ReturnType<TMixins[number]>> {
-  return compose(Base, ...mixins) as any;
-}
-
-// Utility type for merging mixin interfaces
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void
-  ? I
-  : never;
 ```
 
 ## Individual Mixin Patterns
@@ -240,35 +232,38 @@ export function EventManagerMixin<TBase extends Constructor<HTMLElement>>(Base: 
 ### Creating Composite Base Classes
 
 ```typescript
-// src/base/composites/SimpleComponent.ts
+// Example: Minimal component using only core functionality
+// (Components like UI Heading use build-from-scratch approach)
 import { CoreCustomElement } from '../CoreCustomElement.js';
 
-export class SimpleComponent extends CoreCustomElement {
+export class MinimalComponent extends CoreCustomElement {
   // Only core functionality - minimal overhead
 }
 
-// src/base/composites/InteractiveComponent.ts
+// src/base/composites/InteractiveComposite.ts
 import { CoreCustomElement } from '../CoreCustomElement.js';
 import { AccessibilityMixin } from '../mixins/AccessibilityMixin.js';
 import { EventManagerMixin } from '../mixins/EventManagerMixin.js';
 import { UpdateManagerMixin } from '../mixins/UpdateManagerMixin.js';
-import { typedCompose } from '../utilities/mixin-composer.js';
+import { compose } from '../utilities/mixin-composer.js';
 
-export const InteractiveComponent = typedCompose(
+const InteractiveBase = compose(
   CoreCustomElement,
   AccessibilityMixin,
   EventManagerMixin,
   UpdateManagerMixin
 );
 
-export type InteractiveComponent = InstanceType<typeof InteractiveComponent>;
+export abstract class InteractiveComposite extends InteractiveBase {
+  // Implementation details...
+}
 ```
 
 ### Using Composite Classes
 
 ```typescript
 // Component implementation using composite
-export class ButtonComponent extends InteractiveComponent {
+export class ButtonComponent extends InteractiveComposite {
   static get observedAttributes(): string[] {
     return ['disabled', 'variant', 'size'];
   }
@@ -499,7 +494,9 @@ Based on comprehensive analysis of mixin integration across primitive components
 | **AttributeManagerMixin** | ✅ High         | Low           | Low          | Medium           | ✅ Recommended          |
 | **AccessibilityMixin**    | ✅ High         | Medium        | Low          | Medium           | ✅ Recommended          |
 | **ShadowDOMMixin**        | ✅ High         | Low           | Low          | Low              | ✅ Recommended          |
-| **StyleManagerMixin**     | ✅ High         | Low           | Low          | Low              | ✅ Recommended          |
+| **StyleHandlerMixin**     | ✅ High         | Low           | Low          | Low              | ✅ Recommended          |
+| **ClassManagerMixin**     | ✅ Medium       | Low           | Low          | Low              | ✅ Situational          |
+| **SlotManagerMixin**      | ✅ Medium       | Low           | Low          | Medium           | ✅ Situational          |
 | **UpdateManagerMixin**    | ❌ Overkill     | High          | High         | High             | ❌ Avoid for primitives |
 | **EventManagerMixin**     | ❌ Overkill     | High          | High         | High             | ❌ Avoid for primitives |
 
