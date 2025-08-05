@@ -123,7 +123,7 @@ if (this._attributeCallbackDepth >= this.MAX_CALLBACK_DEPTH) {
 These issues remain stable at their assessed priority levels with no degradation:
 
 - **Issue #5**: ClassManagerMixin coupling (🟡 High)
-- **Issue #6**: Unused signal system (~800 lines of dead code) (🟠 Medium)
+- **Issue #6**: Signal system integration planning (~800 lines ready for reactive UI implementation) (🟠 Medium)
 - **Issue #8**: Type definition gaps (🟠 Medium)
 - **Issue #9**: Test file organization inconsistencies (🟠 Medium)
 
@@ -305,10 +305,10 @@ The safety system is validated by **15 dedicated tests** covering all protection
 
 **Priority**: Nice-to-have (can be done when convenient)
 
-1. **Dead Code Removal** (~800 lines of unused signal system)
-   - Impact: Bundle size reduction, maintainability improvement
-   - Risk: Very low - unused code has no runtime dependencies
-   - Timeline: 1-2 days when convenient
+1. **Signal System Integration** (~800 lines of reactive UI infrastructure)
+   - Impact: Enhanced reactive UI capabilities for card components and interactive elements
+   - Risk: Low - well-architected foundation ready for implementation
+   - Timeline: Integration during interactive component development phase
 
 2. **Type Safety Improvements** (mixin-composer.ts enhancements)
    - Impact: Enhanced developer experience, better IDE support
@@ -349,7 +349,7 @@ The safety system is validated by **15 dedicated tests** covering all protection
 1. **Continue Current Development Patterns**: The established architecture patterns are working excellently
 2. **Monitor Deprecation Migration**: Track developer adoption of new ShadowComposite pattern
 3. **Document Success Patterns**: Use current implementation as reference for future components
-4. **Optional Optimization**: Remove unused signal system when convenient for maintainability
+4. **Future Enhancement**: Integrate signal system for reactive UI capabilities when developing card components and interactive elements
 
 ### Medium-Term Strategy (Next 1-3 Months)
 
