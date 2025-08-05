@@ -41,7 +41,7 @@ This document captures key learnings, best practices, and patterns discovered du
 const UIButtonBase = compose(
   CoreCustomElement,
   AccessibilityMixin,
-  AttributeManagerMixin, 
+  AttributeManagerMixin,
   StyleHandlerMixin
 );
 
@@ -90,10 +90,12 @@ const UIButtonBase = compose(
   StyleHandlerMixin
 );
 
-export class UIButton extends UIButtonBase implements 
-  AccessibilityMixinInterface,
-  AttributeManagerMixinInterface,
-  StyleHandlerMixinInterface {
+export class UIButton
+  extends UIButtonBase
+  implements
+    AccessibilityMixinInterface,
+    AttributeManagerMixinInterface,
+    StyleHandlerMixinInterface {
   // TypeScript now understands all mixin methods
 }
 ```

@@ -61,7 +61,11 @@ export class UIButton extends compose(
 ```typescript
 // Actual current implementation
 import uiButtonCSS from './ui-button.css?inline';
-import { AccessibilityMixin, AttributeManagerMixin, StyleHandlerMixin } from '../../../base/mixins/index.js';
+import {
+  AccessibilityMixin,
+  AttributeManagerMixin,
+  StyleHandlerMixin,
+} from '../../../base/mixins/index.js';
 
 export class UIButton extends compose(
   CoreCustomElement,
@@ -275,7 +279,7 @@ export class UIButton extends compose(
 ### **Immediate Next Steps (Phase 5)** - Historical Status
 
 1. **ShadowComponent Migration**: ~~Apply same patterns to `ShadowComponent` composite~~ ✅ **Completed** - Component removed in August 2025
-2. **FullComponent Migration**: ~~Update `FullComponent` to use new architecture~~ ✅ **Completed** - Component removed in August 2025  
+2. **FullComponent Migration**: ~~Update `FullComponent` to use new architecture~~ ✅ **Completed** - Component removed in August 2025
 3. **StyleManagerMixin Deprecation**: ~~Begin deprecation process for old mixin~~ ✅ **Completed** - Component removed in August 2025
 
 ### **Long-term Enhancements**

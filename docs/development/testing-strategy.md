@@ -442,7 +442,7 @@ describe('Migration Compatibility', () => {
       // Create both old and new implementations
       // Historical example - would have been BaseComponent vs new pattern
       // class OldTestComponent extends BaseComponent { ... }
-      
+
       class CurrentTestComponent extends compose(
         CoreCustomElement,
         AccessibilityMixin,
