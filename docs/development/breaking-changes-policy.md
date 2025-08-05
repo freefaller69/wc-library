@@ -1,10 +1,12 @@
 # Breaking Changes Policy
 
-This document outlines the policy for managing breaking changes during the mixin refactoring and future development of the web component library.
+> **Historical Document Notice** (Updated August 5, 2025): This document outlined a planned gradual deprecation process for BaseComponent/ShadowComponent that was never implemented. Instead, these legacy components were completely removed in August 2025 as part of architectural evolution. This document is preserved for historical reference but does not reflect the actual transition process that occurred.
+>
+> **Current Reality**: The project moved directly to the current architecture with two patterns: build-from-scratch (UI Heading) and mixin composition (UI Button). No compatibility layer was maintained.
 
-## Overview
+## Historical Overview
 
-The transition from monolithic BaseComponent/ShadowComponent to the mixin-based architecture is a major refactoring that requires careful change management to ensure zero disruption to existing users while enabling future flexibility.
+This document outlined the planned policy for managing breaking changes during the mixin refactoring and future development of the web component library. The actual transition took a different approach than described below.
 
 ## Refactoring Timeline
 

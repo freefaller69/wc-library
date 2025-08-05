@@ -1,5 +1,7 @@
 # Mixin TypeScript Improvements Checklist
 
+> **Historical Document Notice** (Updated August 5, 2025): This document was written during the development of the mixin architecture. Since then, some components referenced have been removed (StyleManagerMixin, ShadowComponent) as part of architectural evolution. The TypeScript patterns described remain relevant for current mixin development.
+
 ## Overview
 
 The mixin architecture foundation is complete and functional, but includes temporary ESLint disables to handle complex TypeScript typing challenges. This document tracks the specific issues and conditions for resolving them.
@@ -13,11 +15,11 @@ The mixin architecture foundation is complete and functional, but includes tempo
 - `src/base/mixins/AccessibilityMixin.ts`
 - `src/base/mixins/AttributeManagerMixin.ts`
 - `src/base/mixins/SlotManagerMixin.ts`
-- `src/base/mixins/StyleManagerMixin.ts`
+- `src/base/mixins/StyleManagerMixin.ts` (removed August 2025)
 - `src/base/mixins/UpdateManagerMixin.ts`
 - `src/base/composites/FullComponent.ts`
 - `src/base/composites/InteractiveComponent.ts`
-- `src/base/composites/ShadowComponent.ts`
+- `src/base/composites/ShadowComponent.ts` (removed August 2025)
 - `src/components/example/SimpleButton.ts`
 
 **Issue:** Mixin methods calling base class methods that TypeScript can't properly type-check

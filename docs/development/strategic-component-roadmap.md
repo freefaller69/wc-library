@@ -163,11 +163,9 @@ Using evidence from Phases 1 and 2, optimize the underlying architecture and bui
 ```typescript
 const ButtonComponent = compose(
   CoreCustomElement,
-  ShadowDOMMixin,
-  StyleManagerMixin,
+  AccessibilityMixin,
   AttributeManagerMixin,
-  EventManagerMixin,
-  AccessibilityMixin
+  StyleHandlerMixin // Current mixin for styling (StyleManagerMixin was removed)
 );
 ```
 

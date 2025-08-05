@@ -28,28 +28,34 @@ This document captures key learnings, best practices, and patterns discovered du
   3. Completely unique needs? → Build from CoreCustomElement + individual mixins
 - **Separation of concerns**: AttributeManagerMixin vs ClassManagerMixin when building custom
 
-#### **Available Composites**
+#### **Current Architecture Options**
 
-- **AttributeComponent**: For components with attribute handling (CSS custom properties approach)
-- **ShadowComponent**: For components needing Shadow DOM encapsulation
-- **InteractiveComponent**: For interactive elements with accessibility and events
-- **FullComponent**: Complete component with all mixins (use sparingly)
+- **CoreCustomElement + Mixins**: Build components using individual mixins as needed
+- **Mixin Composition**: Combine specific mixins (AccessibilityMixin, AttributeManagerMixin, StyleHandlerMixin, etc.)
+- **Build-from-Scratch**: Minimal components extending HTMLElement directly (like UI Heading)
+- **UI Button Pattern**: Production-ready pattern using CoreCustomElement + AccessibilityMixin + AttributeManagerMixin + StyleHandlerMixin
 
 ```typescript
-// ✅ Best: Use existing composite when it fits
-export class UIText extends AttributeComponent {
-  // Inherits attribute handling, clean implementation
+// ✅ Best: Mixin composition pattern (like UI Button)
+// Uses mixin-composer utility for clean composition
+const UIButtonBase = compose(
+  CoreCustomElement,
+  AccessibilityMixin,
+  AttributeManagerMixin, 
+  StyleHandlerMixin
+);
+
+export class UIButton extends UIButtonBase {
+  // Production-ready pattern with accessibility, attributes, and styling
 }
 
-// ✅ Good: Build from CoreCustomElement when composites don't fit
-export class UIHeading extends CoreCustomElement {
-  // Clean, focused implementation for unique needs
+// ✅ Good: Build-from-scratch for minimal components (like UI Heading)
+export class UIHeading extends HTMLElement {
+  // Clean, focused implementation for simple components
 }
 
-// ❌ Avoid: Deprecated inheritance
-export class UIHeading extends BaseComponent {
-  // Legacy approach
-}
+// ❌ Removed: Legacy components no longer available
+// BaseComponent, ShadowComponent, StyleManagerMixin were removed in August 2025
 ```
 
 #### **Abstract Keyword for Mixins**
@@ -70,23 +76,25 @@ export function SomeMixin<TBase extends Constructor<HTMLElement>>(Base: TBase) {
 
 ### ⚠️ **Challenges Overcome**
 
-#### **TypeScript Composite Component Issues**
+#### **TypeScript Mixin Composition Issues**
 
-- **Problem**: Composite components couldn't see mixin methods
-- **Solution**: Add explicit interface declarations with `declare` statements
+- **Problem**: TypeScript can't infer methods from mixin composition
+- **Solution**: Use proper mixin typing and interface implementation
 
 ```typescript
-// ✅ Required for TypeScript in composite components
-export abstract class ShadowComponent
-  extends ShadowBase
-  implements ShadowDOMMixinInterface, UpdateManagerMixinInterface
-{
-  // Declare methods from ShadowDOMMixin
-  declare shadowRoot: ShadowRoot;
-  declare setupShadowDOM: (options?: ShadowRootInit) => void;
+// ✅ Proper mixin composition with TypeScript
+const UIButtonBase = compose(
+  CoreCustomElement,
+  AccessibilityMixin,
+  AttributeManagerMixin,
+  StyleHandlerMixin
+);
 
-  // Declare methods from UpdateManagerMixin
-  declare requestUpdate: () => void;
+export class UIButton extends UIButtonBase implements 
+  AccessibilityMixinInterface,
+  AttributeManagerMixinInterface,
+  StyleHandlerMixinInterface {
+  // TypeScript now understands all mixin methods
 }
 ```
 
@@ -142,7 +150,19 @@ connectedCallback() {
 
 ## Component Design Philosophy
 
-### ✅ **"Smart Pass-Through" Approach**
+### ✅ **Two Strategic Approaches**
+
+#### **Build-from-Scratch for Simple Components**
+
+- **UI Heading Pattern**: Minimal components extending HTMLElement directly
+- **Benefits**: Tiny bundle size, simple maintenance, clear behavior
+- **Use when**: Component logic is simple and doesn't need complex mixin features
+
+#### **Mixin Composition for Complex Components**
+
+- **UI Button Pattern**: Compose specific mixins for needed functionality
+- **Benefits**: Reusable patterns, consistent behavior, rich feature set
+- **Use when**: Component needs accessibility, events, styling, or attribute management
 
 #### **Minimal Value Proposition**
 
@@ -152,21 +172,23 @@ connectedCallback() {
 
 #### **Static vs Dynamic Attributes**
 
-- **Headings use static attributes** - set once, don't observe changes
+- **Simple components use static attributes** - set once, don't observe changes
+- **Complex components use AttributeManagerMixin** - for dynamic attribute handling
 - **Level validation happens once** on connect, not on every change
-- **Reasoning**: Headings rarely change level dynamically
+- **Reasoning**: Most basic components don't need dynamic attribute observation
 
 ```typescript
-// ✅ Static attribute handling for headings
+// ✅ Static attribute handling for simple components (UI Heading)
 connectedCallback(): void {
   this.validateLevel(); // ✅ Validate once on connect
-  super.connectedCallback();
   this.render();
 }
 
-// ❌ Unnecessary dynamic observation for headings
-static get observedAttributes(): string[] {
-  return ['level']; // Not needed for static components
+// ✅ Dynamic attribute handling for complex components (UI Button)
+// Uses AttributeManagerMixin for automatic observation and updates
+const UIButtonBase = compose(CoreCustomElement, AttributeManagerMixin);
+export class UIButton extends UIButtonBase {
+  // Automatic attribute observation handled by mixin
 }
 ```
 
@@ -380,7 +402,7 @@ it('should throw error for invalid levels', () => {
 
 ### ✅ **Architecture Dos**
 
-1. **Evaluate existing composites first** - Check if AttributeComponent, ShadowComponent, InteractiveComponent, or FullComponent meets your needs before building with individual mixins. All composites are built on CoreCustomElement + mixins and provide common patterns
+1. **Choose appropriate architectural pattern** - Use build-from-scratch for simple components (like UI Heading) or mixin composition for complex components (like UI Button). Both patterns use CoreCustomElement as the foundation.
 2. **Add `abstract` keyword** to all mixin classes for TypeScript
 3. **Use explicit interface declarations** in composite components with `declare` statements
 4. **Separate attribute management** from CSS class generation (AttributeManagerMixin vs ClassManagerMixin)
@@ -391,7 +413,7 @@ it('should throw error for invalid levels', () => {
 
 ### ❌ **Architecture Don'ts**
 
-1. **Don't extend BaseComponent or ShadowComponent** (deprecated)
+1. **Don't reference removed legacy components** - BaseComponent, ShadowComponent, and StyleManagerMixin were removed in August 2025
 2. **Don't use `@ts-ignore`** when `@ts-expect-error` is available
 3. **Don't skip `return` statements** in mixin factory functions
 4. **Don't add manual ARIA** to components that render semantic HTML
@@ -453,8 +475,8 @@ it('should throw error for invalid levels', () => {
 
 ### **Architecture Evolution**
 
-- **Existing composites** (AttributeComponent, ShadowComponent, etc.) should cover most use cases; evaluate gaps before creating new patterns
-- **Mixin composition patterns** will evolve with real-world usage, but prefer extending existing composites
+- **Current architecture** provides two main patterns: build-from-scratch (UI Heading) and mixin composition (UI Button)
+- **Mixin composition patterns** will evolve with real-world usage as we implement more complex components
 - **TypeScript configuration** may need updates for new component patterns
 
 ### **Performance Strategy**
