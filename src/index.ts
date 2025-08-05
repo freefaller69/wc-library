@@ -3,12 +3,6 @@
  * Provides individual exports for tree-shaking
  */
 
-// Base classes (deprecated)
-/** @deprecated Use CoreCustomElement with mixins or pre-composed classes instead */
-export { BaseComponent } from './base/BaseComponent.js';
-/** @deprecated Use ShadowComposite or FullComposite instead */
-export { ShadowComponent } from './base/ShadowComponent.js';
-
 // Utilities
 export * from './utilities/accessibility.js';
 export * from './utilities/style-helpers.js';
