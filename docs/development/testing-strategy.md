@@ -1,5 +1,7 @@
 # Testing Strategy for Mixin Architecture
 
+> **Document Status** (Updated August 5, 2025): This document describes the testing strategy for mixin-based components. Some references to legacy components (BaseComponent, ShadowComponent, StyleManagerMixin) have been updated to reflect their removal and replacement with current patterns.
+
 This document outlines the comprehensive testing strategy for the mixin-based web component architecture.
 
 ## Testing Philosophy
@@ -47,7 +49,7 @@ src/test/
 │   ├── AttributeManagerMixin.test.ts
 │   ├── EventManagerMixin.test.ts
 │   ├── ShadowDOMMixin.test.ts
-│   ├── StyleManagerMixin.test.ts
+│   ├── StyleManagerMixin.test.ts (removed August 2025)
 │   ├── SlotManagerMixin.test.ts
 │   └── UpdateManagerMixin.test.ts
 ├── combinations/
@@ -58,7 +60,7 @@ src/test/
 │   ├── SimpleComponent.test.ts
 │   ├── InteractiveComponent.test.ts
 │   ├── AttributeComponent.test.ts
-│   ├── ShadowComponent.test.ts
+│   ├── ShadowComponent.test.ts (removed August 2025)
 │   └── FullComponent.test.ts
 ├── integration/
 │   ├── complete-components.test.ts  # Real component implementations
@@ -430,26 +432,22 @@ describe('ButtonComponent Integration', () => {
 
 ```typescript
 import { describe, it, expect } from 'vitest';
-import { BaseComponent } from '../../base/BaseComponent.js'; // Old
-import { FullComponent } from '../../base/composites/FullComponent.js'; // New
+// Historical example - BaseComponent was removed August 2025
+// import { BaseComponent } from '../../base/BaseComponent.js'; // Removed
+import { StyleHandlerMixin } from '../../base/mixins/StyleHandlerMixin.js'; // Current
 
 describe('Migration Compatibility', () => {
   describe('Feature Parity', () => {
     it('should provide same public API', () => {
       // Create both old and new implementations
-      class OldTestComponent extends BaseComponent {
-        constructor() {
-          super({ tagName: 'old-test' });
-        }
-        protected getAccessibilityConfig() {
-          return {};
-        }
-        protected getStateClasses() {
-          return {};
-        }
-      }
+      // Historical example - would have been BaseComponent vs new pattern
+      // class OldTestComponent extends BaseComponent { ... }
 
-      class NewTestComponent extends FullComponent {
+      class CurrentTestComponent extends compose(
+        CoreCustomElement,
+        AccessibilityMixin,
+        StyleHandlerMixin
+      ) {
         constructor() {
           super({ tagName: 'new-test' });
         }
@@ -503,7 +501,7 @@ describe('Bundle Size Optimization', () => {
   it('should have smaller bundle for simple components', async () => {
     // Mock bundle analysis
     const simpleComponentSize = await getBundleSize('SimpleComponent');
-    const baseComponentSize = await getBundleSize('BaseComponent');
+    const legacyComponentSize = await getBundleSize('LegacyComponent'); // Historical reference
 
     expect(simpleComponentSize).toBeLessThan(baseComponentSize * 0.6);
   });
