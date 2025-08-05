@@ -1,8 +1,8 @@
 /**
- * UIHeading Component - Minimal Smart Pass-Through Component
+ * UIHeading Legacy Component - Minimal Smart Pass-Through Component
  *
- * Provides design system consistency and developer experience
- * while rendering proper semantic heading elements.
+ * This is the legacy implementation preserved during namespace clearing.
+ * Use ui-heading (modern implementation) for new development.
  */
 
 export { UIHeading } from './ui-heading.js';
@@ -11,8 +11,8 @@ export type { UIHeadingLevel } from './ui-heading.js';
 import { UIHeading } from './ui-heading.js';
 
 // Optional: Export registration function for explicit control
-export function registerUIHeading(): void {
-  if (!customElements.get('ui-heading')) {
-    customElements.define('ui-heading', UIHeading);
+export function registerUIHeadingLegacy(): void {
+  if (!customElements.get('ui-heading-legacy')) {
+    customElements.define('ui-heading-legacy', UIHeading);
   }
 }
