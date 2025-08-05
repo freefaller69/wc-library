@@ -30,7 +30,7 @@ Documentation of major architectural changes and refactoring plans that have bee
 
 - **[base-component-refactoring-plan.md](architectural-evolution/2025-08-legacy-removal/base-component-refactoring-plan.md)** - Plan for transitioning from BaseComponent to modular CoreCustomElement + mixins architecture
 - **Archived**: August 5, 2025
-- **Reason**: BaseComponent, ShadowComponent, and related components removed (2,135+ lines) 
+- **Reason**: BaseComponent, ShadowComponent, and related components removed (2,135+ lines)
 - **Historical Context**: Documents the transition from monolithic base classes to composable mixin-based architecture
 
 ### `/development-approaches/`
@@ -60,12 +60,14 @@ All four documents describe work that has been **completed**:
 The web component library has evolved significantly:
 
 **Before (Documented in archived files)**:
+
 - Monolithic BaseComponent (253 lines)
-- Monolithic ShadowComponent (198 lines) 
+- Monolithic ShadowComponent (198 lines)
 - Standalone StyleManagerMixin (265 lines)
 - Component registry system
 
 **After (Current architecture)**:
+
 - CoreCustomElement base (minimal)
 - Composable mixins (focused responsibilities)
 - Unified StyleHandlerMixin
@@ -84,16 +86,19 @@ These documents contained detailed implementation plans, migration strategies, a
 While no longer current, these documents provide valuable historical context:
 
 ### **Architectural Decision Records**
+
 - Why certain patterns were chosen
 - Trade-offs considered during major refactorings
 - Evolution of component library thinking
 
 ### **Implementation Lessons**
+
 - Successful refactoring strategies
 - Migration patterns that worked well
 - Quality standards and testing approaches
 
 ### **Development Process Documentation**
+
 - How major architectural changes were planned and executed
 - Systematic approach to deprecation and cleanup
 - Integration of code review and quality processes
@@ -115,7 +120,7 @@ While no longer current, these documents provide valuable historical context:
 For current, active documentation see:
 
 - **`/docs/architecture/`** - Current architectural patterns and decisions
-- **`/docs/development/`** - Active development guides and processes  
+- **`/docs/development/`** - Active development guides and processes
 - **`/docs/session_briefs/`** - Recent development session documentation
 - **`/docs/examples/`** - Current usage examples and patterns
 
@@ -126,6 +131,7 @@ For current, active documentation see:
 **Review Schedule**: These archived documents should not require regular updates
 
 **Future Archival Candidates**: Documents should be moved here when:
+
 - Planned work is completely finished
 - Referenced code/components have been removed
 - Content would mislead about current architecture
@@ -133,4 +139,4 @@ For current, active documentation see:
 
 ---
 
-*This archive preserves the institutional knowledge and architectural evolution of the web component library while maintaining a clean, current documentation structure for active development.*
+_This archive preserves the institutional knowledge and architectural evolution of the web component library while maintaining a clean, current documentation structure for active development._
