@@ -23,6 +23,19 @@ This document outlines the development workflow for the web component library. *
 5. **Visual Accessibility**: Support for high contrast, reduced motion, and zoom
 6. **Content Validation**: Prevent empty or meaningless content that violates WCAG
 
+## Accessibility Integration Points
+
+**Before Implementation:**
+- New components: Consult accessibility-expert for design patterns and requirements
+- Component revisions: Review accessibility implications with accessibility-expert
+
+**During Development:**
+- Complex interactions: Get accessibility-expert guidance on keyboard nav, ARIA patterns
+- Form components: Validate with accessibility-expert before testing
+
+**Before Code Review:**
+- Run accessibility-expert evaluation alongside code quality review
+
 ### Non-Negotiables
 
 - **Empty headings**: Will throw errors (violates WCAG SC 1.3.1 and 2.4.6)
