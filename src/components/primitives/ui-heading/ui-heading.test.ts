@@ -5,6 +5,8 @@
  * Tests component functionality, mixin interactions, and learning objectives.
  */
 
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { UIHeading } from './ui-heading.js';
 
@@ -18,7 +20,7 @@ describe('UIHeading - The Next Generation', () => {
 
   afterEach(() => {
     if (element.parentNode) {
-      element.remove();
+      (element as unknown as HTMLElement).remove();
     }
   });
 
@@ -85,7 +87,7 @@ describe('UIHeading - The Next Generation', () => {
           testElement.connectedCallback();
         }).not.toThrow();
 
-        testElement.remove();
+        (testElement as unknown as HTMLElement).remove();
       }
     });
   });
@@ -97,10 +99,10 @@ describe('UIHeading - The Next Generation', () => {
       document.body.appendChild(element as unknown as HTMLElement);
       element.connectedCallback();
 
-      const heading = element.querySelector('h3');
+      const heading = element.querySelector('h3') as HTMLHeadingElement | null;
       expect(heading).toBeTruthy();
       expect(heading?.textContent).toBe('Level 3 Heading');
-      expect(element.children.length).toBe(1);
+      expect((element as HTMLElement).children.length).toBe(1);
     });
 
     it('should preserve HTML content in semantic element', () => {
@@ -109,7 +111,7 @@ describe('UIHeading - The Next Generation', () => {
       document.body.appendChild(element as unknown as HTMLElement);
       element.connectedCallback();
 
-      const heading = element.querySelector('h2');
+      const heading = element.querySelector('h2') as HTMLHeadingElement | null;
       expect(heading).toBeTruthy();
       expect(heading?.textContent).toContain('emphasis');
       expect(heading?.textContent).toContain('strength');
@@ -122,8 +124,8 @@ describe('UIHeading - The Next Generation', () => {
       element.connectedCallback();
 
       // Should only contain the h1, no other text nodes
-      expect(element.childNodes.length).toBe(1);
-      expect(element.firstChild?.nodeName).toBe('H1');
+      expect((element as HTMLElement).childNodes.length).toBe(1);
+      expect((element as HTMLElement).firstChild?.nodeName).toBe('H1');
     });
   });
 
@@ -147,7 +149,9 @@ describe('UIHeading - The Next Generation', () => {
     });
 
     it('should have stylesheet manager available', () => {
-      const manager = element.getStaticStylesheetManager();
+      const manager = element.getStaticStylesheetManager() as {
+        addStylesheet: (sheet: CSSStyleSheet) => void;
+      };
       expect(manager).toBeDefined();
       expect(typeof manager.addStylesheet).toBe('function');
     });
@@ -218,7 +222,7 @@ describe('UIHeading - The Next Generation', () => {
       expect(UIHeading.observedAttributes).toEqual([]);
 
       // Semantic rendering with minimal complexity
-      expect(element.querySelector('h1')).toBeTruthy();
+      expect(element.querySelector('h1') as HTMLHeadingElement | null).toBeTruthy();
 
       // Mixin composition working
       expect(typeof element.getAccessibilityConfig).toBe('function');
@@ -232,11 +236,11 @@ describe('UIHeading - The Next Generation', () => {
       element.connectedCallback();
 
       // Should only contain semantic heading element
-      expect(element.children.length).toBe(1);
-      expect(element.firstElementChild?.tagName).toBe('H2');
+      expect((element as HTMLElement).children.length).toBe(1);
+      expect((element as HTMLElement).firstElementChild?.tagName).toBe('H2');
 
       // No utility classes or extra wrapper elements
-      expect(element.className).toBe('');
+      expect((element as HTMLElement).className).toBe('');
     });
 
     it('should handle lifecycle correctly with mixins', () => {
@@ -251,8 +255,8 @@ describe('UIHeading - The Next Generation', () => {
 
       // Disconnection should clean up properly
       expect(() => {
-        element.disconnectedCallback();
-        element.remove();
+        (element as unknown as { disconnectedCallback: () => void }).disconnectedCallback();
+        (element as unknown as HTMLElement).remove();
       }).not.toThrow();
     });
   });
@@ -264,7 +268,7 @@ describe('UIHeading - The Next Generation', () => {
       document.body.appendChild(element as unknown as HTMLElement);
       element.connectedCallback();
 
-      const heading = element.querySelector('h1');
+      const heading = element.querySelector('h1') as HTMLHeadingElement | null;
       expect(heading).toBeTruthy();
       expect(heading?.textContent).toBe('');
     });
@@ -275,7 +279,7 @@ describe('UIHeading - The Next Generation', () => {
       document.body.appendChild(element as unknown as HTMLElement);
       element.connectedCallback();
 
-      const heading = element.querySelector('h2');
+      const heading = element.querySelector('h2') as HTMLHeadingElement | null;
       expect(heading).toBeTruthy();
       expect(heading?.textContent).toBe('   \n   ');
     });
@@ -287,12 +291,12 @@ describe('UIHeading - The Next Generation', () => {
 
       // First connection
       element.connectedCallback();
-      const firstH1 = element.querySelector('h1');
+      const firstH1 = element.querySelector('h1') as HTMLHeadingElement | null;
       expect(firstH1).toBeTruthy();
 
       // Second connection (shouldn't duplicate)
       element.connectedCallback();
-      expect(element.querySelectorAll('h1').length).toBe(1);
+      expect((element as HTMLElement).querySelectorAll('h1').length).toBe(1);
     });
   });
 });
