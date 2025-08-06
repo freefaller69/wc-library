@@ -17,7 +17,7 @@ This document outlines the development workflow for the web component library. *
 ### Accessibility Requirements
 
 1. **Semantic HTML First**: Leverage native browser accessibility features
-2. **ARIA Enhancement**: Add ARIA attributes only where semantic HTML is insufficient  
+2. **ARIA Enhancement**: Add ARIA attributes only where semantic HTML is insufficient
 3. **Keyboard Navigation**: Full keyboard accessibility for all interactive components
 4. **Screen Reader Support**: Clear, logical content structure and announcements
 5. **Visual Accessibility**: Support for high contrast, reduced motion, and zoom
