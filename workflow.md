@@ -2,6 +2,36 @@
 
 This document outlines the development workflow for the web component library. **All development work must be done on feature branches with Pull Requests unless explicitly specified otherwise.**
 
+## 🌐 Accessibility-First Development Philosophy
+
+**This library champions accessibility in ALL components.** We take an **accessibility-first approach** that benefits everyone:
+
+### Core Accessibility Principles
+
+- **WCAG 2.1 AA Compliance**: All components must meet or exceed WCAG 2.1 AA standards
+- **No Compromise**: We will not support inaccessible patterns or workarounds
+- **Error Prevention**: Components should actively prevent inaccessible usage through validation and helpful error messages
+- **Universal Benefit**: Accessible design benefits ALL users, not just those with disabilities
+- **Developer Education**: Components should teach and enforce accessibility best practices
+
+### Accessibility Requirements
+
+1. **Semantic HTML First**: Leverage native browser accessibility features
+2. **ARIA Enhancement**: Add ARIA attributes only where semantic HTML is insufficient
+3. **Keyboard Navigation**: Full keyboard accessibility for all interactive components
+4. **Screen Reader Support**: Clear, logical content structure and announcements
+5. **Visual Accessibility**: Support for high contrast, reduced motion, and zoom
+6. **Content Validation**: Prevent empty or meaningless content that violates WCAG
+
+### Non-Negotiables
+
+- **Empty headings**: Will throw errors (violates WCAG SC 1.3.1 and 2.4.6)
+- **Missing labels**: Interactive elements require accessible names
+- **Broken focus**: Focus management must be logical and visible
+- **CSS-only content**: No support for `::before`/`::after` content in semantic elements
+
+**If developers need inaccessible patterns, they should implement custom solutions outside this library.** Our mission is to make accessibility the easy, default choice.
+
 ## Branch-First Development Policy
 
 🚨 **IMPORTANT**: Starting immediately, all changes to the codebase MUST follow the branch-based development workflow:
@@ -298,6 +328,7 @@ gh pr create --title "Implement AccessibilityMixin" --body "
 - [ ] **Architecture**: Follows mixin patterns and best practices
 - [ ] **Documentation**: Code is well-documented
 - [ ] **Type Safety**: Full TypeScript compliance
+- [ ] **Accessibility**: WCAG 2.1 AA compliance verified, prevents inaccessible usage
 
 ## Documentation Workflow
 

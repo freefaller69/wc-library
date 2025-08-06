@@ -6,6 +6,7 @@ import './style.css';
 
 // Import our components
 import './components/primitives/ui-heading-legacy/ui-heading.js';
+import './components/primitives/ui-heading/ui-heading.js'; // The Next Generation!
 import './components/primitives/ui-button/ui-button.js';
 import type { UIButtonClickEventDetail } from './components/primitives/ui-button/ui-button.js';
 
@@ -15,18 +16,25 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     <h1>Web Component Library</h1>
     <p>Development playground for testing components</p>
     
-    <section id="component-demo">
+    <section id="legacy-demo">
       <h2>Legacy UI-Heading Demo</h2>
       
       <!-- Basic headings with semantic levels -->
-      <ui-heading-legacy level="1">Heading Level 1</ui-heading-legacy>
-      <ui-heading-legacy level="2">Heading Level 2</ui-heading-legacy>
-      <ui-heading-legacy level="3">Heading Level 3</ui-heading-legacy>
+      <ui-heading-legacy level="1">Legacy Heading Level 1</ui-heading-legacy>
+      <ui-heading-legacy level="2">Legacy Heading Level 2</ui-heading-legacy>
+      <ui-heading-legacy level="3">Legacy Heading Level 3</ui-heading-legacy>
+    </section>
+
+    <section id="next-gen-demo">
+      <h2>UI Heading - The Next Generation! 🚀</h2>
       
-      <!-- Default headings (no variants - keeping it minimal) -->
-      <ui-heading-legacy level="4">Heading Level 4</ui-heading-legacy>
-      <ui-heading-legacy level="5">Heading Level 5</ui-heading-legacy>
-      <ui-heading-legacy level="6">Heading Level 6</ui-heading-legacy>
+      <!-- Modern mixin-based headings -->
+      <ui-heading level="1">The Next Generation Level 1</ui-heading>
+      <ui-heading level="2">Modern Mixin Composition Level 2</ui-heading>
+      <ui-heading level="3">StyleHandler + Accessibility Level 3</ui-heading>
+      <ui-heading level="4">Semantic with Enhanced ARIA Level 4</ui-heading>
+      <ui-heading level="5">Responsive Design Tokens Level 5</ui-heading>
+      <ui-heading level="6">adoptedStyleSheets API Level 6</ui-heading>
     </section>
 
     <section id="button-demo">

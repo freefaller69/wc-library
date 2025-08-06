@@ -1,0 +1,163 @@
+/**
+ * UIHeading - The Next Generation Styles
+ * 
+ * Modern CSS using design tokens and custom properties.
+ * Delivered via StyleHandlerMixin + adoptedStyleSheets API.
+ * 
+ * Features:
+ * - CSS custom properties for theming
+ * - Responsive typography scales
+ * - Dark mode support
+ * - Design token integration ready
+ */
+
+ui-heading {
+  /* Base heading styles with modern defaults */
+  display: block;
+  font-family: var(
+    --ui-heading-font-family,
+    var(--font-family-heading, system-ui, -apple-system, sans-serif)
+  );
+  font-weight: var(--ui-heading-font-weight, var(--font-weight-semibold, 600));
+  line-height: var(--ui-heading-line-height, var(--line-height-tight, 1.25));
+  color: var(--ui-heading-color, var(--color-text-primary, inherit));
+  margin: var(--ui-heading-margin, var(--spacing-stack-md, 0 0 1rem 0));
+
+  /* Base font size with level-specific overrides */
+  font-size: var(--ui-heading-font-size, var(--font-size-lg, 1.125rem));
+}
+
+/* Level-specific typography scales */
+ui-heading[level='1'] {
+  font-size: var(--ui-heading-h1-size, var(--font-size-4xl, 2.25rem));
+  font-weight: var(
+    --ui-heading-h1-weight,
+    var(--ui-heading-font-weight, var(--font-weight-bold, 700))
+  );
+  line-height: var(--ui-heading-h1-line-height, var(--line-height-tight, 1.125));
+  margin: var(--ui-heading-h1-margin, var(--spacing-stack-lg, 0 0 1.5rem 0));
+}
+
+ui-heading[level='2'] {
+  font-size: var(--ui-heading-h2-size, var(--font-size-3xl, 1.875rem));
+  font-weight: var(
+    --ui-heading-h2-weight,
+    var(--ui-heading-font-weight, var(--font-weight-semibold, 600))
+  );
+  line-height: var(--ui-heading-h2-line-height, var(--line-height-tight, 1.25));
+  margin: var(--ui-heading-h2-margin, var(--spacing-stack-lg, 0 0 1.25rem 0));
+}
+
+ui-heading[level='3'] {
+  font-size: var(--ui-heading-h3-size, var(--font-size-2xl, 1.5rem));
+  font-weight: var(
+    --ui-heading-h3-weight,
+    var(--ui-heading-font-weight, var(--font-weight-semibold, 600))
+  );
+  line-height: var(--ui-heading-h3-line-height, var(--line-height-normal, 1.375));
+  margin: var(--ui-heading-h3-margin, var(--spacing-stack-md, 0 0 1rem 0));
+}
+
+ui-heading[level='4'] {
+  font-size: var(--ui-heading-h4-size, var(--font-size-xl, 1.25rem));
+  font-weight: var(
+    --ui-heading-h4-weight,
+    var(--ui-heading-font-weight, var(--font-weight-semibold, 600))
+  );
+  line-height: var(--ui-heading-h4-line-height, var(--line-height-normal, 1.375));
+  margin: var(--ui-heading-h4-margin, var(--spacing-stack-md, 0 0 1rem 0));
+}
+
+ui-heading[level='5'] {
+  font-size: var(--ui-heading-h5-size, var(--font-size-lg, 1.125rem));
+  font-weight: var(
+    --ui-heading-h5-weight,
+    var(--ui-heading-font-weight, var(--font-weight-semibold, 600))
+  );
+  line-height: var(--ui-heading-h5-line-height, var(--line-height-normal, 1.5));
+  margin: var(--ui-heading-h5-margin, var(--spacing-stack-sm, 0 0 0.75rem 0));
+}
+
+ui-heading[level='6'] {
+  font-size: var(--ui-heading-h6-size, var(--font-size-base, 1rem));
+  font-weight: var(
+    --ui-heading-h6-weight,
+    var(--ui-heading-font-weight, var(--font-weight-semibold, 600))
+  );
+  line-height: var(--ui-heading-h6-line-height, var(--line-height-normal, 1.5));
+  margin: var(--ui-heading-h6-margin, var(--spacing-stack-sm, 0 0 0.75rem 0));
+}
+
+/* 
+ * Responsive typography - mobile-first approach
+ */
+@media (max-width: 768px) {
+  ui-heading[level='1'] {
+    font-size: var(--ui-heading-h1-size-mobile, var(--font-size-3xl, 1.875rem));
+  }
+
+  ui-heading[level='2'] {
+    font-size: var(--ui-heading-h2-size-mobile, var(--font-size-2xl, 1.5rem));
+  }
+}
+
+/* 
+ * Dark mode support
+ */
+@media (prefers-color-scheme: dark) {
+  ui-heading {
+    color: var(--ui-heading-color-dark, var(--color-text-primary-dark, #f9fafb));
+  }
+}
+
+/* 
+ * High contrast mode support
+ */
+@media (prefers-contrast: high) {
+  ui-heading {
+    font-weight: var(--ui-heading-font-weight-high-contrast, var(--font-weight-bold, 700));
+  }
+}
+
+/* 
+ * Reduced motion support
+ */
+@media (prefers-reduced-motion: reduce) {
+  ui-heading {
+    transition: none;
+  }
+}
+
+/* 
+ * Print styles
+ */
+@media print {
+  ui-heading {
+    color: black;
+    font-family: serif;
+  }
+
+  ui-heading[level='1'] {
+    font-size: 24pt;
+    margin-bottom: 18pt;
+  }
+
+  ui-heading[level='2'] {
+    font-size: 20pt;
+    margin-bottom: 15pt;
+  }
+
+  ui-heading[level='3'] {
+    font-size: 16pt;
+    margin-bottom: 12pt;
+  }
+}
+
+/*
+ * Focus styles (if headings ever become focusable)
+ */
+ui-heading:focus-visible {
+  outline: 2px solid var(--color-focus-ring, #0066cc);
+  outline-offset: 2px;
+  border-radius: var(--border-radius-sm, 0.25rem);
+}
