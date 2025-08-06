@@ -107,12 +107,15 @@ UIHeading = CoreCustomElement + StyleHandlerMixin + AccessibilityMixin;
 - [ ] Validate semantic heading hierarchy
 - [ ] Test keyboard navigation (if applicable)
 
-#### 2.4 Error Handling & Validation (30 min)
+#### 2.4 WCAG-Compliant Content Validation (45 min)
 
+- [ ] **Implement accessibility-first content validation**
+- [ ] **Throw errors for empty/whitespace-only headings (WCAG SC 1.3.1 & 2.4.6)**
 - [ ] Add comprehensive level attribute validation
-- [ ] Implement helpful error messages for developers
-- [ ] Add runtime safety checks
-- [ ] Handle edge cases (empty content, invalid levels)
+- [ ] Implement educational error messages citing WCAG requirements
+- [ ] Add runtime safety checks for accessible content
+- [ ] Handle edge cases while maintaining accessibility standards
+- [ ] **Test error scenarios to ensure proper accessibility enforcement**
 
 ### **Phase 3: Comprehensive Testing** 🧪
 
