@@ -80,15 +80,15 @@ export class UIHeading extends UIHeadingBase {
     if (this._rendered) return;
 
     const level = this.getLevel();
-    const content = (this as HTMLElement).innerHTML;
+    const content = (this as unknown as HTMLElement).innerHTML;
 
     // Create proper semantic heading - browser handles core accessibility
     const heading = document.createElement(`h${level}`);
     heading.innerHTML = content;
 
     // Replace content with semantic element
-    (this as HTMLElement).innerHTML = '';
-    (this as HTMLElement).appendChild(heading);
+    (this as unknown as HTMLElement).innerHTML = '';
+    (this as unknown as HTMLElement).appendChild(heading);
 
     this._rendered = true;
   }
@@ -114,7 +114,7 @@ export class UIHeading extends UIHeadingBase {
   }
 
   private parseLevelAttribute(): { isValid: boolean; level: string | null; parsed: number | null } {
-    const level = (this as HTMLElement).getAttribute('level');
+    const level = (this as unknown as HTMLElement).getAttribute('level');
 
     // Level attribute is required - no defaults for accessibility
     if (level === null || level === '') {

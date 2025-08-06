@@ -102,7 +102,7 @@ describe('UIHeading - The Next Generation', () => {
       const heading = element.querySelector('h3') as HTMLHeadingElement | null;
       expect(heading).toBeTruthy();
       expect(heading?.textContent).toBe('Level 3 Heading');
-      expect((element as HTMLElement).children.length).toBe(1);
+      expect((element as unknown as HTMLElement).children.length).toBe(1);
     });
 
     it('should preserve HTML content in semantic element', () => {
@@ -124,8 +124,8 @@ describe('UIHeading - The Next Generation', () => {
       element.connectedCallback();
 
       // Should only contain the h1, no other text nodes
-      expect((element as HTMLElement).childNodes.length).toBe(1);
-      expect((element as HTMLElement).firstChild?.nodeName).toBe('H1');
+      expect((element as unknown as HTMLElement).childNodes.length).toBe(1);
+      expect((element as unknown as HTMLElement).firstChild?.nodeName).toBe('H1');
     });
   });
 
@@ -236,11 +236,11 @@ describe('UIHeading - The Next Generation', () => {
       element.connectedCallback();
 
       // Should only contain semantic heading element
-      expect((element as HTMLElement).children.length).toBe(1);
-      expect((element as HTMLElement).firstElementChild?.tagName).toBe('H2');
+      expect((element as unknown as HTMLElement).children.length).toBe(1);
+      expect((element as unknown as HTMLElement).firstElementChild?.tagName).toBe('H2');
 
       // No utility classes or extra wrapper elements
-      expect((element as HTMLElement).className).toBe('');
+      expect((element as unknown as HTMLElement).className).toBe('');
     });
 
     it('should handle lifecycle correctly with mixins', () => {
@@ -296,7 +296,7 @@ describe('UIHeading - The Next Generation', () => {
 
       // Second connection (shouldn't duplicate)
       element.connectedCallback();
-      expect((element as HTMLElement).querySelectorAll('h1').length).toBe(1);
+      expect((element as unknown as HTMLElement).querySelectorAll('h1').length).toBe(1);
     });
   });
 });
