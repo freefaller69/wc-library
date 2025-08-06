@@ -29,6 +29,7 @@ export interface AccessibilityOptions {
   role?: string;
   ariaLabel?: string;
   ariaDescribedBy?: string;
+  ariaLevel?: string;
   tabIndex?: number;
   focusable?: boolean;
 }
