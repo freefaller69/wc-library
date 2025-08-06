@@ -1,14 +1,14 @@
 /**
  * UIHeading - The Next Generation
- * 
+ *
  * Modern mixin-based heading component using build-from-scratch approach.
  * Demonstrates minimal modern component pattern: static, semantic, themeable.
- * 
+ *
  * Architecture: CoreCustomElement + StyleHandlerMixin + AccessibilityMixin
- * 
+ *
  * Learning Objectives:
  * - Mixin composition patterns and interactions
- * - Static component optimization strategies  
+ * - Static component optimization strategies
  * - Modern CSS delivery with adoptedStyleSheets
  * - Enhanced accessibility beyond semantic HTML
  */
@@ -25,16 +25,12 @@ import uiHeadingCSS from './ui-heading.css?inline';
 export type UIHeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 
 // Mixin composition - The Next Generation architecture
-const UIHeadingBase = compose(
-  CoreCustomElement,
-  StyleHandlerMixin,
-  AccessibilityMixin
-);
+const UIHeadingBase = compose(CoreCustomElement, StyleHandlerMixin, AccessibilityMixin);
 
 export class UIHeading extends UIHeadingBase {
   // Static stylesheet for StyleHandlerMixin auto-detection
   static stylesheet = createStyleSheet(uiHeadingCSS);
-  
+
   private _rendered = false;
 
   constructor() {
@@ -66,7 +62,7 @@ export class UIHeading extends UIHeadingBase {
   // AccessibilityMixin interface implementation
   getAccessibilityConfig(): AccessibilityOptions {
     const level = this.getLevel();
-    
+
     return {
       role: 'heading',
       ariaLevel: level.toString(),
@@ -78,7 +74,7 @@ export class UIHeading extends UIHeadingBase {
   protected render(): void {
     // Prevent multiple renders
     if (this._rendered) return;
-    
+
     const level = this.getLevel();
     const content = this.innerHTML;
 
@@ -89,7 +85,7 @@ export class UIHeading extends UIHeadingBase {
     // Replace content with semantic element
     this.innerHTML = '';
     this.appendChild(heading);
-    
+
     this._rendered = true;
   }
 

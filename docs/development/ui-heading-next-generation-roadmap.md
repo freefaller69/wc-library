@@ -21,11 +21,12 @@ UIHeading = CoreCustomElement + StyleHandlerMixin + AccessibilityMixin;
 ```
 
 **Rationale**:
+
 - **CoreCustomElement**: Essential base functionality and lifecycle management
 - **StyleHandlerMixin**: Modern CSS custom properties and adoptedStyleSheets API
 - **AccessibilityMixin**: Semantic heading roles and enhanced ARIA support
 - **NO AttributeManagerMixin**: Static component, level set once during initialization
-- **NO EventManagerMixin**: No interactive behavior required  
+- **NO EventManagerMixin**: No interactive behavior required
 - **NO UpdateManagerMixin**: No dynamic attribute observation needed
 
 **Key Insight**: Headings represent the "minimal modern component" pattern - maximum semantic value with minimal complexity.
@@ -55,6 +56,7 @@ UIHeading = CoreCustomElement + StyleHandlerMixin + AccessibilityMixin;
 **Goal**: Establish development environment and architectural foundation
 
 #### 1.1 Directory Structure & Files (15 min)
+
 - [ ] Create `/src/components/primitives/ui-heading/` directory
 - [ ] Set up component file structure:
   - `ui-heading.ts` - Main component implementation
@@ -64,12 +66,14 @@ UIHeading = CoreCustomElement + StyleHandlerMixin + AccessibilityMixin;
 - [ ] Update `/src/main.ts` to import and demo new component
 
 #### 1.2 Architecture Planning (15 min)
+
 - [ ] Review mixin interfaces and capabilities
 - [ ] Plan CSS custom property strategy (modern vs legacy)
 - [ ] Design test scenarios for mixin composition
 - [ ] Plan accessibility validation approach
 
 #### 1.3 Documentation Prep (15 min)
+
 - [ ] Create development notes template
 - [ ] Set up architectural decision recording
 - [ ] Plan post-development reflection framework
@@ -80,6 +84,7 @@ UIHeading = CoreCustomElement + StyleHandlerMixin + AccessibilityMixin;
 **Goal**: Build functional component with mixin composition
 
 #### 2.1 Base Component Structure (45 min)
+
 - [ ] Implement CoreCustomElement extension
 - [ ] Add mixin composition using `compose()` utility
 - [ ] Set up basic lifecycle methods (`connectedCallback`, etc.)
@@ -87,6 +92,7 @@ UIHeading = CoreCustomElement + StyleHandlerMixin + AccessibilityMixin;
 - [ ] Add semantic HTML rendering (h1-h6 elements)
 
 #### 2.2 StyleHandlerMixin Integration (45 min)
+
 - [ ] Configure StyleHandlerMixin for static stylesheet delivery
 - [ ] Implement modern CSS custom properties system
 - [ ] Add responsive typography scales (h1-h6)
@@ -94,6 +100,7 @@ UIHeading = CoreCustomElement + StyleHandlerMixin + AccessibilityMixin;
 - [ ] Test adoptedStyleSheets API integration
 
 #### 2.3 AccessibilityMixin Integration (45 min)
+
 - [ ] Configure AccessibilityMixin for heading semantics
 - [ ] Implement `getAccessibilityConfig()` method
 - [ ] Add ARIA attributes for enhanced screen reader support
@@ -101,6 +108,7 @@ UIHeading = CoreCustomElement + StyleHandlerMixin + AccessibilityMixin;
 - [ ] Test keyboard navigation (if applicable)
 
 #### 2.4 Error Handling & Validation (30 min)
+
 - [ ] Add comprehensive level attribute validation
 - [ ] Implement helpful error messages for developers
 - [ ] Add runtime safety checks
@@ -112,6 +120,7 @@ UIHeading = CoreCustomElement + StyleHandlerMixin + AccessibilityMixin;
 **Goal**: Ensure reliability and validate architectural decisions
 
 #### 3.1 Unit Testing (60 min)
+
 - [ ] Component registration and instantiation tests
 - [ ] Level attribute validation tests (1-6, error cases)
 - [ ] Semantic HTML rendering tests (h1-h6 output)
@@ -119,6 +128,7 @@ UIHeading = CoreCustomElement + StyleHandlerMixin + AccessibilityMixin;
 - [ ] CSS custom property application tests
 
 #### 3.2 Mixin Integration Testing (60 min)
+
 - [ ] StyleHandlerMixin functionality validation
 - [ ] AccessibilityMixin configuration testing
 - [ ] Mixin interaction and conflict detection
@@ -126,6 +136,7 @@ UIHeading = CoreCustomElement + StyleHandlerMixin + AccessibilityMixin;
 - [ ] Bundle size analysis
 
 #### 3.3 Accessibility Testing (45 min)
+
 - [ ] Screen reader announcement validation
 - [ ] Semantic heading hierarchy testing
 - [ ] ARIA attribute verification
@@ -133,8 +144,9 @@ UIHeading = CoreCustomElement + StyleHandlerMixin + AccessibilityMixin;
 - [ ] Manual keyboard navigation testing
 
 #### 3.4 Edge Case & Error Testing (30 min)
+
 - [ ] Invalid level attribute handling
-- [ ] Missing level attribute error scenarios  
+- [ ] Missing level attribute error scenarios
 - [ ] Empty content handling
 - [ ] Multiple initialization scenarios
 - [ ] Cleanup and disconnection testing
@@ -145,6 +157,7 @@ UIHeading = CoreCustomElement + StyleHandlerMixin + AccessibilityMixin;
 **Goal**: Complete implementation with comprehensive documentation
 
 #### 4.1 API Documentation (45 min)
+
 - [ ] Create comprehensive API reference
 - [ ] Document all CSS custom properties
 - [ ] Add usage examples and patterns
@@ -152,12 +165,14 @@ UIHeading = CoreCustomElement + StyleHandlerMixin + AccessibilityMixin;
 - [ ] Create integration guidelines
 
 #### 4.2 Development Insights Documentation (30 min)
+
 - [ ] Record mixin composition insights
 - [ ] Document troubleshooting discoveries
 - [ ] Capture performance characteristics
 - [ ] Note architectural decision rationale
 
 #### 4.3 Demo & Examples (30 min)
+
 - [ ] Create comprehensive demo in `main.ts`
 - [ ] Add real-world usage examples
 - [ ] Demonstrate responsive behavior
@@ -170,18 +185,21 @@ UIHeading = CoreCustomElement + StyleHandlerMixin + AccessibilityMixin;
 **Goal**: Extract maximum learning value and validate architectural decisions
 
 #### 5.1 Architecture Validation (20 min)
+
 - [ ] Compare predicted vs actual mixin needs
 - [ ] Evaluate composite design alignment
 - [ ] Assess minimal component pattern success
 - [ ] Validate build-from-scratch approach benefits
 
 #### 5.2 Learning Documentation (15 min)
+
 - [ ] Document key architectural insights
 - [ ] Record troubleshooting strategies discovered
 - [ ] Capture performance and bundle size data
 - [ ] Note patterns for future components
 
 #### 5.3 Strategic Assessment (10 min)
+
 - [ ] Evaluate readiness for card ecosystem development
 - [ ] Assess team capability development
 - [ ] Plan next component development approach
@@ -240,7 +258,7 @@ UIHeading = CoreCustomElement + StyleHandlerMixin + AccessibilityMixin;
 
 3. **CSS Planning** (15 min)
    - Analyze legacy CSS custom properties strategy
-   - Plan modern CSS custom property naming (--ui-heading-* vs --heading-*)
+   - Plan modern CSS custom property naming (--ui-heading-_ vs --heading-_)
    - Consider design token integration strategy
 
 ### **Larger Prep Tasks** (If time allows)
@@ -283,7 +301,7 @@ UIHeading = CoreCustomElement + StyleHandlerMixin + AccessibilityMixin;
 ### **Integration Opportunities**
 
 - **Design System**: Integrate with existing typography scale and theme system
-- **Component Library**: Establish as template for other static semantic components  
+- **Component Library**: Establish as template for other static semantic components
 - **Documentation**: Use as comprehensive example in architecture guides
 - **Testing Framework**: Establish as pattern for mixin composition testing
 

@@ -1,6 +1,6 @@
 /**
  * UIHeading - The Next Generation Tests
- * 
+ *
  * Comprehensive test suite for mixin composition architecture.
  * Tests component functionality, mixin interactions, and learning objectives.
  */
@@ -36,8 +36,8 @@ describe('UIHeading - The Next Generation', () => {
       // StyleHandlerMixin methods
       expect(typeof element.getStaticStylesheetManager).toBe('function');
       expect(typeof element.applyStaticStylesheets).toBe('function');
-      
-      // AccessibilityMixin methods  
+
+      // AccessibilityMixin methods
       expect(typeof element.setupAccessibility).toBe('function');
       expect(typeof element.getAccessibilityConfig).toBe('function');
     });
@@ -79,12 +79,12 @@ describe('UIHeading - The Next Generation', () => {
         const testElement = new UIHeading();
         testElement.setAttribute('level', level.toString());
         testElement.innerHTML = `Level ${level}`;
-        
+
         expect(() => {
           document.body.appendChild(testElement as unknown as HTMLElement);
           testElement.connectedCallback();
         }).not.toThrow();
-        
+
         testElement.remove();
       }
     });
@@ -136,13 +136,13 @@ describe('UIHeading - The Next Generation', () => {
       element.setAttribute('level', '2');
       element.innerHTML = 'Styled Heading';
       document.body.appendChild(element as unknown as HTMLElement);
-      
+
       // Mock the stylesheet manager to verify it's called
       const applyStylesSpy = vi.fn();
       element.applyStaticStylesheets = applyStylesSpy;
-      
+
       element.connectedCallback();
-      
+
       expect(applyStylesSpy).toHaveBeenCalled();
     });
 
@@ -162,7 +162,7 @@ describe('UIHeading - The Next Generation', () => {
 
     it('should provide accessibility configuration', () => {
       element.connectedCallback();
-      
+
       const config = element.getAccessibilityConfig();
       expect(config.role).toBe('heading');
       expect(config.ariaLevel).toBe('2');
@@ -172,15 +172,15 @@ describe('UIHeading - The Next Generation', () => {
     it('should setup accessibility on connection', () => {
       const setupSpy = vi.fn();
       element.setupAccessibility = setupSpy;
-      
+
       element.connectedCallback();
-      
+
       expect(setupSpy).toHaveBeenCalled();
     });
 
     it('should have dynamic accessibility level', () => {
       element.connectedCallback();
-      
+
       // Change level and verify config updates
       element.setAttribute('level', '4');
       const config = element.getAccessibilityConfig();
@@ -216,10 +216,10 @@ describe('UIHeading - The Next Generation', () => {
 
       // Static component - no observed attributes for dynamic behavior
       expect(UIHeading.observedAttributes).toEqual([]);
-      
+
       // Semantic rendering with minimal complexity
       expect(element.querySelector('h1')).toBeTruthy();
-      
+
       // Mixin composition working
       expect(typeof element.getAccessibilityConfig).toBe('function');
       expect(typeof element.applyStaticStylesheets).toBe('function');
@@ -234,7 +234,7 @@ describe('UIHeading - The Next Generation', () => {
       // Should only contain semantic heading element
       expect(element.children.length).toBe(1);
       expect(element.firstElementChild?.tagName).toBe('H2');
-      
+
       // No utility classes or extra wrapper elements
       expect(element.className).toBe('');
     });
@@ -242,13 +242,13 @@ describe('UIHeading - The Next Generation', () => {
     it('should handle lifecycle correctly with mixins', () => {
       element.setAttribute('level', '3');
       element.innerHTML = 'Lifecycle Test';
-      
+
       // Connection should not throw with mixin composition
       expect(() => {
         document.body.appendChild(element as unknown as HTMLElement);
         element.connectedCallback();
       }).not.toThrow();
-      
+
       // Disconnection should clean up properly
       expect(() => {
         element.disconnectedCallback();
@@ -284,12 +284,12 @@ describe('UIHeading - The Next Generation', () => {
       element.setAttribute('level', '1');
       element.innerHTML = 'Multiple Connections';
       document.body.appendChild(element as unknown as HTMLElement);
-      
+
       // First connection
       element.connectedCallback();
       const firstH1 = element.querySelector('h1');
       expect(firstH1).toBeTruthy();
-      
+
       // Second connection (shouldn't duplicate)
       element.connectedCallback();
       expect(element.querySelectorAll('h1').length).toBe(1);
